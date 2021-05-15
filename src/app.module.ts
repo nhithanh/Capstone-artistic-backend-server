@@ -9,6 +9,7 @@ import { StylesModule } from './modules/styles/styles.module';
 import { AiModelsModule } from './modules/ai-models/ai-models.module';
 import { AiModelSnapshotsModule } from './modules/ai-model-snapshots/ai-model-snapshots.module';
 import { ArtistsModule } from './modules/artists/artists.module';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 @Module({
   imports: [
@@ -19,17 +20,18 @@ import { ArtistsModule } from './modules/artists/artists.module';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
+      host: process.env.DATABASE_HOST || 'localhost',
       port: 5432,
-      username: process.env.MYSQL_USER || 'postgres',
-      password: process.env.MYSQL_PASSWORD || 'postgres',
-      database: process.env.MYSQL_DATABASE || 'capstone',
+      username: process.env.DATABASE_USER || 'postgres',
+      password: process.env.DATABASE_PASSWORD || 'postgres',
+      database: process.env.DATABASE_NAME || 'capstone',
       entities: ['dist/**/*.entity{.ts,.js}'],
       migrationsTableName: 'migrations',
       migrations: ['dist/**/migration/*.js'],
       synchronize: true,
       migrationsRun: false,
       logging: false,
+      namingStrategy: new SnakeNamingStrategy()
     }),
     StylesModule,
     AiModelsModule,
