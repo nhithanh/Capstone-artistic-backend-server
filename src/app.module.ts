@@ -3,15 +3,17 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthsModule } from './auths/auths.module';
 import { UsersModule } from './modules/users/users.module';
-import { ContentsModule } from './modules/contents/contents.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { StylesModule } from './modules/styles/styles.module';
+import { AiModelsModule } from './modules/ai-models/ai-models.module';
+import { AiModelSnapshotsModule } from './modules/ai-model-snapshots/ai-model-snapshots.module';
+import { ArtistsModule } from './modules/artists/artists.module';
 
 @Module({
   imports: [
     AuthsModule, 
     UsersModule, 
-    ContentsModule, 
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -28,7 +30,11 @@ import { ConfigModule } from '@nestjs/config';
       synchronize: true,
       migrationsRun: false,
       logging: false,
-    })
+    }),
+    StylesModule,
+    AiModelsModule,
+    AiModelSnapshotsModule,
+    ArtistsModule
   ],
   controllers: [AppController],
   providers: [AppService],
