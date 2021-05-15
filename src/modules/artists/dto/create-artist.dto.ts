@@ -1,11 +1,9 @@
-import { IsString } from "class-validator";
+import { IsNotEmpty, IsString } from "class-validator";
 import { Gender } from "../entities/artist.entity";
 
 export class CreateArtistDto {
     @IsString()
-    id: string;
-
-    @IsString()
+    @IsNotEmpty()
     name: string;
 
     @IsString()

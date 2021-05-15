@@ -1,14 +1,15 @@
-import { IsBoolean, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateAiModelDto {
     @IsString()
     id: string;
 
     @IsString()
-    style_id: string;
+    @IsNotEmpty()
+    styleId: string;
 
     @IsString()
-    activate_model_id: string;
+    activateModelId: string;
 
     
 }
