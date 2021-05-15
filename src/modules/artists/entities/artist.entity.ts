@@ -32,8 +32,8 @@ export class Artist {
     biography: string;
 
     @CreateDateColumn()
-    created_at: Date;
+    CreatedAt: Date;
  
     @UpdateDateColumn()
-    updated_at: Date;
+    UpdatedAt: Date;
 }
