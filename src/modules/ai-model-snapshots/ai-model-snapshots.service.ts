@@ -1,19 +1,27 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateAiModelSnapshotDto } from './dto/create-ai-model-snapshot.dto';
 import { UpdateAiModelSnapshotDto } from './dto/update-ai-model-snapshot.dto';
+import { AiModelSnapshot } from './entities/ai-model-snapshot.entity';
 
 @Injectable()
 export class AiModelSnapshotsService {
+
+  @InjectRepository(AiModelSnapshot)
+  private readonly aiModelSnapshotRepository: Repository<AiModelSnapshot>
+
+
   create(createAiModelSnapshotDto: CreateAiModelSnapshotDto) {
-    return 'This action adds a new aiModelSnapshot';
+    return this.aiModelSnapshotRepository.create(createAiModelSnapshotDto);
   }
 
-  findAll() {
-    return `This action returns all aiModelSnapshots`;
+  findAll(): Promise<AiModelSnapshot[]> {
+    return this.aiModelSnapshotRepository.find()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} aiModelSnapshot`;
+  findOne(id: number): Promise<AiModelSnapshot> {
+    return this.aiModelSnapshotRepository.findOne(id)
   }
 
   update(id: number, updateAiModelSnapshotDto: UpdateAiModelSnapshotDto) {

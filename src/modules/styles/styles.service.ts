@@ -1,19 +1,25 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateStyleDto } from './dto/create-style.dto';
 import { UpdateStyleDto } from './dto/update-style.dto';
+import { Style } from './entities/style.entity';
 
 @Injectable()
 export class StylesService {
+
+  @InjectRepository(Style)
+  private readonly stylesRepository : Repository<Style>;
   create(createStyleDto: CreateStyleDto) {
-    return 'This action adds a new style';
+    return this.stylesRepository.create(createStyleDto);
   }
 
   findAll() {
-    return `This action returns all styles`;
+    return this.stylesRepository.find()
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} style`;
+    return this.stylesRepository.findOne(id)
   }
 
   update(id: number, updateStyleDto: UpdateStyleDto) {

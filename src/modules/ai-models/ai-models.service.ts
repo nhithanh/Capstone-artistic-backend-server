@@ -1,19 +1,26 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateAiModelDto } from './dto/create-ai-model.dto';
 import { UpdateAiModelDto } from './dto/update-ai-model.dto';
+import { AiModel } from './entities/ai-model.entity';
 
 @Injectable()
 export class AiModelsService {
+
+  @InjectRepository(AiModel)
+  private readonly aiModelRepository: Repository<AiModel>;
+
   create(createAiModelDto: CreateAiModelDto) {
-    return 'This action adds a new aiModel';
+    return this.aiModelRepository.create(createAiModelDto)
   }
 
   findAll() {
-    return `This action returns all aiModels`;
+    return this.aiModelRepository.find()
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} aiModel`;
+    return this.aiModelRepository.findOne(id)
   }
 
   update(id: number, updateAiModelDto: UpdateAiModelDto) {
