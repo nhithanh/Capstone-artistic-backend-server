@@ -1,3 +1,6 @@
+import { SnakeNamingStrategy } from "typeorm-naming-strategies";
+
+
 const config = {
     // production: {
     //     type: 'postgres',
@@ -26,6 +29,7 @@ const config = {
       synchronize: true,
       migrationsRun: false,
       logging: false,
+      namingStrategy: new SnakeNamingStrategy()
     },
   };
   
