@@ -2,11 +2,9 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
-import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import { nestCsrf } from 'ncsrf';
 
-dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
