@@ -7,19 +7,18 @@ import { Style } from './entities/style.entity';
 
 @Injectable()
 export class StylesService {
-
   @InjectRepository(Style)
-  private readonly stylesRepository : Repository<Style>;
-  async create(createStyleDto: CreateStyleDto) : Promise<Style> {
-    return await this.stylesRepository.save(createStyleDto);
+  private readonly stylesRepository: Repository<Style>;
+  async create(createStyleDto: CreateStyleDto): Promise<Style> {
+    return this.stylesRepository.save(createStyleDto);
   }
 
-  async findAll() : Promise<Style[]> {
-    return await this.stylesRepository.find()
+  async findAll(): Promise<Style[]> {
+    return this.stylesRepository.find();
   }
 
-  async findOne(id: number) : Promise<Style> {
-    return await this.stylesRepository.findOne(id)
+  async findOne(id: number): Promise<Style> {
+    return this.stylesRepository.findOne(id);
   }
 
   update(id: number, updateStyleDto: UpdateStyleDto) {

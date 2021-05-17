@@ -12,5 +12,3 @@ export class CreateArtistDto {
     @IsString()
     gender: Gender;
 }
-
-

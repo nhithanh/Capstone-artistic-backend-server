@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { IsBoolean, IsOptional, IsString } from "class-validator";
+=======
+import { IsBoolean, IsNotEmpty, IsString } from "class-validator";
+>>>>>>> 76964dcfe574393ed749f70f1b62a23c5e9884ce
 
 export class CreateAiModelDto {
     @IsOptional()
@@ -7,10 +11,11 @@ export class CreateAiModelDto {
 
     @IsOptional()
     @IsString()
-    style_id: string;
+    @IsNotEmpty()
+    styleId: string;
 
     @IsString()
-    activate_model_id: string;
+    activateModelId: string;
 
     
 }
