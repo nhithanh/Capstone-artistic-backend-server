@@ -11,16 +11,16 @@ export class AiModelsService {
   @InjectRepository(AiModel)
   private readonly aiModelRepository: Repository<AiModel>;
 
-  create(createAiModelDto: CreateAiModelDto) {
-    return this.aiModelRepository.create(createAiModelDto)
+  async create(createAiModelDto: CreateAiModelDto): Promise<AiModel> {
+    return await this.aiModelRepository.save(createAiModelDto)
   }
 
-  findAll() {
-    return this.aiModelRepository.find()
+  async findAll(): Promise<AiModel[]> {
+    return await this.aiModelRepository.find()
   }
 
-  findOne(id: number) {
-    return this.aiModelRepository.findOne(id)
+  async findOne(id: number): Promise<AiModel> {
+    return await this.aiModelRepository.findOne(id)
   }
 
   update(id: number, updateAiModelDto: UpdateAiModelDto) {

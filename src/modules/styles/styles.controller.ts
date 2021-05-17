@@ -2,14 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { StylesService } from './styles.service';
 import { CreateStyleDto } from './dto/create-style.dto';
 import { UpdateStyleDto } from './dto/update-style.dto';
+import { Style } from './entities/style.entity';
 
 @Controller('styles')
 export class StylesController {
   constructor(private readonly stylesService: StylesService) {}
 
   @Post()
-  create(@Body() createStyleDto: CreateStyleDto) {
-    return this.stylesService.create(createStyleDto);
+  async create(@Body() createStyleDto: CreateStyleDto) : Promise<Style>{
+    console.log("success create new style")
+    return await this.stylesService.create(createStyleDto);
   }
 
   @Get()

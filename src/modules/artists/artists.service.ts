@@ -10,16 +10,16 @@ export class ArtistsService {
   @InjectRepository(Artist)
   private readonly artistsRepository: Repository<Artist>
 
-  create(createArtistDto: CreateArtistDto) {
-    return this.artistsRepository.create(createArtistDto)
+  async create(createArtistDto: CreateArtistDto) : Promise<Artist> {
+    return await this.artistsRepository.save(createArtistDto)
   }
 
-  findAll() {
-    return this.artistsRepository.find()
+  async findAll() : Promise<Artist[]> {
+    return await this.artistsRepository.find()
   }
 
-  findOne(id: number) {
-    return this.artistsRepository.findOne(id)
+  async findOne(id: number): Promise<Artist> {
+    return await this.artistsRepository.findOne(id)
   }
 
   update(id: number, updateArtistDto: UpdateArtistDto) {

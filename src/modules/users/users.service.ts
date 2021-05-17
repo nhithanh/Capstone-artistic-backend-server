@@ -11,15 +11,15 @@ export class UsersService {
   @InjectRepository(User)
   private readonly usersRepository: Repository<User>
 
-  create(createUserDto: CreateUserDto) {
-    return this.usersRepository.create(createUserDto)
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    return await this.usersRepository.save(createUserDto)
   }
 
-  findAll() {
-    return this.usersRepository.find()
+  async findAll(): Promise<User[]> {
+    return await this.usersRepository.find()
   }
 
-  findOne(id: number) {
-    return this.usersRepository.findOne(id)
+  async findOne(id: number): Promise<User> {
+    return await this.usersRepository.findOne(id)
   }
 }

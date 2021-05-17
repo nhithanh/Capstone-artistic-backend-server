@@ -7,7 +7,7 @@ export class Style {
     id: string
 
     @Column({ nullable: true })
-    artistId: string;
+    artist_id: string;
 
     @ManyToOne(() => Artist)
     @JoinColumn()
@@ -18,13 +18,19 @@ export class Style {
         unique: true,
         nullable: false
     })
-    styleName: string;
+    style_name: string;
 
     @Column({
         type: 'boolean',
         default: false
     })
-    isGeneric: boolean
+    is_generic: boolean
+
+    @Column({
+        type: 'varchar',
+        nullable: false
+    })
+    icon_url: string;
 
     @CreateDateColumn()
     createdAt: Date;

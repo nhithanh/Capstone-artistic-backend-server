@@ -10,16 +10,16 @@ export class StylesService {
 
   @InjectRepository(Style)
   private readonly stylesRepository : Repository<Style>;
-  create(createStyleDto: CreateStyleDto) {
-    return this.stylesRepository.create(createStyleDto);
+  async create(createStyleDto: CreateStyleDto) : Promise<Style> {
+    return await this.stylesRepository.save(createStyleDto);
   }
 
-  findAll() {
-    return this.stylesRepository.find()
+  async findAll() : Promise<Style[]> {
+    return await this.stylesRepository.find()
   }
 
-  findOne(id: number) {
-    return this.stylesRepository.findOne(id)
+  async findOne(id: number) : Promise<Style> {
+    return await this.stylesRepository.findOne(id)
   }
 
   update(id: number, updateStyleDto: UpdateStyleDto) {

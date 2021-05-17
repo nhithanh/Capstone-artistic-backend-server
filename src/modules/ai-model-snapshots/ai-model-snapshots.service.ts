@@ -12,16 +12,16 @@ export class AiModelSnapshotsService {
   private readonly aiModelSnapshotRepository: Repository<AiModelSnapshot>
 
 
-  create(createAiModelSnapshotDto: CreateAiModelSnapshotDto) {
-    return this.aiModelSnapshotRepository.create(createAiModelSnapshotDto);
+  async create(createAiModelSnapshotDto: CreateAiModelSnapshotDto): Promise<AiModelSnapshot> {
+    return await this.aiModelSnapshotRepository.save(createAiModelSnapshotDto);
   }
 
-  findAll(): Promise<AiModelSnapshot[]> {
-    return this.aiModelSnapshotRepository.find()
+  async findAll(): Promise<AiModelSnapshot[]> {
+    return await this.aiModelSnapshotRepository.find()
   }
 
-  findOne(id: number): Promise<AiModelSnapshot> {
-    return this.aiModelSnapshotRepository.findOne(id)
+  async findOne(id: number): Promise<AiModelSnapshot> {
+    return await this.aiModelSnapshotRepository.findOne(id)
   }
 
   update(id: number, updateAiModelSnapshotDto: UpdateAiModelSnapshotDto) {
