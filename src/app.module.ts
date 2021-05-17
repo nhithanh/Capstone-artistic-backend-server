@@ -10,7 +10,6 @@ import { AiModelsModule } from './modules/ai-models/ai-models.module';
 import { AiModelSnapshotsModule } from './modules/ai-model-snapshots/ai-model-snapshots.module';
 import { ArtistsModule } from './modules/artists/artists.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { UpdateImagesModule } from './modules/update-images/update-images.module';
 import { UploadImagesModule } from './modules/upload-images/upload-images.module';
 import { TranferImagesModule } from './modules/tranfer-images/tranfer-images.module';
 
@@ -40,7 +39,6 @@ import { TranferImagesModule } from './modules/tranfer-images/tranfer-images.mod
     AiModelsModule,
     AiModelSnapshotsModule,
     ArtistsModule,
-    UpdateImagesModule,
     UploadImagesModule,
     TranferImagesModule
   ],
