@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { UploadImagesService } from './upload-images.service';
 import { CreateUploadImageDto } from './dto/create-upload-image.dto';
 import { UpdateUploadImageDto } from './dto/update-upload-image.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerOptions } from 'src/config/multer.config';
 
 @Controller('upload-images')
 export class UploadImagesController {
@@ -10,6 +12,12 @@ export class UploadImagesController {
   @Post()
   create(@Body() createUploadImageDto: CreateUploadImageDto) {
     return this.uploadImagesService.create(createUploadImageDto);
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file', multerOptions))
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
   }
 
   @Get()
