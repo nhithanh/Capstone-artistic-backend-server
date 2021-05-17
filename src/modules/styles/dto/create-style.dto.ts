@@ -10,10 +10,10 @@ export class CreateStyleDto {
     style_id: string;
 
     @IsString()
-    styleName: string;
+    style_name: string;
 
     @IsBoolean()
-    isGeneric: boolean;
+    is_generic: boolean;
 
     @IsString()
     icon_url: string;
