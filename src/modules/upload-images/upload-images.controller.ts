@@ -3,7 +3,7 @@ import { UploadImagesService } from './upload-images.service';
 import { CreateUploadImageDto } from './dto/create-upload-image.dto';
 import { UpdateUploadImageDto } from './dto/update-upload-image.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { multerOptions } from 'src/config/multer.config';
+import { uploadImageToS3Option } from 'src/config/multer.config';
 
 @Controller('upload-images')
 export class UploadImagesController {
@@ -15,13 +15,9 @@ export class UploadImagesController {
   }
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('image', multerOptions))
-  uploadFile(@UploadedFile() file: Express.Multer.File, @Req() req) {
-    console.log("req:", req)
-    return {
-      status: 201,
-      message: 'upload success'
-    }
+  @UseInterceptors(FileInterceptor('file', uploadImageToS3Option))
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
   }
 
   @Get()

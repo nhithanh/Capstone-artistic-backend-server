@@ -1,10 +1,17 @@
 import { extname } from 'path';
-import { diskStorage } from 'multer';
 import { v4 as uuid } from 'uuid';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import  * as multerS3 from 'multer-s3'
+import {S3} from 'aws-sdk'
 
-export const multerOptions = {
-    limits: { fieldSize: 25 * 1024 * 1024 },
+const s3 = new S3({
+    credentials: {
+        accessKeyId: 'AKIAYB7AFYKUMNDEZT4L',
+        secretAccessKey: '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'
+    }
+})
+
+export const uploadImageToS3Option = {
     fileFilter: (req: any, file: any, cb: any) => {
         console.log("file:", file)
         if (file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
@@ -17,10 +24,12 @@ export const multerOptions = {
             }, HttpStatus.BAD_REQUEST), false);
         }
     },
-    storage: diskStorage({
-        destination: './upload',
-        filename: (req: any, file: any, cb: any) => {
-            cb(null, `${uuid()}${extname(file.originalname)}`);
+    storage: multerS3({
+        s3: s3,
+        bucket: 'artisan-photos',
+        key: function (req, file, cb) {
+            cb(null, Date.now().toString())
         },
-    }),
+        contentType: multerS3.AUTO_CONTENT_TYPE
+    })
 };
