@@ -40,6 +40,7 @@
     "class-validator": "^0.13.1",
     "cookie-parser": "^1.4.5",
     "helmet": "^4.5.0",
+    "morgan": "^1.10.0",
     "multer-s3": "^2.9.0",
     "ncsrf": "^1.0.2",
     "passport": "^0.4.1",

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req } from '@nestjs/common';
 import { UploadImagesService } from './upload-images.service';
 import { CreateUploadImageDto } from './dto/create-upload-image.dto';
 import { UpdateUploadImageDto } from './dto/update-upload-image.dto';
