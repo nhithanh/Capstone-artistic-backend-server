@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req } from '@nestjs/common';
 import { UploadImagesService } from './upload-images.service';
 import { CreateUploadImageDto } from './dto/create-upload-image.dto';
 import { UpdateUploadImageDto } from './dto/update-upload-image.dto';
@@ -15,9 +15,13 @@ export class UploadImagesController {
   }
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file', multerOptions))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
+  @UseInterceptors(FileInterceptor('image', multerOptions))
+  uploadFile(@UploadedFile() file: Express.Multer.File, @Req() req) {
+    console.log("req:", req)
+    return {
+      status: 201,
+      message: 'upload success'
+    }
   }
 
   @Get()
