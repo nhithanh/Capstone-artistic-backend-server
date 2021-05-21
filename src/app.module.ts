@@ -12,7 +12,7 @@ import { ArtistsModule } from './modules/artists/artists.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { UploadImagesModule } from './modules/upload-images/upload-images.module';
 import { TranferImagesModule } from './modules/tranfer-images/tranfer-images.module';
-
+import { HelloGateway } from './gateways/hello/hello.gateway';
 @Module({
   imports: [
     AuthsModule, 
@@ -43,6 +43,6 @@ import { TranferImagesModule } from './modules/tranfer-images/tranfer-images.mod
     TranferImagesModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, HelloGateway],
 })
 export class AppModule {}
