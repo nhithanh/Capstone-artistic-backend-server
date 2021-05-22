@@ -10,7 +10,7 @@ import { AiModelsModule } from './modules/ai-models/ai-models.module';
 import { AiModelSnapshotsModule } from './modules/ai-model-snapshots/ai-model-snapshots.module';
 import { ArtistsModule } from './modules/artists/artists.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { UploadImagesModule } from './modules/upload-images/upload-images.module';
+import { PhotosModule } from './modules/photos/photos.module'
 import { TranferImagesModule } from './modules/tranfer-images/tranfer-images.module';
 import { HelloGateway } from './gateways/hello/hello.gateway';
 @Module({
@@ -39,7 +39,7 @@ import { HelloGateway } from './gateways/hello/hello.gateway';
     AiModelsModule,
     AiModelSnapshotsModule,
     ArtistsModule,
-    UploadImagesModule,
+    PhotosModule,
     TranferImagesModule
   ],
   controllers: [AppController],

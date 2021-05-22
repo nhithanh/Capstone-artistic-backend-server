@@ -1,23 +1,27 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req } from '@nestjs/common';
-import { UploadImagesService } from './upload-images.service';
-import { CreateUploadImageDto } from './dto/create-upload-image.dto';
-import { UpdateUploadImageDto } from './dto/update-upload-image.dto';
+import { UploadImagesService } from './photos.service';
+import { CreatePhoToDTO } from './dto/create-photo.dto';
+import { UpdatePhotoDTO } from './dto/upload-photo.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { uploadImageToS3Option } from 'src/config/multer.config';
 
-@Controller('upload-images')
+@Controller('photos')
 export class UploadImagesController {
   constructor(private readonly uploadImagesService: UploadImagesService) {}
 
   @Post()
-  create(@Body() createUploadImageDto: CreateUploadImageDto) {
-    return this.uploadImagesService.create(createUploadImageDto);
+  create(@Body() createPhotoDTO: CreatePhoToDTO) {
+    return this.uploadImagesService.create(createPhotoDTO);
   }
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file', uploadImageToS3Option))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
+  @UseInterceptors(FileInterceptor('photo', uploadImageToS3Option))
+  uploadFile(@UploadedFile() photo: Express.MulterS3.File) {
+    return this.uploadImagesService.create({
+      imageURL: photo.location,
+      userID: '7578b8c7-0bdb-4376-9c3b-bf80ec043c1c',
+      photoName: photo.originalname
+    })
   }
 
   @Get()
@@ -31,7 +35,7 @@ export class UploadImagesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUploadImageDto: UpdateUploadImageDto) {
+  update(@Param('id') id: string, @Body() updateUploadImageDto: UpdatePhotoDTO) {
     return this.uploadImagesService.update(+id, updateUploadImageDto);
   }
 
