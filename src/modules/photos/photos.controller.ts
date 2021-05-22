@@ -24,7 +24,7 @@ export class UploadImagesController {
     })
     return {
       ...photoObject,
-      accessdURL: getPhotoSignedURL(photoObject.photoLocation) 
+      accessURL: getPhotoSignedURL(photoObject.photoLocation) 
     }
   }
 
