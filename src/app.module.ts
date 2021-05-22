@@ -15,7 +15,7 @@ import { TranferImagesModule } from './modules/tranfer-images/tranfer-images.mod
 import { HelloGateway } from './gateways/hello/hello.gateway';
 import { SqsModule } from '@ssut/nestjs-sqs';
 import { QueueConsumerService } from './queues/consumers'
-import { QueueProducerService } from './queues/producers'
+import * as AWS from 'aws-sdk';
 @Module({
   imports: [
     AuthsModule, 
@@ -24,8 +24,16 @@ import { QueueProducerService } from './queues/producers'
       isGlobal: true,
     }),
     SqsModule.register({
-      consumers: [QueueConsumerService],
-      producers: [QueueProducerService]
+      consumers: [],
+      producers: [{
+        name: 'test',
+        queueUrl: 'https://sqs.ap-southeast-1.amazonaws.com/553984049832/artisan-queue-test',
+        sqs: new AWS.SQS({
+          accessKeyId: 'AKIAYB7AFYKUMNDEZT4L',
+          secretAccessKey: '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',
+          region: 'ap-southest-1'
+        })
+      }]
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
