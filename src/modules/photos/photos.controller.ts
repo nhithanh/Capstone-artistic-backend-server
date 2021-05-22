@@ -4,21 +4,15 @@ import { CreatePhoToDTO } from './dto/create-photo.dto';
 import { UpdatePhotoDTO } from './dto/upload-photo.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { getPhotoSignedURL, uploadImageToS3Option } from 'src/config/multer.config';
-import { SqsService } from '@ssut/nestjs-sqs';
 
 @Controller('photos')
 export class UploadImagesController {
 
-  @Inject()
-  private readonly sqsService: SqsService;
-
   constructor(private readonly photosService: PhotosService) {}
 
   @Post()
-  create() {
-    this.sqsService.send('test', {body: 'Ass', id: '12345'})
-    return "Send to SQS"
-    // return this.photosService.create(createPhotoDTO);
+  create(createPhotoDTO: CreatePhoToDTO) {
+    return this.photosService.create(createPhotoDTO);
   }
 
   @Post('upload')
