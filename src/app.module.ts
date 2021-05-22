@@ -13,12 +13,19 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { PhotosModule } from './modules/photos/photos.module'
 import { TranferImagesModule } from './modules/tranfer-images/tranfer-images.module';
 import { HelloGateway } from './gateways/hello/hello.gateway';
+import { SqsModule } from '@ssut/nestjs-sqs';
+import { QueueConsumerService } from './queues/consumers'
+import { QueueProducerService } from './queues/producers'
 @Module({
   imports: [
     AuthsModule, 
     UsersModule, 
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    SqsModule.register({
+      consumers: [QueueConsumerService],
+      producers: [QueueProducerService]
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
