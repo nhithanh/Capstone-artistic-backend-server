@@ -13,11 +13,9 @@ const s3 = new S3({
 
 export const uploadImageToS3Option = {
     fileFilter: (req: any, file: any, cb: any) => {
-        console.log("file:", file)
         if (file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
             cb(null, true);
         } else {
-            console.log("extName:", extname(file.originalname))
             cb(new HttpException({
                 status: 400,
                 message: `Unsupported file type ${extname(file.originalname)}`

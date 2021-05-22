@@ -10,7 +10,6 @@ export class StylesController {
 
   @Post()
   async create(@Body() createStyleDto: CreateStyleDto) : Promise<Style>{
-    console.log("success create new style")
     return await this.stylesService.create(createStyleDto);
   }
 
