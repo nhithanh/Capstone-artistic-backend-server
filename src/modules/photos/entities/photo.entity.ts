@@ -23,7 +23,7 @@ export class Photo {
         type: 'varchar',
         nullable: false
     })
-    imageURL: string;
+    photoLocation: string;
 
     @CreateDateColumn()
     createdAt: Date;

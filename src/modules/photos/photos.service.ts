@@ -6,7 +6,7 @@ import { UpdatePhotoDTO } from './dto/upload-photo.dto';
 import { Photo } from './entities/photo.entity';
 
 @Injectable()
-export class UploadImagesService {
+export class PhotosService {
   @InjectRepository(Photo)
   private readonly photoRepository: Repository<Photo>;
 

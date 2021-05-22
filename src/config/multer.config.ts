@@ -11,6 +11,16 @@ const s3 = new S3({
     }
 })
 
+export const getPhotoSignedURL = (locationURL) => {
+    const key = locationURL.substring(locationURL.lastIndexOf('/') + 1)
+    const url = s3.getSignedUrl('getObject', {
+        Bucket: 'artisan-photos',
+        Key: key,
+        Expires: 600
+    })
+    return url
+}
+
 export const uploadImageToS3Option = {
     fileFilter: (req: any, file: any, cb: any) => {
         if (file.mimetype.match(/\/(jpg|jpeg|png)$/)) {

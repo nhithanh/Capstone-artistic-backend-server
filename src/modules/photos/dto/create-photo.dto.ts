@@ -9,7 +9,7 @@ export class CreatePhoToDTO {
     userID: string;
 
     @IsString()
-    imageURL: string;
+    photoLocation: string;
 
     @IsString()
     photoName: string;
