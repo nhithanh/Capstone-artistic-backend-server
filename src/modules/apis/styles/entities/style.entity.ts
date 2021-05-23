@@ -1,4 +1,4 @@
-import { Artist } from "src/modules/artists/entities/artist.entity";
+import { Artist } from "src/modules/apis/artists/entities/artist.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()

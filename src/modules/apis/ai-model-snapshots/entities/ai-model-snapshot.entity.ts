@@ -1,4 +1,4 @@
-import { AiModel } from "src/modules/ai-models/entities/ai-model.entity";
+import { AiModel } from "src/modules/apis/ai-models/entities/ai-model.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()

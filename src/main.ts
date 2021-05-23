@@ -5,6 +5,7 @@ import * as helmet from "helmet";
 import * as cookieParser from 'cookie-parser';
 import { nestCsrf } from 'ncsrf';
 import * as morgan from 'morgan'
+import { MicroserviceOptions, Transport } from '@nestjs/microservices'
 
 
 async function bootstrap() {
@@ -20,6 +21,19 @@ async function bootstrap() {
     credentials: true,
   });
 
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: { 
+      urls: ['amqp://localhost:5672'],
+      queue: 'test_queue',
+      queueOptions: {
+        durable: false
+      }
+    }
+  })
+  
+  app.startAllMicroservices();
   await app.listen(3000);
 }
 bootstrap();
