@@ -1,12 +1,20 @@
 import { IsString } from "class-validator";
 
-export class TransferPhotoMetadata {
+export class TransferPhotoMetadataDTO {
     @IsString()
-    socketId: string;
+    socketID: string;
 
     @IsString()
     photoLocation: string;
     
     @IsString()
     styleID: string;
+}
+
+export class TransferPhotoCompleteMetadatadDTO {
+    @IsString()
+    socketID: string;
+
+    @IsString()
+    transferPhotoName: string;
 }

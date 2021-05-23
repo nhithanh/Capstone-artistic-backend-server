@@ -5,7 +5,7 @@ import { UpdatePhotoDTO } from './dto/upload-photo.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { getPhotoSignedURL, uploadImageToS3Option } from 'src/config/multer.config';
 import { ProducerService } from 'src/modules/producer/producer.service';
-import { TransferPhotoMetadata } from './dto/transfer-photo-metadata.dto';
+import { TransferPhotoCompleteMetadatadDTO, TransferPhotoMetadataDTO } from './dto/transfer-photo-metadata.dto';
 import { SocketService } from 'src/gateway/socket.service';
 
 @Controller('photos')
@@ -20,10 +20,10 @@ export class PhotosController {
   constructor(private readonly photosService: PhotosService) {}
 
   @Post('/transfer-photo')
-  transferPhoto(transferPhotoMetadata: TransferPhotoMetadata) {
+  transferPhoto(transferPhotoMetadata: TransferPhotoMetadataDTO) {
     const payload = {
       ...transferPhotoMetadata,
-      accessUrl: getPhotoSignedURL(transferPhotoMetadata.photoLocation)
+      accessURL: getPhotoSignedURL(transferPhotoMetadata.photoLocation)
     }
     this.producerService.sendQueueToGeneratorService('TRANSFER-PHOTO', payload);
     return {
@@ -33,10 +33,15 @@ export class PhotosController {
   }
 
   @Post('/transfer-photo/completed')
-  transferPhotoCompleted() {
-    this.socketService.socket.emit('hello', 'hello from body')
-    console.log("No complete roi nha anh trai")
-    return 'emit event transfer success'
+  transferPhotoCompleted(transferPhotoCompleteMetadataDTO: TransferPhotoCompleteMetadatadDTO) {
+    this.socketService.emitToSpecificClient(transferPhotoCompleteMetadataDTO.socketID, 'TRANSFER_COMPLETED', {
+      status: 'COMPLETED',
+      accessURL: `localhost:3000/${transferPhotoCompleteMetadataDTO.transferPhotoName}`
+    })
+    return {
+      status: HttpStatus.OK,
+      message: 'Your request is completed!'
+    }
   }
 
   @Post()
