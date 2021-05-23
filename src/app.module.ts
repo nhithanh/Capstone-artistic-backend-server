@@ -12,12 +12,13 @@ import { ArtistsModule } from './modules/apis/artists/artists.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { PhotosModule } from './modules/apis/photos/photos.module'
 import { TranferImagesModule } from './modules/apis/tranfer-images/tranfer-images.module';
-import { HelloGateway } from './modules/gateways/hello/hello.gateway';
 import { ProducerService } from './modules/producer/producer.service';
 import { ProducerModule } from './modules/producer/producer.module';
 import { ControllerController } from './modules/consumers/controller/controller.controller';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { AppGateway } from './gateway/app.gateway';
+import { SocketModule } from './gateway/socket.module';
 
 @Module({
   imports: [
@@ -50,9 +51,10 @@ import { join } from 'path';
     AiModelSnapshotsModule,
     ArtistsModule,
     PhotosModule,
-    TranferImagesModule
+    TranferImagesModule,
+    SocketModule
   ],
   controllers: [AppController, ControllerController],
-  providers: [AppService, HelloGateway, ProducerService],
+  providers: [AppService, AppGateway]
 })
 export class AppModule {}

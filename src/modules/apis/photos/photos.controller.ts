@@ -6,12 +6,16 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { getPhotoSignedURL, uploadImageToS3Option } from 'src/config/multer.config';
 import { ProducerService } from 'src/modules/producer/producer.service';
 import { TransferPhotoMetadata } from './dto/transfer-photo-metadata.dto';
+import { SocketService } from 'src/gateway/socket.service';
 
 @Controller('photos')
-export class UploadImagesController {
+export class PhotosController {
 
   @Inject()
-  producerService: ProducerService;
+  private readonly socketService: SocketService
+
+  @Inject()
+  private readonly producerService: ProducerService;
 
   constructor(private readonly photosService: PhotosService) {}
 
@@ -30,7 +34,9 @@ export class UploadImagesController {
 
   @Post('/transfer-photo/completed')
   transferPhotoCompleted() {
+    this.socketService.socket.emit('hello', 'hello from body')
     console.log("No complete roi nha anh trai")
+    return 'emit event transfer success'
   }
 
   @Post()
