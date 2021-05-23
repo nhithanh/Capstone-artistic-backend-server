@@ -1,13 +1,12 @@
 import { extname } from 'path';
-import { v4 as uuid } from 'uuid';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import  * as multerS3 from 'multer-s3'
 import {S3} from 'aws-sdk'
 
 const s3 = new S3({
     credentials: {
-        accessKeyId: 'AKIAYB7AFYKUMNDEZT4L',
-        secretAccessKey: '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'
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_PRIVATE_KEY_ID
     }
 })
 
