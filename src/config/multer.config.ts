@@ -11,14 +11,25 @@ const s3 = new S3({
     }
 })
 
-export const getPhotoSignedURL = (locationURL) => {
+export const getPhotoSignedURL = async (locationURL) => {
     const key = locationURL.substring(locationURL.lastIndexOf('/') + 1)
-    const url = s3.getSignedUrl('getObject', {
+    const params = {
         Bucket: 'artisan-photos',
         Key: key,
         Expires: 60000
-    })
-    return url
+    }
+    try { 
+        await s3.headObject(params).promise();
+        const signedUrl = s3.getSignedUrl('getObject', params);
+        return signedUrl
+    } catch (headErr) {
+        if (headErr.code === 'NotFound') {
+            throw new HttpException({
+                status: HttpStatus.NOT_FOUND,
+                message: `location ${locationURL} does not exist!`
+            }, HttpStatus.NOT_FOUND)
+        }
+    }
 }
 
 export const uploadImageToS3Option = {

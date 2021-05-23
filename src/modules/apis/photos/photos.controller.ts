@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req, Inject, HttpStatus } from '@nestjs/common';
 import { PhotosService } from './photos.service';
 import { CreatePhoToDTO } from './dto/create-photo.dto';
 import { UpdatePhotoDTO } from './dto/upload-photo.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { getPhotoSignedURL, uploadImageToS3Option } from 'src/config/multer.config';
 import { ProducerService } from 'src/modules/producer/producer.service';
+import { TransferPhotoMetadata } from './dto/transfer-photo-metadata.dto';
 
 @Controller('photos')
 export class UploadImagesController {
@@ -14,9 +15,22 @@ export class UploadImagesController {
 
   constructor(private readonly photosService: PhotosService) {}
 
-  @Get('/test-send-message')
-  testSendMessage() {
-    this.producerService.sendQueueToGeneratorService('my_queue', '{"photoLocation": "http://localhost:5000/"}');
+  @Post('/transfer-photo')
+  transferPhoto(transferPhotoMetadata: TransferPhotoMetadata) {
+    const payload = {
+      ...transferPhotoMetadata,
+      accessUrl: getPhotoSignedURL(transferPhotoMetadata.photoLocation)
+    }
+    this.producerService.sendQueueToGeneratorService('TRANSFER-PHOTO', payload);
+    return {
+      status: HttpStatus.ACCEPTED,
+      message: 'Your request is executing.'
+    }
+  }
+
+  @Post('/transfer-photo/completed')
+  transferPhotoCompleted() {
+    console.log("No complete roi nha anh trai")
   }
 
   @Post()

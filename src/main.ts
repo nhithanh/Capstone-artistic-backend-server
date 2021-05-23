@@ -22,16 +22,16 @@ async function bootstrap() {
   });
 
 
-  const microserviceRMQ = app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: { 
-      urls: ['amqp://localhost:5672'],
-      queue: 'test_queue',
-      queueOptions: {
-        durable: false
-      }
-    }
-  })
+  // const microserviceRMQ = app.connectMicroservice<MicroserviceOptions>({
+  //   transport: Transport.RMQ,
+  //   options: { 
+  //     urls: ['amqp://localhost:5672'],
+  //     queue: 'test_queue',
+  //     queueOptions: {
+  //       durable: false
+  //     }
+  //   }
+  // })
   
   await app.startAllMicroservicesAsync();
   await app.listen(3000);

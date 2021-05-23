@@ -16,8 +16,14 @@ import { HelloGateway } from './modules/gateways/hello/hello.gateway';
 import { ProducerService } from './modules/producer/producer.service';
 import { ProducerModule } from './modules/producer/producer.module';
 import { ControllerController } from './modules/consumers/controller/controller.controller';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: 'C:\\Users\\enka\\Desktop\\public'
+    }),    
     ProducerModule,
     AuthsModule, 
     UsersModule, 
