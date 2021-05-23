@@ -3,13 +3,17 @@ import { PhotosService } from './photos.service';
 import { CreatePhoToDTO } from './dto/create-photo.dto';
 import { UpdatePhotoDTO } from './dto/upload-photo.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { getPhotoSignedURL, uploadImageToS3Option } from 'src/config/multer.config';
+import { uploadImageToS3Option } from 'src/config/multer.service';
 import { ProducerService } from 'src/modules/producer/producer.service';
 import { TransferPhotoCompleteMetadatadDTO, TransferPhotoMetadataDTO } from './dto/transfer-photo-metadata.dto';
 import { SocketService } from 'src/gateway/socket.service';
+import { S3Service } from 'src/s3/s3.service';
 
 @Controller('photos')
 export class PhotosController {
+
+  @Inject()
+  s3Service: S3Service;
 
   @Inject()
   private readonly socketService: SocketService
@@ -20,10 +24,11 @@ export class PhotosController {
   constructor(private readonly photosService: PhotosService) {}
 
   @Post('/transfer-photo')
-  transferPhoto(transferPhotoMetadata: TransferPhotoMetadataDTO) {
+  async transferPhoto(@Body() transferPhotoMetadata: TransferPhotoMetadataDTO) {
+    const accessURL = await this.s3Service.getPhotoSignedURL(transferPhotoMetadata.photoLocation)
     const payload = {
       ...transferPhotoMetadata,
-      accessURL: getPhotoSignedURL(transferPhotoMetadata.photoLocation)
+      accessURL
     }
     this.producerService.sendQueueToGeneratorService('TRANSFER-PHOTO', payload);
     return {
@@ -33,7 +38,7 @@ export class PhotosController {
   }
 
   @Post('/transfer-photo/completed')
-  transferPhotoCompleted(transferPhotoCompleteMetadataDTO: TransferPhotoCompleteMetadatadDTO) {
+  transferPhotoCompleted(@Body() transferPhotoCompleteMetadataDTO: TransferPhotoCompleteMetadatadDTO) {
     this.socketService.emitToSpecificClient(transferPhotoCompleteMetadataDTO.socketID, 'TRANSFER_COMPLETED', {
       status: 'COMPLETED',
       accessURL: `localhost:3000/${transferPhotoCompleteMetadataDTO.transferPhotoName}`
@@ -50,16 +55,19 @@ export class PhotosController {
   }
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('photo', uploadImageToS3Option))
+  @UseInterceptors(FileInterceptor('photo'))
   async uploadFile(@UploadedFile() photo: Express.MulterS3.File) {
-    const photoObject = await this.photosService.create({
-      photoLocation: photo.location,
-      userID: '7578b8c7-0bdb-4376-9c3b-bf80ec043c1c',
-      photoName: photo.originalname
-    })
+    const [photoObject, accessURL] = await Promise.all([
+      this.photosService.create({
+        photoLocation: photo.location,
+        userID: '7578b8c7-0bdb-4376-9c3b-bf80ec043c1c',
+        photoName: photo.originalname
+      }),
+      this.s3Service.getPhotoSignedURL(photo.location) 
+    ])
     return {
       ...photoObject,
-      accessURL: getPhotoSignedURL(photoObject.photoLocation) 
+      accessURL
     }
   }
 

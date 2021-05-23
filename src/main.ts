@@ -6,9 +6,10 @@ import * as cookieParser from 'cookie-parser';
 import { nestCsrf } from 'ncsrf';
 import * as morgan from 'morgan'
 import { MicroserviceOptions, Transport } from '@nestjs/microservices'
-
+import * as dotenv from 'dotenv'
 
 async function bootstrap() {
+  dotenv.config()
   const app = await NestFactory.create(AppModule);
   app.use(morgan('dev'));
   app.use(helmet());
