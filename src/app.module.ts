@@ -13,10 +13,12 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { PhotosModule } from './modules/apis/photos/photos.module'
 import { TranferImagesModule } from './modules/apis/tranfer-images/tranfer-images.module';
 import { HelloGateway } from './modules/gateways/hello/hello.gateway';
-import { ProducerService } from './common/modules/producer/producer.service';
-import { ProducerModule } from './common/modules/producer/producer.module';
+import { ProducerService } from './modules/producer/producer.service';
+import { ProducerModule } from './modules/producer/producer.module';
+import { ControllerController } from './modules/consumers/controller/controller.controller';
 @Module({
   imports: [
+    ProducerModule,
     AuthsModule, 
     UsersModule, 
     ConfigModule.forRoot({
@@ -42,10 +44,9 @@ import { ProducerModule } from './common/modules/producer/producer.module';
     AiModelSnapshotsModule,
     ArtistsModule,
     PhotosModule,
-    TranferImagesModule,
-    ProducerModule
+    TranferImagesModule
   ],
-  controllers: [AppController],
+  controllers: [AppController, ControllerController],
   providers: [AppService, HelloGateway, ProducerService],
 })
 export class AppModule {}

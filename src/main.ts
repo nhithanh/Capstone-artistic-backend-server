@@ -22,7 +22,7 @@ async function bootstrap() {
   });
 
 
-  app.connectMicroservice<MicroserviceOptions>({
+  const microserviceRMQ = app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: { 
       urls: ['amqp://localhost:5672'],
@@ -33,7 +33,7 @@ async function bootstrap() {
     }
   })
   
-  app.startAllMicroservices();
-  await app.listen(3000);
+  await app.startAllMicroservicesAsync();
+  await app.listen(3001);
 }
 bootstrap();

@@ -4,11 +4,20 @@ import { CreatePhoToDTO } from './dto/create-photo.dto';
 import { UpdatePhotoDTO } from './dto/upload-photo.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { getPhotoSignedURL, uploadImageToS3Option } from 'src/config/multer.config';
+import { ProducerService } from 'src/modules/producer/producer.service';
 
 @Controller('photos')
 export class UploadImagesController {
 
+  @Inject()
+  producerService: ProducerService;
+
   constructor(private readonly photosService: PhotosService) {}
+
+  @Get('/test-send-message')
+  testSendMessage() {
+    this.producerService.sendQueueToGeneratorService('test-queue', 'Hello there');
+  }
 
   @Post()
   create(createPhotoDTO: CreatePhoToDTO) {
@@ -31,7 +40,7 @@ export class UploadImagesController {
 
   @Get()
   findAll() {
-    return this.photosService.findAll();``
+    return this.photosService.findAll();
   }
 
   @Get(':id')
