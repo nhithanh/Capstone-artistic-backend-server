@@ -16,7 +16,7 @@ export const getPhotoSignedURL = (locationURL) => {
     const url = s3.getSignedUrl('getObject', {
         Bucket: 'artisan-photos',
         Key: key,
-        Expires: 600
+        Expires: 60000
     })
     return url
 }

@@ -16,7 +16,7 @@ export class UploadImagesController {
 
   @Get('/test-send-message')
   testSendMessage() {
-    this.producerService.sendQueueToGeneratorService('test-queue', 'Hello there');
+    this.producerService.sendQueueToGeneratorService('my_queue', '{"photoLocation": "http://localhost:5000/"}');
   }
 
   @Post()

@@ -9,8 +9,8 @@ export class ProducerService {
         this.client = ClientProxyFactory.create({
           transport: Transport.RMQ,
           options: {
-              urls: ['amqp://localhost:5672'],
-              queue: 'test_queue'
+              urls: ['amqps://vkcupcps:7aZAQs_SrFQ8_xUtIsC_phHlwl_KpuLf@baboon.rmq.cloudamqp.com/vkcupcps'],
+              queue: 'GENERATOR_SERVICE'
           }
         });
       }
