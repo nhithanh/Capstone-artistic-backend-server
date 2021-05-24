@@ -25,7 +25,7 @@ import { S3Module } from './s3/s3.module';
       isGlobal: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: 'C:\\Users\\enka\\Desktop\\public'
+      rootPath: process.env.STATIC_DIR
     }),    
     ProducerModule,
     AuthsModule, 

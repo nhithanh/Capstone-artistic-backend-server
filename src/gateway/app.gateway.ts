@@ -19,13 +19,13 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   }
 
   handleDisconnect(client: Socket) {
-    this.socketService.clients = _.omit(this.socketService.clients, [client.id])
+    // this.socketService.clients = _.omit(this.socketService.clients, [client.id])
     this.logger.log(`Client disconnected: ${client.id}`);
   }
 
   handleConnection(client: Socket, ...args: any[]) {
+    console.log("client connect to server")
     this.socketService.clients[client.id] = client;
-    this.logger.log(`Client connected: ${client.id}`);
+    client.emit('connection', {socketID: client.id})
   }
-
 }

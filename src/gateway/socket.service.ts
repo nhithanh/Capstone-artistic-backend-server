@@ -6,9 +6,9 @@ export class SocketService {
 
     public server: Server = null;
 
-    public clients: { [Key: string]: Socket }
+    public clients: { [Key: string]: Socket } = {}
 
-    public emitToSpecificClient(socketID, eventName, payload) {
+    public emitToSpecificClient(socketID: string, eventName: string, payload: any) {
         this.clients[socketID].emit(eventName, payload)
     }
 
