@@ -17,4 +17,7 @@ export class TransferPhotoCompleteMetadatadDTO {
 
     @IsString()
     transferPhotoName: string;
+
+    @IsString()
+    styleID: string;
 }

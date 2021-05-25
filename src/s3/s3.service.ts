@@ -16,6 +16,7 @@ export class S3Service {
 
     public async getPhotoSignedURL(locationURL: string): Promise<string> {
         const key = locationURL.substring(locationURL.lastIndexOf('/') + 1)
+        console.log("key:", key)
         const params = {
             Bucket: 'artisan-photos',
             Key: key
