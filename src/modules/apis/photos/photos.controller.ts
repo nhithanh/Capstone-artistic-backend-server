@@ -61,7 +61,9 @@ export class PhotosController {
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('photo'))
-  async uploadFile(@UploadedFile() photo: Express.MulterS3.File) {
+  async uploadFile(@UploadedFile() photo: Express.MulterS3.File, @Body() body) {
+    const socketID = body['socketID']
+
     const [photoObject, accessURL] = await Promise.all([
       this.photosService.create({
         photoLocation: photo.location,
@@ -70,10 +72,13 @@ export class PhotosController {
       }),
       this.s3Service.getPhotoSignedURL(photo.location) 
     ])
-    return {
+    const payload = {
       ...photoObject,
       accessURL
     }
+
+    this.socketService.emitToSpecificClient(socketID, 'UPLOAD_IMAGE_SUCCESS', payload)
+    return null
   }
 
   @Get()

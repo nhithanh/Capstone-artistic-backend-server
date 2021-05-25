@@ -18,6 +18,7 @@ import { AppGateway } from './gateway/app.gateway';
 import { SocketModule } from './gateway/socket.module';
 import { ConfigModule } from '@nestjs/config';
 import { S3Module } from './s3/s3.module';
+import { PhotoLocalModule } from './modules/apis/photo-local/photo-local.module';
 
 @Module({
   imports: [
@@ -52,7 +53,8 @@ import { S3Module } from './s3/s3.module';
     PhotosModule,
     TranferImagesModule,
     SocketModule,
-    S3Module
+    S3Module,
+    PhotoLocalModule
   ],
   controllers: [AppController, ControllerController],
   providers: [AppService, AppGateway]
