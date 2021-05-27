@@ -5,9 +5,8 @@ import { AuthsModule } from './auths/auths.module';
 import { UsersModule } from './modules/apis/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StylesModule } from './modules/apis/styles/styles.module';
-import { AiModelsModule } from './modules/apis/ai-models/ai-models.module';
-import { AiModelSnapshotsModule } from './modules/apis/ai-model-snapshots/ai-model-snapshots.module';
-import { ArtistsModule } from './modules/apis/artists/artists.module';
+import { AiModelsModule } from './modules/apis/models/models.module';
+import { AiModelSnapshotsModule } from './modules/apis/snapshots/snapshot.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { PhotosModule } from './modules/apis/photos/photos.module'
 import { TranferImagesModule } from './modules/apis/tranfer-images/tranfer-images.module';
@@ -49,7 +48,6 @@ import { PhotoLocalModule } from './modules/apis/photo-local/photo-local.module'
     StylesModule,
     AiModelsModule,
     AiModelSnapshotsModule,
-    ArtistsModule,
     PhotosModule,
     TranferImagesModule,
     SocketModule,

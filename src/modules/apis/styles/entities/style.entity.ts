@@ -1,40 +1,42 @@
-import { Artist } from "src/modules/apis/artists/entities/artist.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Style {
     @PrimaryGeneratedColumn('uuid')
     id: string
 
-    @Column({ nullable: true })
-    artist_id: string;
+    @Column({
+        type: 'varchar',
+        unique: true,
+        nullable: false
+    })
+    styleName: string;
 
-    @ManyToOne(() => Artist)
-    @JoinColumn()
-    artist: Artist;
+
+    @Column({
+        type: 'varchar',
+        nullable: false
+    })
+    iconURL: string;
+
+    @Column({
+        type: 'varchar'
+    })
+    description: string;
 
     @Column({
         type: 'varchar',
         unique: true,
         nullable: false
     })
-    style_name: string;
-
-    @Column({
-        type: 'boolean',
-        default: false
-    })
-    is_generic: boolean
-
-    @Column({
-        type: 'varchar',
-        nullable: false
-    })
-    icon_url: string;
+    transportChannelName: string;
 
     @CreateDateColumn()
     createdAt: Date;
  
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
 }
