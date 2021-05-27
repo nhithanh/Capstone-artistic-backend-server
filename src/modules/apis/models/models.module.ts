@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AiModelsService } from './models.service';
+import { ModelsService } from './models.service';
 import { ModelsController } from './models.controller';
 import { Model } from './entities/model.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -7,6 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [TypeOrmModule.forFeature([Model])],
   controllers: [ModelsController],
-  providers: [AiModelsService]
+  providers: [ModelsService]
 })
 export class AiModelsModule {}

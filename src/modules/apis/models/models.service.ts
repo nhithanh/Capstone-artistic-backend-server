@@ -9,21 +9,21 @@ import { Model } from './entities/model.entity';
 export class ModelsService {
 
   @InjectRepository(Model)
-  private readonly aiModelRepository: Repository<Model>;
+  private readonly modelRepository: Repository<Model>;
 
-  async create(createAiModelDto: CreateModelDTO): Promise<Model> {
-    return await this.aiModelRepository.save(createAiModelDto)
+  async create(createModelDTO: CreateModelDTO): Promise<Model> {
+    return await this.modelRepository.save(createModelDTO)
   }
 
   async findAll(): Promise<Model[]> {
-    return await this.aiModelRepository.find()
+    return await this.modelRepository.find()
   }
 
   async findOne(id: number): Promise<Model> {
-    return await this.aiModelRepository.findOne(id)
+    return await this.modelRepository.findOne(id)
   }
 
-  update(id: number, updateAiModelDto: UpdateModelDTO) {
+  update(id: number, updateModelDTO: UpdateModelDTO) {
     return `This action updates a #${id} aiModel`;
   }
 

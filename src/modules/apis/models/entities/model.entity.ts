@@ -7,7 +7,7 @@ export class Model {
     id: string
 
     @Column({ nullable: true })
-    styleId: string;
+    styleID: string;
 
     @ManyToOne(() => Style)
     @JoinColumn()
