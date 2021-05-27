@@ -29,7 +29,7 @@ export class Style {
 
     @OneToOne(() => Model)
     @JoinColumn()
-    activeModel: Model
+    activeModel: Promise<Model>
 
     @Column({
         type: 'varchar',

@@ -5,7 +5,7 @@ import { AuthsModule } from './auths/auths.module';
 import { UsersModule } from './modules/apis/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StylesModule } from './modules/apis/styles/styles.module';
-import { AiModelsModule } from './modules/apis/models/models.module';
+import { ModelsModule } from './modules/apis/models/models.module';
 import { AiModelSnapshotsModule } from './modules/apis/snapshots/snapshot.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { PhotosModule } from './modules/apis/photos/photos.module'
@@ -17,7 +17,6 @@ import { AppGateway } from './gateway/app.gateway';
 import { SocketModule } from './gateway/socket.module';
 import { ConfigModule } from '@nestjs/config';
 import { S3Module } from './s3/s3.module';
-import { PhotoLocalModule } from './modules/apis/photo-local/photo-local.module';
 
 @Module({
   imports: [
@@ -46,13 +45,12 @@ import { PhotoLocalModule } from './modules/apis/photo-local/photo-local.module'
       namingStrategy: new SnakeNamingStrategy()
     }),
     StylesModule,
-    AiModelsModule,
+    ModelsModule,
     AiModelSnapshotsModule,
     PhotosModule,
     TranferImagesModule,
     SocketModule,
-    S3Module,
-    PhotoLocalModule
+    S3Module
   ],
   controllers: [AppController, ControllerController],
   providers: [AppService, AppGateway]

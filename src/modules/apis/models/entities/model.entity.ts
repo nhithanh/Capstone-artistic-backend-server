@@ -26,7 +26,7 @@ export class Model {
 
     @OneToOne(() =>  Snapshot)
     @JoinColumn()
-    snapshot: Snapshot;
+    activeSnapshot: Promise<Snapshot>;
 
     @CreateDateColumn()
     CreatedAt: Date;

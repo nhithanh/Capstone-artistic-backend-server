@@ -1,12 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject } from '@nestjs/common';
 import { StylesService } from './styles.service';
 import { CreateStyleDto } from './dto/create-style.dto';
 import { UpdateStyleDto } from './dto/update-style.dto';
 import { Style } from './entities/style.entity';
+import { ModelsService } from '../models/models.service';
 
 @Controller('styles')
 export class StylesController {
-  constructor(private readonly stylesService: StylesService) {}
+
+  @Inject()
+  private readonly stylesService: StylesService;
+
+  @Inject()
+  private readonly modelsService: ModelsService;
 
   @Post()
   async create(@Body() createStyleDto: CreateStyleDto) : Promise<Style>{
@@ -20,7 +26,12 @@ export class StylesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.stylesService.findOne(+id);
+
+  }
+  
+  @Get(':id/active-model')
+  getStyleActiveModelDetail(@Param('id') id: string) {
+    return this.modelsService.getActivateModelDetail(id);
   }
 
   @Patch(':id')
