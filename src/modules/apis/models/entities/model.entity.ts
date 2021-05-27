@@ -1,5 +1,6 @@
 import { Style } from "src/modules/apis/styles/entities/style.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Snapshot } from "../../snapshots/entities/snapshot.entity";
 
 @Entity()
 export class Model {
@@ -22,6 +23,10 @@ export class Model {
         type: 'varchar'
     })
     activeSnapshotId: string;
+
+    @OneToOne(() =>  Snapshot)
+    @JoinColumn()
+    snapshot: Snapshot;
 
     @CreateDateColumn()
     CreatedAt: Date;
