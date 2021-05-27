@@ -6,7 +6,7 @@ export class CreatePhoToDTO {
     id? : string;
 
     @IsString()
-    userID: string;
+    userId: string;
 
     @IsString()
     photoLocation: string;

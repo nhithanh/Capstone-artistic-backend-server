@@ -43,10 +43,10 @@ export class PhotosController {
     const payload = {
       status: 'COMPLETED',
       accessURL: `http://192.168.1.26:3000/${transferPhotoCompleteMetadataDTO.transferPhotoName}`,
-      styleID: transferPhotoCompleteMetadataDTO.styleID
+      styleId: transferPhotoCompleteMetadataDTO.styleId
     }
-    this.socketService.emitToSpecificClient(transferPhotoCompleteMetadataDTO.socketID, 'TRANSFER_COMPLETED', payload)
-    console.log(`Emit to ${transferPhotoCompleteMetadataDTO.socketID}`)
+    this.socketService.emitToSpecificClient(transferPhotoCompleteMetadataDTO.socketId, 'TRANSFER_COMPLETED', payload)
+    console.log(`Emit to ${transferPhotoCompleteMetadataDTO.socketId}`)
     console.log("Payload:", payload)
     return {
       status: HttpStatus.OK,
@@ -62,12 +62,12 @@ export class PhotosController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('photo'))
   async uploadFile(@UploadedFile() photo: Express.MulterS3.File, @Body() body) {
-    const socketID = body['socketID']
+    const socketId = body['socketId']
 
     const [photoObject, accessURL] = await Promise.all([
       this.photosService.create({
         photoLocation: photo.location,
-        userID: '7578b8c7-0bdb-4376-9c3b-bf80ec043c1c',
+        userId: '7578b8c7-0bdb-4376-9c3b-bf80ec043c1c',
         photoName: photo.originalname
       }),
       this.s3Service.getPhotoSignedURL(photo.location) 
@@ -77,7 +77,7 @@ export class PhotosController {
       accessURL
     }
 
-    this.socketService.emitToSpecificClient(socketID, 'UPLOAD_IMAGE_SUCCESS', payload)
+    this.socketService.emitToSpecificClient(socketId, 'UPLOAD_IMAGE_SUCCESS', payload)
     return null
   }
 

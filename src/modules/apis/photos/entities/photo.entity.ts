@@ -7,7 +7,7 @@ export class Photo {
     id: string;
 
     @Column({ nullable: false })
-    userID: string;
+    userId: string;
 
     @ManyToOne(() => User)
     @JoinColumn()

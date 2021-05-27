@@ -8,8 +8,8 @@ export class SocketService {
 
     public clients: { [Key: string]: Socket } = {}
 
-    public emitToSpecificClient(socketID: string, eventName: string, payload: any) {
-        this.clients[socketID].emit(eventName, payload)
+    public emitToSpecificClient(socketId: string, eventName: string, payload: any) {
+        this.clients[socketId].emit(eventName, payload)
     }
 
 }

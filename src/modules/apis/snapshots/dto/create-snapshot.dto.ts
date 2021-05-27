@@ -7,7 +7,7 @@ export class CreateSnapshotDTO {
 
     @IsString()
     @IsNotEmpty()
-    modelID: string;
+    modelId: string;
 
     @IsString()
     @IsNotEmpty()

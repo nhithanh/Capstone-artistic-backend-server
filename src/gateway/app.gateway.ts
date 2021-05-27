@@ -27,7 +27,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     console.log("client connect to server")
     this.socketService.clients[client.id] = client;
     console.log("client id:", client.id)
-    client.emit('connection', {socketID: client.id})
+    client.emit('connection', {socketId: client.id})
     client.emit("TRANSFER_SUCCESS", "Hello from client instance")
     this.socketService.emitToSpecificClient(client.id, "TRANSFER_SUCCESS", "Hello from socket service")
   }

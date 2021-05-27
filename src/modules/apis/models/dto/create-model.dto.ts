@@ -7,7 +7,7 @@ export class CreateModelDTO {
 
     @IsNotEmpty()
     @IsString()
-    styleID: string;
+    styleId: string;
 
     @IsNotEmpty()
     @IsString()
@@ -15,5 +15,5 @@ export class CreateModelDTO {
 
     @IsOptional()
     @IsString()
-    activeSnapshotID: string;
+    activeSnapshotId: string;
 }

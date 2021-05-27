@@ -7,7 +7,7 @@ export class Model {
     id: string
 
     @Column({ nullable: true })
-    styleID: string;
+    styleId: string;
 
     @ManyToOne(() => Style)
     @JoinColumn()
@@ -21,7 +21,7 @@ export class Model {
     @Column({
         type: 'varchar'
     })
-    activeSnapshotID: string;
+    activeSnapshotId: string;
 
     @CreateDateColumn()
     CreatedAt: Date;

@@ -11,7 +11,7 @@ export class Snapshot {
         unique: true,
         nullable: false
     })
-    modelID: string;
+    modelId: string;
 
     @ManyToOne(() => Model)
     @JoinColumn()

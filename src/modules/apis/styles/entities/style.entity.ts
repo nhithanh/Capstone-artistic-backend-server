@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Model } from "../../models/entities/model.entity";
 
 @Entity()
 export class Style {
@@ -12,7 +13,6 @@ export class Style {
     })
     styleName: string;
 
-
     @Column({
         type: 'varchar',
         nullable: false
@@ -23,6 +23,13 @@ export class Style {
         type: 'varchar'
     })
     description: string;
+
+    @Column()
+    activeModelId: string
+
+    @OneToOne(() => Model)
+    @JoinColumn()
+    activeModel: Model
 
     @Column({
         type: 'varchar',
