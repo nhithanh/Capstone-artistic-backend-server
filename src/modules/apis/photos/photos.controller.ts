@@ -3,7 +3,6 @@ import { PhotosService } from './photos.service';
 import { CreatePhoToDTO } from './dto/create-photo.dto';
 import { UpdatePhotoDTO } from './dto/upload-photo.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { uploadImageToS3Option } from 'src/config/multer.service';
 import { ProducerService } from 'src/modules/producer/producer.service';
 import { TransferPhotoCompleteMetadatadDTO, TransferPhotoMetadataDTO } from './dto/transfer-photo-metadata.dto';
 import { SocketService } from 'src/gateway/socket.service';
@@ -31,7 +30,8 @@ export class PhotosController {
       ...transferPhotoMetadata,
       accessURL
     }
-    this.producerService.sendQueueToGeneratorService('TRANSFER-PHOTO', payload);
+
+    this.producerService.sendQueueToGeneratorService(transferPhotoMetadata.transportChannelName, payload);
     return {
       status: HttpStatus.ACCEPTED,
       message: 'Your request is executing.'
@@ -42,12 +42,9 @@ export class PhotosController {
   transferPhotoCompleted(@Body() transferPhotoCompleteMetadataDTO: TransferPhotoCompleteMetadatadDTO) {
     const payload = {
       status: 'COMPLETED',
-      accessURL: `http://192.168.1.26:3000/${transferPhotoCompleteMetadataDTO.transferPhotoName}`,
-      styleId: transferPhotoCompleteMetadataDTO.styleId
+      accessURL: `http://192.168.1.26:3000/${transferPhotoCompleteMetadataDTO.transferPhotoName}`
     }
     this.socketService.emitToSpecificClient(transferPhotoCompleteMetadataDTO.socketId, 'TRANSFER_COMPLETED', payload)
-    console.log(`Emit to ${transferPhotoCompleteMetadataDTO.socketId}`)
-    console.log("Payload:", payload)
     return {
       status: HttpStatus.OK,
       message: 'Your request is completed!'
@@ -67,7 +64,7 @@ export class PhotosController {
     const [photoObject, accessURL] = await Promise.all([
       this.photosService.create({
         photoLocation: photo.location,
-        userId: '7578b8c7-0bdb-4376-9c3b-bf80ec043c1c',
+        userId: 'b4dbdf25-77ab-447c-8da1-9d8929614ee1',
         photoName: photo.originalname
       }),
       this.s3Service.getPhotoSignedURL(photo.location) 
@@ -76,9 +73,11 @@ export class PhotosController {
       ...photoObject,
       accessURL
     }
-
     this.socketService.emitToSpecificClient(socketId, 'UPLOAD_IMAGE_SUCCESS', payload)
-    return null
+    return {
+      status: 200,
+      msg: "Done"
+    }
   }
 
   @Get()

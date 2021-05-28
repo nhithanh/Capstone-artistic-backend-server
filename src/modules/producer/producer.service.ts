@@ -16,7 +16,6 @@ export class ProducerService {
     }
 
     public sendQueueToGeneratorService(pattern: string, data: any) {
-      console.log("send ne")
       return this.client.send(pattern, data).subscribe();
     }
 }
