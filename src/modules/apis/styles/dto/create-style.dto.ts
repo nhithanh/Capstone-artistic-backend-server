@@ -1,23 +1,24 @@
-import { IsBoolean, IsOptional, IsString } from "class-validator"
+import { IsNotEmpty, IsOptional, IsString } from "class-validator"
+import { ModelType } from "../../models/entities/model.entity";
 
 export class CreateStyleDto {
     @IsString()
     @IsOptional()
     id: string;
 
+    @IsNotEmpty()
+    @IsString()
+    styleName: string;
+
+    @IsNotEmpty()
+    @IsString()
+    transportChannelName: string;
+
     @IsString()
     @IsOptional()
-    style_id: string;
+    iconURL: string;
 
     @IsString()
-    style_name: string;
-
-    @IsBoolean()
-    is_generic: boolean;
-
-    @IsString()
-    icon_url: string;
-
-    @IsString()
+    @IsOptional()
     description: string;
 }

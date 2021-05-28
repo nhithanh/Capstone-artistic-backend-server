@@ -15,16 +15,20 @@ export class Style {
 
     @Column({
         type: 'varchar',
-        nullable: false
+        nullable: true
     })
     iconURL: string;
 
     @Column({
-        type: 'varchar'
+        type: 'varchar',
+        nullable: true
     })
     description: string;
 
-    @Column()
+    @Column({
+        type: 'varchar',
+        nullable: true
+    })
     activeModelId: string
 
     @OneToOne(() => Model)

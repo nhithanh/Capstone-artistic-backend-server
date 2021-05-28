@@ -2,6 +2,11 @@ import { Style } from "src/modules/apis/styles/entities/style.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Snapshot } from "../../snapshots/entities/snapshot.entity";
 
+export enum ModelType {
+    CYCLE_GAN = "CYCLE_GAN",
+    NEURAL_STYLE_TRANSFER = "NEURAL_STYLE_TRANSFER"
+}
+
 @Entity()
 export class Model {
     @PrimaryGeneratedColumn('uuid')
@@ -17,10 +22,10 @@ export class Model {
     @Column({
         type: 'varchar'
     })
-    type: string;
+    type: ModelType;
 
     @Column({
-        type: 'varchar'
+        nullable: true
     })
     activeSnapshotId: string;
 

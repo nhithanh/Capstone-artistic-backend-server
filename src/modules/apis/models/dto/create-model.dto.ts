@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { ModelType } from "../entities/model.entity";
 
 export class CreateModelDTO {
     @IsOptional()
@@ -11,7 +12,7 @@ export class CreateModelDTO {
 
     @IsNotEmpty()
     @IsString()
-    type: string;
+    type: ModelType;
 
     @IsOptional()
     @IsString()
