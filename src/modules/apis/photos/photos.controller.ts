@@ -24,13 +24,12 @@ export class PhotosController {
 
   @Get('/send-message')
   sendMessage() {
-    // this.producerService.emitMessage("ne-nha", "route-key", "Hello there")
+    this.producerService.emitTransferPhotoTask("udnin", "route-key")
     return "Done"
   }
 
   @Post('/transfer-photo')
   async transferPhoto(@Body() transferPhotoMetadata: TransferPhotoMetadataDTO) {
-    console.log("prepost:", transferPhotoMetadata)
     const accessURL = await this.s3Service.getPhotoSignedURL(transferPhotoMetadata.photoLocation)
     const payload = {
       ...transferPhotoMetadata,
@@ -45,12 +44,14 @@ export class PhotosController {
   }
 
   @Post('/transfer-photo/completed')
-  transferPhotoCompleted(@Body() transferPhotoCompleteMetadataDTO: TransferPhotoCompleteMetadatadDTO) {
+  async transferPhotoCompleted(@Body() transferPhotoCompleteMetadataDTO: TransferPhotoCompleteMetadatadDTO) {
+    const accessURL = await this.s3Service.getPhotoSignedURL(transferPhotoCompleteMetadataDTO.transferPhotoLocation)
     const payload = {
       status: 'COMPLETED',
-      accessURL: `http://192.168.1.26:3000/${transferPhotoCompleteMetadataDTO.transferPhotoName}`
+      accessURL
     }
-    this.socketService.emitToSpecificClient(transferPhotoCompleteMetadataDTO.socketId, 'TRANSFER_COMPLETED', payload)
+    console.log(payload)
+    // this.socketService.emitToSpecificClient(transferPhotoCompleteMetadataDTO.socketId, 'TRANSFER_COMPLETED', payload)
     return {
       status: HttpStatus.OK,
       message: 'Your request is completed!'

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class TransferPhotoMetadataDTO {
     @IsNotEmpty()
@@ -21,9 +21,9 @@ export class TransferPhotoCompleteMetadatadDTO {
 
     @IsNotEmpty()
     @IsString()
-    transferPhotoName: string;
+    transferPhotoLocation: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     styleId: string;
 }

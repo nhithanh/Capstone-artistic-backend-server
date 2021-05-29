@@ -1,6 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { S3 } from 'aws-sdk';
 
+const AmazonS3URI = require('amazon-s3-uri')
+
+
 @Injectable()
 export class S3Service {
     public s3: S3
@@ -20,15 +23,15 @@ export class S3Service {
     }
 
     public async getPhotoSignedURL(locationURL: string): Promise<string> {
-        const key = locationURL.substring(locationURL.lastIndexOf('/') + 1)
-        console.log("key:", key)
+        const {bucket, key} = AmazonS3URI(locationURL)
+
         const params = {
-            Bucket: 'artisan-photos',
+            Bucket: bucket,
             Key: key
         }
         try { 
             await this.s3.headObject(params).promise();
-            return await this.s3.getSignedUrl('getObject', {...params, Expires: 60000});
+            return this.s3.getSignedUrl('getObject', {...params,Expires: 60000});
         } catch (headErr) {
             if (headErr.code === 'NotFound') {
                 throw new HttpException({
