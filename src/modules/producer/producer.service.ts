@@ -1,21 +1,32 @@
-import { Injectable } from '@nestjs/common';
-import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
+import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ProducerService {
-    client: ClientProxy;
+    
+    @Inject()
+    private readonly amqpConnection: AmqpConnection
+
+    private TRANSFER_PHOTO_EXCHANGE: string
+    private UPDATE_MODEL_EXCHANGE: string
     
     constructor() {
-      this.client = ClientProxyFactory.create({
-        transport: Transport.RMQ,
-        options: {
-          urls: ['amqps://vkcupcps:7aZAQs_SrFQ8_xUtIsC_phHlwl_KpuLf@baboon.rmq.cloudamqp.com/vkcupcps'],
-          queue: 'GENERATOR_SERVICE'
-        }
-      });
+      this.TRANSFER_PHOTO_EXCHANGE = process.env.EXCHANGE_TRANSFER_PHOTO
+      this.UPDATE_MODEL_EXCHANGE = process.env.EXCHANGE_UPDATE_MODEL
     }
 
-    public sendQueueToGeneratorService(pattern: string, data: any) {
-      return this.client.send(pattern, data).subscribe();
+    private emitMessage(exchange: string, routingKey:string, data: any) {
+      return this.amqpConnection.publish(exchange, routingKey, data)
     }
+
+    public emitTransferPhotoTask(routingKey: string, data:any) {
+      return this.emitMessage(this.TRANSFER_PHOTO_EXCHANGE, routingKey, data)
+    }
+
+    public emitUpdateModel(routingKey: string, snapshotLocation: string) {
+      return this.emitMessage(this.UPDATE_MODEL_EXCHANGE, routingKey, {
+        snapshotLocation
+      })
+    }
+
 }

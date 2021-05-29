@@ -40,7 +40,7 @@ export class Style {
         unique: true,
         nullable: false
     })
-    transportChannelName: string;
+    routingKey: string;
 
     @CreateDateColumn()
     createdAt: Date;

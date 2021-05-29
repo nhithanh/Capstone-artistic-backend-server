@@ -11,7 +11,7 @@ export class TransferPhotoMetadataDTO {
     
     @IsNotEmpty()
     @IsString()
-    transportChannelName: string;
+    routingKey: string;
 }
 
 export class TransferPhotoCompleteMetadatadDTO {

@@ -12,7 +12,7 @@ export class CreateStyleDto {
 
     @IsNotEmpty()
     @IsString()
-    transportChannelName: string;
+    routingKey: string;
 
     @IsString()
     @IsOptional()

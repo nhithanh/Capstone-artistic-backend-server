@@ -55,7 +55,7 @@ export class ModelsService {
 
     return {
       modelType: activeModel.type,
-      exchangeName: style.transportChannelName,
+      routingKey: style.routingKey,
       snapshotPath: snapshotSignedURL
     }
   }

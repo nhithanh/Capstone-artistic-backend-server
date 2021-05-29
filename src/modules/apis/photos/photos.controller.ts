@@ -22,6 +22,12 @@ export class PhotosController {
 
   constructor(private readonly photosService: PhotosService) {}
 
+  @Get('/send-message')
+  sendMessage() {
+    // this.producerService.emitMessage("ne-nha", "route-key", "Hello there")
+    return "Done"
+  }
+
   @Post('/transfer-photo')
   async transferPhoto(@Body() transferPhotoMetadata: TransferPhotoMetadataDTO) {
     console.log("prepost:", transferPhotoMetadata)
@@ -31,7 +37,7 @@ export class PhotosController {
       accessURL
     }
 
-    this.producerService.sendQueueToGeneratorService(transferPhotoMetadata.transportChannelName, payload);
+    this.producerService.emitTransferPhotoTask(transferPhotoMetadata.routingKey, payload);
     return {
       status: HttpStatus.ACCEPTED,
       message: 'Your request is executing.'
