@@ -6,12 +6,17 @@ export class S3Service {
     public s3: S3
 
     constructor() {
-        this.s3 = new S3({
-            credentials: {
-                accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-                secretAccessKey: process.env.AWS_PRIVATE_KEY_ID
-            }
-        })
+        const env = process.env.ENV || 'dev'
+        if(env == 'production') {
+            this.s3 = new S3()
+        } else {
+            this.s3 = new S3({
+                credentials: {
+                    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                    secretAccessKey: process.env.AWS_PRIVATE_KEY_ID
+                }
+            })
+        }
     }
 
     public async getPhotoSignedURL(locationURL: string): Promise<string> {
