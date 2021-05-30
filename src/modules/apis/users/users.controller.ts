@@ -2,7 +2,10 @@ import { Controller, Get, Post, Body, Param, Req, UseGuards } from '@nestjs/comm
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../../../auths/jwt-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags("users")
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

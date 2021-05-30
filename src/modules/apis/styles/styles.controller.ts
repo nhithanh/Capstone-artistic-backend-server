@@ -4,7 +4,10 @@ import { CreateStyleDto } from './dto/create-style.dto';
 import { UpdateStyleDto } from './dto/update-style.dto';
 import { Style } from './entities/style.entity';
 import { ModelsService } from '../models/models.service';
+import { ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags("styles")
 @Controller('styles')
 export class StylesController {
 

@@ -3,7 +3,10 @@ import { ModelsService } from './models.service';
 import { CreateModelDTO } from './dto/create-model.dto';
 import { UpdateModelDTO } from './dto/update-model.dto';
 import { ProducerService } from 'src/modules/producer/producer.service';
+import { ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags("models")
 @Controller('models')
 export class ModelsController {
 

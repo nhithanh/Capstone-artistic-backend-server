@@ -3,7 +3,10 @@ import { SnapshotsService } from './snapshot.service';
 import { CreateSnapshotDTO } from './dto/create-snapshot.dto';
 import { UpdateSnapshotDTO } from './dto/update-snapshot.dto';
 import { SnapshotQueryParams } from './dto/snapshot-query.params';
+import { ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags("snapshots")
 @Controller('snapshots')
 export class SnapshotsController {
   constructor(private readonly snapshotsService: SnapshotsService) {}

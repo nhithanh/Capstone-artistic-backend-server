@@ -2,8 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { TranferImagesService } from './tranfer-images.service';
 import { CreateTranferImageDto } from './dto/create-tranfer-image.dto';
 import { UpdateTranferImageDto } from './dto/update-tranfer-image.dto';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('tranfer-images')
+
+@ApiTags("transfer-images")
+@Controller('transfer-images')
 export class TranferImagesController {
   constructor(private readonly tranferImagesService: TranferImagesService) {}
 

@@ -7,7 +7,9 @@ import { ProducerService } from 'src/modules/producer/producer.service';
 import { TransferPhotoCompleteMetadatadDTO, TransferPhotoMetadataDTO } from './dto/transfer-photo-metadata.dto';
 import { SocketService } from 'src/gateway/socket.service';
 import { S3Service } from 'src/s3/s3.service';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
+@ApiTags("photos")
 @Controller('photos')
 export class PhotosController {
 
@@ -50,14 +52,14 @@ export class PhotosController {
       status: 'COMPLETED',
       accessURL
     }
-    console.log(payload)
-    // this.socketService.emitToSpecificClient(transferPhotoCompleteMetadataDTO.socketId, 'TRANSFER_COMPLETED', payload)
+    this.socketService.emitToSpecificClient(transferPhotoCompleteMetadataDTO.socketId, 'TRANSFER_COMPLETED', payload)
     return {
       status: HttpStatus.OK,
       message: 'Your request is completed!'
     }
   }
 
+  @ApiBody({type: CreatePhoToDTO})
   @Post()
   create(createPhotoDTO: CreatePhoToDTO) {
     return this.photosService.create(createPhotoDTO);

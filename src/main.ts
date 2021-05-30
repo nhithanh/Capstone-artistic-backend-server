@@ -6,6 +6,7 @@ import * as cookieParser from 'cookie-parser';
 import { nestCsrf } from 'ncsrf';
 import * as morgan from 'morgan'
 import { MicroserviceOptions, Transport } from '@nestjs/microservices'
+import {SwaggerModule, DocumentBuilder} from "@nestjs/swagger"
 import * as dotenv from 'dotenv'
 
 async function bootstrap() {
@@ -21,6 +22,25 @@ async function bootstrap() {
     origin: ['http://localhost:3000'],
     credentials: true,
   });
+
+
+  // Swagger
+  const config = new DocumentBuilder()
+  .setTitle("Artisan Main Server Open API")
+  .setDescription("The api map of Artisan Main API")
+  .setVersion("1.0")
+  .addTag("photos")
+  .addTag("styles")
+  .addTag("users")
+  .addTag("models")
+  .addTag("snapshots")
+  .addTag("transfer-images")
+  .build()
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('swagger', app, document);
+
+
   await app.startAllMicroservicesAsync();
   await app.listen(3000);
 }
