@@ -29,8 +29,24 @@ export class ModelsService {
     return await this.modelRepository.save(createModelDTO)
   }
 
-  async findAll(@Query() queryParams: ModelQueryParams): Promise<Model[]> {
-    return await this.modelRepository.find()
+  async findAll(@Query() queryParams: ModelQueryParams): Promise<any> {
+    const page = queryParams['page'] || 0
+    const offset = queryParams['offset'] || 5
+    const skip = page * offset
+
+    const where = _.omit(queryParams, ['page', 'offset'])
+
+    const [models, count] = await this.modelRepository.findAndCount({
+      where: where,
+      skip,
+      take: offset,
+      order: {createdAt: "DESC"}
+    })
+    return {
+      page,
+      totalPage: Math.ceil(count / offset),
+      data: models
+    }
   }
 
   async findOne(id: number): Promise<Model> {

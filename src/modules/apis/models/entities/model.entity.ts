@@ -34,10 +34,10 @@ export class Model {
     activeSnapshot: Promise<Snapshot>;
 
     @CreateDateColumn()
-    CreatedAt: Date;
+    createdAt: Date;
  
     @UpdateDateColumn()
-    UpdatedAt: Date;
+    updatedAt: Date;
 
     @DeleteDateColumn()
     deletedAt: Date;

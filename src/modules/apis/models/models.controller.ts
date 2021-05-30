@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Inject, Query } from '@nestjs/common';
 import { ModelsService } from './models.service';
 import { CreateModelDTO } from './dto/create-model.dto';
 import { UpdateModelDTO } from './dto/update-model.dto';
 import { ProducerService } from 'src/modules/producer/producer.service';
 import { ApiTags } from '@nestjs/swagger';
+import { ModelQueryParams } from './dto/model.query';
 
 
 @ApiTags("models")
@@ -32,8 +33,8 @@ export class ModelsController {
   }
 
   @Get()
-  findAll() {
-    return this.modelsService.findAll();
+  findAll(@Query() queryParams: ModelQueryParams) {
+    return this.modelsService.findAll(queryParams);
   }
 
   @Get(':id')

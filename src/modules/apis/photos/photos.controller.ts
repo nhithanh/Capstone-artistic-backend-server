@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req, Inject, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req, Inject, HttpStatus, Query } from '@nestjs/common';
 import { PhotosService } from './photos.service';
 import { CreatePhoToDTO } from './dto/create-photo.dto';
 import { UpdatePhotoDTO } from './dto/upload-photo.dto';
@@ -8,6 +8,7 @@ import { TransferPhotoCompleteMetadatadDTO, TransferPhotoMetadataDTO } from './d
 import { SocketService } from 'src/gateway/socket.service';
 import { S3Service } from 'src/s3/s3.service';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { PhotosQueryParams } from './dto/photos.query';
 
 @ApiTags("photos")
 @Controller('photos')
@@ -22,13 +23,10 @@ export class PhotosController {
   @Inject()
   private readonly producerService: ProducerService;
 
-  constructor(private readonly photosService: PhotosService) {}
+  @Inject()
+  private readonly photosService: PhotosService;
 
-  @Get('/send-message')
-  sendMessage() {
-    this.producerService.emitTransferPhotoTask("udnin", "route-key")
-    return "Done"
-  }
+  constructor() {}
 
   @Post('/transfer-photo')
   async transferPhoto(@Body() transferPhotoMetadata: TransferPhotoMetadataDTO) {
@@ -90,8 +88,8 @@ export class PhotosController {
   }
 
   @Get()
-  findAll() {
-    return this.photosService.findAll();
+  findAll(@Query() queryParams: PhotosQueryParams) {
+    return this.photosService.findAll(queryParams);
   }
 
   @Get(':id')

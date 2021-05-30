@@ -17,19 +17,25 @@ export class SnapshotsService {
     return await this.snapshotRepository.save(createAiModelSnapshotDto);
   }
 
-  async findAll(queryParams: any): Promise<Snapshot[]> {
+  async findAll(queryParams: any): Promise<any> {
     const page = queryParams['page'] || 0
     const offset = queryParams['offset'] || 5
     const skip = page * offset
 
     const where = _.omit(queryParams, ['page', 'offset'])
 
-    return await this.snapshotRepository.find({
+    const [snapshots, count] =  await this.snapshotRepository.findAndCount({
       where: where,
       skip,
       take: offset,
       order: {createdAt:"DESC"}
     })
+
+    return {
+      page,
+      totalPage: Math.ceil(count / offset),
+      data: snapshots
+    }
   }
 
   async findOne(id: number): Promise<Snapshot> {
