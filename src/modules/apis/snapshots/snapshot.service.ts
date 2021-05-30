@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as _ from 'lodash'
 import { CreateSnapshotDTO } from './dto/create-snapshot.dto';
 import { UpdateSnapshotDTO } from './dto/update-snapshot.dto';
 import { Snapshot } from './entities/snapshot.entity';
@@ -16,8 +17,19 @@ export class SnapshotsService {
     return await this.snapshotRepository.save(createAiModelSnapshotDto);
   }
 
-  async findAll(): Promise<Snapshot[]> {
-    return await this.snapshotRepository.find()
+  async findAll(queryParams: any): Promise<Snapshot[]> {
+    const page = queryParams['page'] || 0
+    const offset = queryParams['offset'] || 5
+    const skip = page * offset
+
+    const where = _.omit(queryParams, ['page', 'offset'])
+
+    return await this.snapshotRepository.find({
+      where: where,
+      skip,
+      take: offset,
+      order: {createdAt:"DESC"}
+    })
   }
 
   async findOne(id: number): Promise<Snapshot> {

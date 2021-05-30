@@ -7,6 +7,7 @@ import { UpdateModelDTO } from './dto/update-model.dto';
 import { Model } from './entities/model.entity';
 import * as _ from 'lodash'
 import { S3Service } from 'src/s3/s3.service';
+import { Snapshot } from '../snapshots/entities/snapshot.entity';
 
 @Injectable()
 export class ModelsService {
@@ -16,6 +17,9 @@ export class ModelsService {
 
   @InjectRepository(Style)
   private readonly styleRepository: Repository<Style>
+
+  @InjectRepository(Snapshot)
+  private readonly snapshotRepository: Repository<Snapshot>
 
   @InjectRepository(Model)
   private readonly modelRepository: Repository<Model>;
@@ -57,6 +61,41 @@ export class ModelsService {
       modelType: activeModel.type,
       routingKey: style.routingKey,
       snapshotPath: snapshotSignedURL
+    }
+  }
+
+  async updateActiveSnapshot(modelId: string, snapshotId: string) {
+    const model = await this.modelRepository.findOne({
+      where: {
+        id: modelId
+      } 
+    })
+    if(!model) {
+      throw new HttpException('Model not found', HttpStatus.NOT_FOUND)
+    }
+    const snapshot = await this.snapshotRepository.findOne({
+      where: {
+        id: snapshotId
+      }
+    })
+
+    if(!snapshot) {
+      throw new HttpException('Snasphot not found', HttpStatus.NOT_FOUND)
+    }
+
+    const updatedModel = await this.modelRepository.save({
+      ...model,
+      activeSnapshotId: snapshotId
+    })
+    const style = await this.styleRepository.findOne({
+      where: {
+        id: model.styleId
+      }
+    })
+    return {
+      snapshot,
+      model: updatedModel,
+      style
     }
   }
 }

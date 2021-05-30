@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { SnapshotsService } from './snapshot.service';
 import { CreateSnapshotDTO } from './dto/create-snapshot.dto';
 import { UpdateSnapshotDTO } from './dto/update-snapshot.dto';
+import { SnapshotQueryParams } from './dto/snapshot-query.params';
 
 @Controller('snapshots')
 export class SnapshotsController {
@@ -13,8 +14,8 @@ export class SnapshotsController {
   }
 
   @Get()
-  findAll() {
-    return this.snapshotsService.findAll();
+  findAll(@Query() queryParams: SnapshotQueryParams) {
+    return this.snapshotsService.findAll(queryParams);
   }
 
   @Get(':id')
