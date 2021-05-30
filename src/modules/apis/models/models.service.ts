@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, Query } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Style } from '../styles/entities/style.entity';
@@ -8,6 +8,7 @@ import { Model } from './entities/model.entity';
 import * as _ from 'lodash'
 import { S3Service } from 'src/s3/s3.service';
 import { Snapshot } from '../snapshots/entities/snapshot.entity';
+import { ModelQueryParams } from './dto/model.query';
 
 @Injectable()
 export class ModelsService {
@@ -28,7 +29,7 @@ export class ModelsService {
     return await this.modelRepository.save(createModelDTO)
   }
 
-  async findAll(): Promise<Model[]> {
+  async findAll(@Query() queryParams: ModelQueryParams): Promise<Model[]> {
     return await this.modelRepository.find()
   }
 
@@ -73,6 +74,11 @@ export class ModelsService {
     if(!model) {
       throw new HttpException('Model not found', HttpStatus.NOT_FOUND)
     }
+
+    if(model.activeSnapshotId == snapshotId) {
+      throw new HttpException('Active snapshot is same', HttpStatus.AMBIGUOUS)
+    }
+
     const snapshot = await this.snapshotRepository.findOne({
       where: {
         id: snapshotId
