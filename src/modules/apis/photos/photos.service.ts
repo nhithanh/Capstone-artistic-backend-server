@@ -34,16 +34,17 @@ export class PhotosService {
       where: where,
       skip,
       take: limit,
-      order: {createdAt: "DESC"}
+      order: {createdAt: "DESC"},
+      select: ['id', 'photoLocation', 'photoName']
     })
 
-    const photosPublic = await Promise.all(photos.map(async photo => {
-      const accessURL = await this.s3Service.getPhotoSignedURL(photo.photoLocation)
+    const photosPublic = photos.map(photo => {
+      const accessURL = this.s3Service.getCDNURL(photo.photoLocation)
       return {
         ...photo,
         accessURL
       } 
-    }))
+    })
 
     return {
       metaData: {

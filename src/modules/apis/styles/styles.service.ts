@@ -9,12 +9,15 @@ import { Style } from './entities/style.entity';
 export class StylesService {
   @InjectRepository(Style)
   private readonly stylesRepository: Repository<Style>;
+
   async create(createStyleDto: CreateStyleDto): Promise<Style> {
     return this.stylesRepository.save(createStyleDto);
   }
 
   async findAll(): Promise<Style[]> {
-    return this.stylesRepository.find();
+    return this.stylesRepository.find({
+      select: ['id', 'styleName', 'iconURL', 'description', 'routingKey']
+    });
   }
 
   async findOne(id: number): Promise<Style> {

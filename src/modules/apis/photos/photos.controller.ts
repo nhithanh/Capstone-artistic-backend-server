@@ -30,7 +30,7 @@ export class PhotosController {
 
   @Post('/transfer-photo')
   async transferPhoto(@Body() transferPhotoMetadata: TransferPhotoMetadataDTO) {
-    const accessURL = await this.s3Service.getPhotoSignedURL(transferPhotoMetadata.photoLocation)
+    const accessURL = this.s3Service.getCDNURL(transferPhotoMetadata.photoLocation)
     const payload = {
       photoLocation: transferPhotoMetadata.photoLocation,
       styleId: transferPhotoMetadata.style.id,
@@ -46,8 +46,8 @@ export class PhotosController {
   }
 
   @Post('/transfer-photo/completed')
-  async transferPhotoCompleted(@Body() transferPhotoCompleteMetadataDTO) {
-    const accessURL = await this.s3Service.getPhotoSignedURL(transferPhotoCompleteMetadataDTO.transferPhotoLocation)
+  transferPhotoCompleted(@Body() transferPhotoCompleteMetadataDTO) {
+    const accessURL = this.s3Service.getCDNURL(transferPhotoCompleteMetadataDTO.transferPhotoLocation)
     const payload = {
       status: 'COMPLETED',
       accessURL,
@@ -71,17 +71,15 @@ export class PhotosController {
   async uploadFile(@UploadedFile() photo: Express.MulterS3.File, @Body() body) {
     const socketId = body['socketId']
 
-    const [photoObject, accessURL] = await Promise.all([
-      this.photosService.create({
+    const photoObject = await this.photosService.create({
         photoLocation: photo.location,
         userId: '6fb1db8d-9719-426e-86f2-1b8d00001c0c',
         photoName: photo.originalname
-      }),
-      this.s3Service.getPhotoSignedURL(photo.location) 
-    ])
+    })
+    
     const payload = {
       ...photoObject,
-      accessURL
+      accessURL: this.s3Service.getCDNURL(photoObject.photoLocation)
     }
     this.socketService.emitToSpecificClient(socketId, 'UPLOAD_IMAGE_SUCCESS', payload)
     return {

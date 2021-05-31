@@ -75,8 +75,7 @@ export class ModelsService {
       throw new HttpException('Active model does not have active snapshot!', HttpStatus.NOT_FOUND)
     }
 
-    const snapshotSignedURL = await this.s3.getPhotoSignedURL(activeSnapshot.location)
-
+    const snapshotSignedURL = this.s3.getS3SignedURL(activeSnapshot.location)
     return {
       modelType: activeModel.type,
       routingKey: style.routingKey,
