@@ -24,7 +24,6 @@ export class ProducerService {
     }
 
     public emitUpdateModel(routingKey: string, snapshotLocation: string) {
-      console.log(`emit ${routingKey} - Location: ${snapshotLocation}`)
       return this.emitMessage(this.UPDATE_MODEL_EXCHANGE, routingKey, {
         snapshotLocation
       })

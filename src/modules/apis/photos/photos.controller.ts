@@ -32,11 +32,13 @@ export class PhotosController {
   async transferPhoto(@Body() transferPhotoMetadata: TransferPhotoMetadataDTO) {
     const accessURL = await this.s3Service.getPhotoSignedURL(transferPhotoMetadata.photoLocation)
     const payload = {
-      ...transferPhotoMetadata,
+      photoLocation: transferPhotoMetadata.photoLocation,
+      styleId: transferPhotoMetadata.style.id,
+      socketId: transferPhotoMetadata.socketId,
       accessURL
     }
 
-    this.producerService.emitTransferPhotoTask(transferPhotoMetadata.routingKey, payload);
+    this.producerService.emitTransferPhotoTask(transferPhotoMetadata.style.routingKey, payload);
     return {
       status: HttpStatus.ACCEPTED,
       message: 'Your request is executing.'
@@ -44,11 +46,12 @@ export class PhotosController {
   }
 
   @Post('/transfer-photo/completed')
-  async transferPhotoCompleted(@Body() transferPhotoCompleteMetadataDTO: TransferPhotoCompleteMetadatadDTO) {
+  async transferPhotoCompleted(@Body() transferPhotoCompleteMetadataDTO) {
     const accessURL = await this.s3Service.getPhotoSignedURL(transferPhotoCompleteMetadataDTO.transferPhotoLocation)
     const payload = {
       status: 'COMPLETED',
-      accessURL
+      accessURL,
+      ...transferPhotoCompleteMetadataDTO
     }
     this.socketService.emitToSpecificClient(transferPhotoCompleteMetadataDTO.socketId, 'TRANSFER_COMPLETED', payload)
     return {

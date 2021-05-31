@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { Style } from "../../styles/entities/style.entity";
 
 export class TransferPhotoMetadataDTO {
     @IsNotEmpty()
@@ -10,8 +11,7 @@ export class TransferPhotoMetadataDTO {
     photoLocation: string;
     
     @IsNotEmpty()
-    @IsString()
-    routingKey: string;
+    style: Style;
 }
 
 export class TransferPhotoCompleteMetadatadDTO {
