@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatePhoToDTO } from './dto/create-photo.dto';
@@ -6,9 +6,14 @@ import { PhotosQueryParams } from './dto/photos.query';
 import { UpdatePhotoDTO } from './dto/upload-photo.dto';
 import { Photo } from './entities/photo.entity';
 import * as _ from 'lodash'
+import { S3Service } from 'src/s3/s3.service';
 
 @Injectable()
 export class PhotosService {
+
+  @Inject()
+  s3Service: S3Service;
+
   @InjectRepository(Photo)
   private readonly photoRepository: Repository<Photo>;
 
@@ -20,22 +25,33 @@ export class PhotosService {
 
   async findAll(queryParams: PhotosQueryParams): Promise<any> {
     const page = queryParams['page'] || 0
-    const offset = queryParams['offset'] || 5
-    const skip = page * offset
+    const limit = queryParams['limit'] || 5
+    const skip = page * limit
 
-    const where = _.omit(queryParams, ['page', 'offset'])
+    const where = _.omit(queryParams, ['page', 'limit'])
 
     const [photos, count] = await this.photoRepository.findAndCount({
       where: where,
       skip,
-      take: offset,
+      take: limit,
       order: {createdAt: "DESC"}
     })
 
+    const photosPublic = await Promise.all(photos.map(async photo => {
+      const accessURL = await this.s3Service.getPhotoSignedURL(photo.photoLocation)
+      return {
+        ...photo,
+        accessURL
+      } 
+    }))
+
     return {
-      page,
-      totalPage: Math.ceil(count / offset),
-      data: photos
+      metaData: {
+        page,
+        limit,
+        totalPage: Math.ceil(count / limit)
+      },
+      photos: photosPublic
     }
   }
 

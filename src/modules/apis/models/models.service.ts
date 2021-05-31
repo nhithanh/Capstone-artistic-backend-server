@@ -31,20 +31,23 @@ export class ModelsService {
 
   async findAll(@Query() queryParams: ModelQueryParams): Promise<any> {
     const page = queryParams['page'] || 0
-    const offset = queryParams['offset'] || 5
-    const skip = page * offset
+    const limit = queryParams['limit'] || 5
+    const skip = page * limit
 
-    const where = _.omit(queryParams, ['page', 'offset'])
+    const where = _.omit(queryParams, ['page', 'limit'])
 
     const [models, count] = await this.modelRepository.findAndCount({
       where: where,
       skip,
-      take: offset,
+      take: limit,
       order: {createdAt: "DESC"}
     })
     return {
-      page,
-      totalPage: Math.ceil(count / offset),
+      metaData: {
+        page,
+        limit,
+        totalPage: Math.ceil(count / limit),
+      },
       data: models
     }
   }

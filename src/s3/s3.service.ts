@@ -34,10 +34,7 @@ export class S3Service {
             return this.s3.getSignedUrl('getObject', {...params,Expires: 60000});
         } catch (headErr) {
             if (headErr.code === 'NotFound') {
-                throw new HttpException({
-                    status: HttpStatus.NOT_FOUND,
-                    message: `location ${locationURL} does not exist!`
-                }, HttpStatus.NOT_FOUND)
+                return "https://cdn.dribbble.com/users/150039/screenshots/15043316/media/d66c51a81f504f0b605cdc0fb37a0da5.png?compress=1&resize=1600x1200"
             }
         }
     }

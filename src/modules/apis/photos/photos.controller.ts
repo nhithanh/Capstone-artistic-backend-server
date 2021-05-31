@@ -71,7 +71,7 @@ export class PhotosController {
     const [photoObject, accessURL] = await Promise.all([
       this.photosService.create({
         photoLocation: photo.location,
-        userId: 'b4dbdf25-77ab-447c-8da1-9d8929614ee1',
+        userId: '6fb1db8d-9719-426e-86f2-1b8d00001c0c',
         photoName: photo.originalname
       }),
       this.s3Service.getPhotoSignedURL(photo.location) 

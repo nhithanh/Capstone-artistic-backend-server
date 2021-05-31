@@ -14,5 +14,5 @@ export class SnapshotQueryParams {
     @IsInt()
     @IsOptional()
     @Type(() => Number)
-    offset: number;
+    limit: number;
 }

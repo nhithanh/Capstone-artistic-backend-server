@@ -14,5 +14,5 @@ export class PhotosQueryParams {
     @IsInt()
     @IsOptional()
     @Type(() => Number)
-    offset: number;
+    limit: number;
 }

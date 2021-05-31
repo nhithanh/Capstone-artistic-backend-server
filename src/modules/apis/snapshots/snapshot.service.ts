@@ -19,21 +19,24 @@ export class SnapshotsService {
 
   async findAll(queryParams: any): Promise<any> {
     const page = queryParams['page'] || 0
-    const offset = queryParams['offset'] || 5
-    const skip = page * offset
+    const limit = queryParams['limit'] || 5
+    const skip = page * limit
 
-    const where = _.omit(queryParams, ['page', 'offset'])
+    const where = _.omit(queryParams, ['page', 'limit'])
 
     const [snapshots, count] =  await this.snapshotRepository.findAndCount({
       where: where,
       skip,
-      take: offset,
+      take: limit,
       order: {createdAt:"DESC"}
     })
 
     return {
-      page,
-      totalPage: Math.ceil(count / offset),
+      metaData: {
+        page,
+        limit,
+        totalPage: Math.ceil(count / limit)
+      },
       data: snapshots
     }
   }

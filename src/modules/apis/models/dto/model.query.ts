@@ -14,5 +14,5 @@ export class ModelQueryParams {
     @IsInt()
     @IsOptional()
     @Type(() => Number)
-    offset: number;
+    limit: number;
 }
