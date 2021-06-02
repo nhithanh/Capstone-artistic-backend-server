@@ -12,7 +12,27 @@ export class UsersService {
   private readonly usersRepository: Repository<User>
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    return await this.usersRepository.save(createUserDto)
+    const newUser = this.usersRepository.create(createUserDto)
+    return this.usersRepository.save(newUser)
+  }
+
+  async findByCredential(username: string, password: string): Promise<User | null> {
+    const user = await this.usersRepository.findOne({
+      where: {
+        username
+      }
+    })
+    if(!user) {
+      return null
+    }
+    
+    const isPasswordMatch = user.comparePassword(password)
+    
+    if(!isPasswordMatch) {
+      return null
+    }
+
+    return user
   }
 
   async findAll(): Promise<User[]> {

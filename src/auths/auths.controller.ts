@@ -1,18 +1,18 @@
-import { Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { Controller, Post, UseGuards, Request, Inject } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthsService } from './auths.service';
-import { LoginDTO } from './dto/login.dto';
 import { LocalAuthGuard } from './local-auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthsController {
-  constructor(private authsService: AuthsService) {}
+  
+  @Inject()
+  authService: AuthsService;
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  @ApiBody({ type: LoginDTO })
-  async login(@Request() req: LoginDTO): Promise<any> {
-    return this.authsService.login((req as any).user);
+  async login(@Request() req): Promise<any> {
+    return this.authService.genToken(req.user)
   }
 }
