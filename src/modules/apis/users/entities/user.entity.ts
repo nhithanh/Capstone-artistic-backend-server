@@ -23,7 +23,8 @@ export class User {
 
     @Column({
         type: 'varchar',
-        nullable: true
+        nullable: true,
+        default: 'https://cdn.dribbble.com/users/427368/screenshots/14046571/dribbble.jpg'
     })
     iconURL: string;
 

@@ -10,6 +10,13 @@ import { ApiTags } from '@nestjs/swagger';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get('/profile')
+  @UseGuards(JwtAuthGuard)
+  getUserInfo(@Req() req) {
+    console.log(req.user)
+    return this.usersService.findOne(req.user.id)
+  }
+
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
