@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatePhoToDTO } from './dto/create-photo.dto';
@@ -7,6 +7,7 @@ import { UpdatePhotoDTO } from './dto/upload-photo.dto';
 import { Photo } from './entities/photo.entity';
 import * as _ from 'lodash'
 import { S3Service } from 'src/s3/s3.service';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class PhotosService {
@@ -14,12 +15,25 @@ export class PhotosService {
   @Inject()
   s3Service: S3Service;
 
+  @InjectRepository(User)
+  private readonly userRepository: Repository<User>
+
   @InjectRepository(Photo)
   private readonly photoRepository: Repository<Photo>;
 
-  async create(
-    createPhotoDTO: CreatePhoToDTO,
-  ): Promise<Photo> {
+  private async checkUserAccessRight(user: User, photoId: string): Promise<boolean> {
+    const photo = await this.photoRepository.findOne({
+      where: {
+        id: photoId
+      }
+    })
+    if (photo) {
+      return photo.userId == user.id ? true : false
+    }
+    throw new HttpException("Photo not found", HttpStatus.NOT_FOUND)
+  }
+
+  async create(createPhotoDTO: CreatePhoToDTO): Promise<Photo> {
     return this.photoRepository.save(createPhotoDTO);
   }
 
@@ -64,7 +78,21 @@ export class PhotosService {
     return `This action updates a #${id} uploadImage`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} uploadImage`;
+  async remove(user: User, id: string) {
+    const isHasRight = await this.checkUserAccessRight(user, id)
+    if (isHasRight) {
+      const rs = await this.photoRepository.softDelete(id)
+      if(rs.affected > 0) {
+        return {
+          message: `Delete photo ${id} success!`
+        }
+      }
+    }
+    else {
+      throw new HttpException({
+        status: 401,
+        msg: "Not have permission"
+      }, HttpStatus.UNAUTHORIZED)
+    }
   }
 }

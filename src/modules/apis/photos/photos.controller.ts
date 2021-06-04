@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req, Inject, HttpStatus, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req, Inject, HttpStatus, Query, UseGuards } from '@nestjs/common';
 import { PhotosService } from './photos.service';
 import { CreatePhoToDTO } from './dto/create-photo.dto';
-import { UpdatePhotoDTO } from './dto/upload-photo.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProducerService } from 'src/modules/producer/producer.service';
 import { TransferPhotoCompleteMetadatadDTO, TransferPhotoMetadataDTO } from './dto/transfer-photo-metadata.dto';
@@ -9,6 +8,7 @@ import { SocketService } from 'src/gateway/socket.service';
 import { S3Service } from 'src/s3/s3.service';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { PhotosQueryParams } from './dto/photos.query';
+import { JwtAuthGuard } from 'src/auths/jwt-auth.guard';
 
 @ApiTags("photos")
 @Controller('photos')
@@ -46,7 +46,7 @@ export class PhotosController {
   }
 
   @Post('/transfer-photo/completed')
-  transferPhotoCompleted(@Body() transferPhotoCompleteMetadataDTO) {
+  transferPhotoCompleted(@Body() transferPhotoCompleteMetadataDTO: TransferPhotoCompleteMetadatadDTO) {
     const accessURL = this.s3Service.getCDNURL(transferPhotoCompleteMetadataDTO.transferPhotoLocation)
     const payload = {
       status: 'COMPLETED',
@@ -58,12 +58,6 @@ export class PhotosController {
       status: HttpStatus.OK,
       message: 'Your request is completed!'
     }
-  }
-
-  @ApiBody({type: CreatePhoToDTO})
-  @Post()
-  create(createPhotoDTO: CreatePhoToDTO) {
-    return this.photosService.create(createPhotoDTO);
   }
 
   @Post('upload')
@@ -98,13 +92,9 @@ export class PhotosController {
     return this.photosService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUploadImageDto: UpdatePhotoDTO) {
-    return this.photosService.update(+id, updateUploadImageDto);
-  }
-
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.photosService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  remove(@Req() req, @Param('id') id: string) {
+    return this.photosService.remove(req.user, id);
   }
 }

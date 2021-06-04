@@ -36,7 +36,6 @@ export class User {
     @BeforeInsert()
     @BeforeUpdate()
     hashPassword() {
-        console.log("Vào đây")
         if (this.password) {
             this.password = Base64.stringify(hmacSHA512(this.password, process.env.PASSWORD_HASH_SECRET_KEY));
         }

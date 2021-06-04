@@ -13,7 +13,6 @@ export class UsersController {
   @Get('/profile')
   @UseGuards(JwtAuthGuard)
   getUserInfo(@Req() req) {
-    console.log(req.user)
     return this.usersService.findOne(req.user.id)
   }
 
