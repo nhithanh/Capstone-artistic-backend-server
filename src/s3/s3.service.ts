@@ -11,7 +11,6 @@ export class S3Service {
     private bucketName: string;
     private artisan_cdn: string;
     private artisan_temporary_cdn: string;
-    private copyObject: any;
 
     constructor() {
         this.artisan_cdn = process.env.S3_ARTISAN_CDN
@@ -28,7 +27,6 @@ export class S3Service {
                 }
             })
         }
-        this.copyObject = promisify(this.s3.copyObject)
     }
 
     getS3SignedURL(locationURL: string): string {
@@ -47,11 +45,11 @@ export class S3Service {
     }
 
     async copyPhotoToPermanentBucket(temporaryLocationURL: string, key: string) {
-        const data = await this.copyObject({
+        const rs = await this.s3.copyObject({
             Bucket: this.bucketName,
             CopySource: temporaryLocationURL,
             Key: key
-        })
-        return data;
+        }).promise()
+        return rs
     }
 }

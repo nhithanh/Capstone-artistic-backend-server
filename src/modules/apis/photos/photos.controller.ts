@@ -9,6 +9,7 @@ import { S3Service } from 'src/s3/s3.service';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { PhotosQueryParams } from './dto/photos.query';
 import { JwtAuthGuard } from 'src/auths/jwt-auth.guard';
+import { SavePhotoToAlbumDto } from './dto/save-photo-to-album.dto';
 
 @ApiTags("photos")
 @Controller('photos')
@@ -61,13 +62,14 @@ export class PhotosController {
   }
 
   @Post('upload')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('photo'))
-  async uploadFile(@UploadedFile() photo: Express.MulterS3.File, @Body() body) {
+  async uploadFile(@Req() req, @UploadedFile() photo: Express.MulterS3.File, @Body() body) {
     const socketId = body['socketId']
 
     const photoObject = await this.photosService.create({
         photoLocation: photo.location,
-        userId: '6fb1db8d-9719-426e-86f2-1b8d00001c0c',
+        userId: req.user.id,
         photoName: photo.originalname
     })
     
@@ -80,6 +82,22 @@ export class PhotosController {
       status: 200,
       msg: "Done"
     }
+  }
+
+  @Post('save-to-album')
+  @UseGuards(JwtAuthGuard)
+  async savePhotoToAlbum(@Req() req, @Body() saveToAlbumDto: SavePhotoToAlbumDto) {
+    const photoName = new Date().toString()
+    const key = `${req.user.id}/${photoName}`
+    const rs = await this.s3Service.copyPhotoToPermanentBucket(saveToAlbumDto.photoLocation, key)
+    console.log(rs)
+    console.log("Continue process")
+    const photoObject = await this.photosService.create({
+        photoLocation: saveToAlbumDto.photoLocation,
+        userId: req.user.id,
+        photoName,
+    })
+    return photoObject
   }
 
   @Get()
