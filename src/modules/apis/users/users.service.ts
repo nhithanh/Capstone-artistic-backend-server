@@ -40,7 +40,7 @@ export class UsersService {
       where: {
         username
       },
-      select: ['password']
+      select: ['password', "id", "username"]
     })
 
     if(!user) {
