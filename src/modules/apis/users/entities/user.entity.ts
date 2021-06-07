@@ -1,7 +1,6 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 import * as hmacSHA512 from 'crypto-js/hmac-sha512'
-import * as Base64 from 'crypto-js/enc-base64';
-
+import * as Base64 from 'crypto-js/enc-base64'
 
 @Entity()
 export class User {
@@ -14,12 +13,34 @@ export class User {
         nullable: false
     })
     username: string
-
+    
     @Column({
         type: 'varchar',
-        nullable: false
+        nullable: false,
+        select: false
     })
     password: string
+
+    @Column({
+        default: ''
+    })
+    firstName: string;
+
+    @Column({
+        default: ''
+    })
+    lastName: string;
+
+    @Column({
+        default: ''
+    })
+    email: string;
+
+    @Column({
+        type: 'date',
+        default: new Date()
+    })
+    dateOfBirth: string;
 
     @Column({
         type: 'varchar',

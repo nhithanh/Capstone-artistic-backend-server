@@ -39,8 +39,10 @@ export class UsersService {
     const user = await this.usersRepository.findOne({
       where: {
         username
-      }
+      },
+      select: ['password']
     })
+
     if(!user) {
       return null
     }
@@ -58,7 +60,19 @@ export class UsersService {
     return await this.usersRepository.find()
   }
 
-  async findOne(id: number): Promise<User> {
-    return await this.usersRepository.findOne(id)
+  async findOne(id: string): Promise<User> {
+    return await this.usersRepository.findOne({
+      where: {
+        id
+      }
+    })
+  }
+
+  async updateUserProfile(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const updateUser = await this.findOne(id)
+    return this.usersRepository.save({
+      ...updateUser,
+      ...updateUserDto
+    })
   }
 }

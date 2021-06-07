@@ -1,0 +1,3 @@
+class UserProfile {
+    username: string;
+}
