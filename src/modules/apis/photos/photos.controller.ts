@@ -31,14 +31,11 @@ export class PhotosController {
 
   @Post('/transfer-photo')
   async transferPhoto(@Body() transferPhotoMetadata: TransferPhotoMetadataDTO) {
-    const accessURL = this.s3Service.getCDNURL(transferPhotoMetadata.photoLocation)
     const payload = {
-      photoLocation: transferPhotoMetadata.photoLocation,
+      accessURL: transferPhotoMetadata.photoLocation,
       styleId: transferPhotoMetadata.style.id,
       socketId: transferPhotoMetadata.socketId,
-      accessURL
     }
-
     this.producerService.emitTransferPhotoTask(transferPhotoMetadata.style.routingKey, payload);
     return {
       status: HttpStatus.ACCEPTED,
@@ -54,6 +51,9 @@ export class PhotosController {
       accessURL,
       ...transferPhotoCompleteMetadataDTO
     }
+    console.log(transferPhotoCompleteMetadataDTO)
+    console.log("In here")
+    console.log("payload: ",payload)
     this.socketService.emitToSpecificClient(transferPhotoCompleteMetadataDTO.socketId, 'TRANSFER_COMPLETED', payload)
     return {
       status: HttpStatus.OK,

@@ -9,13 +9,18 @@ const AmazonS3URI = require('amazon-s3-uri')
 export class S3Service {
     public s3: S3;
     private bucketName: string;
-    private artisan_cdn: string;
-    private artisan_temporary_cdn: string;
+    private mainCDN: string;
+    private temporaryBucketName: string;
+    private temporaryCDN: string;
 
     constructor() {
-        this.artisan_cdn = process.env.S3_ARTISAN_CDN
-        this.artisan_temporary_cdn = process.env.S3_ARTISAN_TEMPORARY_CDN
+
         this.bucketName = process.env.S3_BUCKET_NAME
+        this.temporaryBucketName = process.env.S3_TEMPORARY_BUCKET_NAME
+
+        this.mainCDN = process.env.S3_ARTISAN_CDN
+        this.temporaryCDN = process.env.S3_ARTISAN_TEMPORARY_CDN
+
         const env = process.env.ENV || 'dev'
         if(env == 'production') {
             this.s3 = new S3()
@@ -40,8 +45,12 @@ export class S3Service {
 
     getCDNURL(locationURL: string): string {
         const {bucket, key} = AmazonS3URI(locationURL)
-        if (bucket == 'artisan-photos')
-            return `${this.artisan_cdn}/${key}`
+        if (bucket == this.bucketName) {
+            return `${this.mainCDN}/${key}`
+        }
+        else if(bucket == this.temporaryBucketName) {
+            return `${this.temporaryCDN}/${key}`
+        }
     }
 
     async copyPhotoToPermanentBucket(temporaryLocationURL: string, key: string) {
