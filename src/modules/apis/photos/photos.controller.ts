@@ -6,7 +6,7 @@ import { ProducerService } from 'src/modules/producer/producer.service';
 import { TransferPhotoCompleteMetadatadDTO, TransferPhotoMetadataDTO } from './dto/transfer-photo-metadata.dto';
 import { SocketService } from 'src/gateway/socket.service';
 import { S3Service } from 'src/s3/s3.service';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { PhotosQueryParams } from './dto/photos.query';
 import { JwtAuthGuard } from 'src/auths/jwt-auth.guard';
 import { SavePhotoToAlbumDto } from './dto/save-photo-to-album.dto';
@@ -51,9 +51,7 @@ export class PhotosController {
       accessURL,
       ...transferPhotoCompleteMetadataDTO
     }
-    console.log(transferPhotoCompleteMetadataDTO)
-    console.log("In here")
-    console.log("payload: ",payload)
+    console.log(payload)
     this.socketService.emitToSpecificClient(transferPhotoCompleteMetadataDTO.socketId, 'TRANSFER_COMPLETED', payload)
     return {
       status: HttpStatus.OK,
@@ -90,8 +88,6 @@ export class PhotosController {
     const photoName = new Date().toString()
     const key = `${req.user.id}/${photoName}`
     const rs = await this.s3Service.copyPhotoToPermanentBucket(saveToAlbumDto.photoLocation, key)
-    console.log(rs)
-    console.log("Continue process")
     const photoObject = await this.photosService.create({
         photoLocation: saveToAlbumDto.photoLocation,
         userId: req.user.id,

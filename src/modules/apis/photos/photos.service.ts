@@ -84,7 +84,7 @@ export class PhotosService {
       const rs = await this.photoRepository.softDelete(id)
       if(rs.affected > 0) {
         return {
-          message: `Delete photo ${id} success!`
+          id
         }
       }
     }
