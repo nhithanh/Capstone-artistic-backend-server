@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { AlbumsService } from '../albums/albums.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -10,6 +11,7 @@ export class UsersService {
 
   @InjectRepository(User)
   private readonly usersRepository: Repository<User>
+  private readonly albumService: AlbumsService;
 
   private async verifyIsUsernameExist(username: string): Promise<boolean> {
     const user = await this.usersRepository.findOne({
@@ -32,6 +34,11 @@ export class UsersService {
       }, HttpStatus.CONFLICT)
     }
     const newUser = this.usersRepository.create(createUserDto)
+    const userId = newUser.id
+    await this.albumService.create({
+      name: 'Default',
+      userId: userId
+    })
     return this.usersRepository.save(newUser)
   }
 

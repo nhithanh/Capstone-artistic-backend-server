@@ -21,5 +21,6 @@ export class CreateAlbumDto {
 
     @ApiProperty({type: String, name: "thumbnailURL", description: "thumbnailURL of the albums"})
     @IsString()
-    thumbnailURL: string;
+    @IsOptional()
+    thumbnailURL?: string;
 }
