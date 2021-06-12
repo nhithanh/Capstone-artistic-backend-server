@@ -92,6 +92,7 @@ export class PhotosController {
         photoLocation: saveToAlbumDto.photoLocation,
         userId: req.user.id,
         photoName,
+        albumId: saveToAlbumDto.albumId
     })
     return photoObject
   }

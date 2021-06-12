@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "src/modules/apis/users/entities/user.entity";
+import { Album } from "../../albums/entities/album.entity";
 
 @Entity()
 export class Photo {
@@ -12,6 +13,16 @@ export class Photo {
     @ManyToOne(() => User)
     @JoinColumn()
     user: User
+
+
+    @Column({ nullable: true, default: null })
+    albumId: string;
+
+    @ManyToOne(() => User)
+    @JoinColumn()
+    album: Album
+
+
 
     @Column({
         type: 'varchar',

@@ -19,4 +19,10 @@ export class CreatePhoToDTO {
     @ApiProperty({type: String, name: "photoName", description: "original name of the photo"})
     @IsString()
     photoName: string;
+
+    @ApiProperty({type: String, name: "albumId",description: "id of the album where the photo belong to", default: null})
+    @IsString() 
+    @IsOptional()
+    albumId?: string;
+
 }

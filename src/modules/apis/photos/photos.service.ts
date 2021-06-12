@@ -95,4 +95,14 @@ export class PhotosService {
       }, HttpStatus.UNAUTHORIZED)
     }
   }
+
+
+  async findByAlbumId(albumId: string) {
+   const [photos, count] = await this.photoRepository.findAndCount({
+      where: {albumId},
+      order: {createdAt: 'DESC'},
+      take: 5
+   })
+   return {count, photos}
+  }
 }
