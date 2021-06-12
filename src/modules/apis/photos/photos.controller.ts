@@ -51,7 +51,7 @@ export class PhotosController {
       accessURL,
       ...transferPhotoCompleteMetadataDTO
     }
-    console.log(payload)
+
     this.socketService.emitToSpecificClient(transferPhotoCompleteMetadataDTO.socketId, 'TRANSFER_COMPLETED', payload)
     return {
       status: HttpStatus.OK,
