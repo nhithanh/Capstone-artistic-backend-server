@@ -19,6 +19,7 @@ import { ConfigModule } from '@nestjs/config';
 import { S3Module } from './s3/s3.module';
 import { AlbumsModule } from './src/modules/apis/albums/albums.module';
 import { AlbumsModule } from './modules/apis/albums/albums.module';
+import { ShowcasesModule } from './modules/apis/showcases/showcases.module';
 
 @Module({
   imports: [
@@ -53,7 +54,8 @@ import { AlbumsModule } from './modules/apis/albums/albums.module';
     TranferImagesModule,
     SocketModule,
     S3Module,
-    AlbumsModule
+    AlbumsModule,
+    ShowcasesModule
   ],
   controllers: [AppController, ControllerController],
   providers: [AppService, AppGateway]

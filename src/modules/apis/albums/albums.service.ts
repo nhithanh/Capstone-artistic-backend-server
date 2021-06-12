@@ -23,23 +23,42 @@ export class AlbumsService {
     }
     throw new HttpException("Album not found", HttpStatus.NOT_FOUND)
   }
-  create(createAlbumDto: CreateAlbumDto) {
-    return 'This action adds a new album';
+  async create(createAlbumDto: CreateAlbumDto) {
+    return this.albumRepository.save(createAlbumDto);
   }
 
-  findAll() {
-    return `This action returns all albums`;
+  async findAll(user: User) {
+    const userId = user.id
+    return this.albumRepository.find({
+      where: {
+        userId
+      }
+    })
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} album`;
+  async findOne(id: string) {
+    return this.albumRepository.findOne(id)
   }
 
-  update(id: number, updateAlbumDto: UpdateAlbumDto) {
+  async update(id: number, updateAlbumDto: UpdateAlbumDto) {
     return `This action updates a #${id} album`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} album`;
+  async remove(id: string, user:User) {
+    const isHasRight = await this.checkUserAccessRight(user, id)
+    if (isHasRight) {
+      const rs = await this.albumRepository.softDelete(id)
+      if(rs.affected > 0) {
+        return {
+          id
+        }
+      }
+    }
+    else {
+      throw new HttpException({
+        status: 401,
+        msg: "Not have permission"
+      }, HttpStatus.UNAUTHORIZED)
+    }
   }
 }
