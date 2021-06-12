@@ -1,26 +1,58 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { S3Service } from 'src/s3/s3.service';
+import { Repository } from 'typeorm';
 import { CreateShowcaseDto } from './dto/create-showcase.dto';
 import { UpdateShowcaseDto } from './dto/update-showcase.dto';
+import { Showcase } from './entities/showcase.entity';
 
 @Injectable()
 export class ShowcasesService {
+  @Inject()
+  s3Service: S3Service;
+
+  @InjectRepository(Showcase)
+  private readonly showCaseRepository: Repository<Showcase>;
+
+
   create(createShowcaseDto: CreateShowcaseDto) {
-    return 'This action adds a new showcase';
+    return this.showCaseRepository.save(createShowcaseDto)
   }
 
-  findAll() {
-    return `This action returns all showcases`;
+  async findAll(styleId: string) {
+    const showCases = await this.showCaseRepository.find({
+      where: {
+        styleId
+      },
+      order: {createdAt: "DESC"},
+      select: ['id', 'photoLocation', 'photoName']
+    })
+
+    const publicShowcases = showCases.map(showcase => {
+      const accessURL = this.s3Service.getCDNURL(showcase.photoLocation)
+      return {
+        ...showcase,
+        accessURL
+      } 
+    })
+
+    return publicShowcases
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} showcase`;
+  findOne(id: string) {
+    return this.showCaseRepository.findOne(id)
   }
 
-  update(id: number, updateShowcaseDto: UpdateShowcaseDto) {
+  update(id: string, updateShowcaseDto: UpdateShowcaseDto) {
     return `This action updates a #${id} showcase`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} showcase`;
+  async remove(id: string) {
+    const rs = await this.showCaseRepository.softDelete(id)
+    if (rs.affected > 0) {
+      return {
+        id
+      }
+    }
   }
 }

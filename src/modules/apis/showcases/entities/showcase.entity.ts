@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToO
 import { Style } from "../../styles/entities/style.entity";
 
 @Entity()
-export class Photo {
+export class Showcase {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
