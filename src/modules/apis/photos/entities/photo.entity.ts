@@ -18,7 +18,7 @@ export class Photo {
     @Column({ nullable: true, default: null })
     albumId: string;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => Album)
     @JoinColumn()
     album: Album
 
