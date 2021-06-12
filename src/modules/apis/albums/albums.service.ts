@@ -40,8 +40,21 @@ export class AlbumsService {
     return this.albumRepository.findOne(id)
   }
 
-  async update(id: number, updateAlbumDto: UpdateAlbumDto) {
-    return `This action updates a #${id} album`;
+  async update(id: string, user: User, updateAlbumDto: UpdateAlbumDto) {
+    const isHasRight = await this.checkUserAccessRight(user, id)
+    if (isHasRight) {
+      const updateAlbum = await this.findOne(id)
+      return this.albumRepository.save({
+        ...updateAlbum,
+        ...updateAlbumDto
+      })
+    }
+    else {
+      throw new HttpException({
+        status: 401,
+        msg: "Not have permission"
+      }, HttpStatus.UNAUTHORIZED)
+    }
   }
 
   async remove(id: string, user:User) {

@@ -103,7 +103,7 @@ export class PhotosController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.photosService.findOne(+id);
+    return this.photosService.findOne(id);
   }
 
   @Delete(':id')

@@ -70,7 +70,7 @@ export class PhotosService {
     }
   }
 
-  async findOne(id: number): Promise<Photo> {
+  async findOne(id: string): Promise<Photo> {
     return this.photoRepository.findOne(id);
   }
 

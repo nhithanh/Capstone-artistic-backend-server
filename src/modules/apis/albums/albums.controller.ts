@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards, Req, Put } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auths/jwt-auth.guard';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
@@ -13,22 +14,24 @@ export class AlbumsController {
   }
 
   @Get()
-  findAll() {
-    return this.albumsService.findAll();
+  @UseGuards(JwtAuthGuard)
+  findAll(@Req() req) {
+    return this.albumsService.findAll(req.user);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.albumsService.findOne(+id);
+    return this.albumsService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
-    return this.albumsService.update(+id, updateAlbumDto);
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  update(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto, @Req() req) {
+    return this.albumsService.update(id,req.user, updateAlbumDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.albumsService.remove(+id);
+    // return this.albumsService.remove(id);
   }
 }

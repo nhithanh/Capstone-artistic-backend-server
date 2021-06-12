@@ -17,7 +17,6 @@ import { AppGateway } from './gateway/app.gateway';
 import { SocketModule } from './gateway/socket.module';
 import { ConfigModule } from '@nestjs/config';
 import { S3Module } from './s3/s3.module';
-import { AlbumsModule } from './src/modules/apis/albums/albums.module';
 import { AlbumsModule } from './modules/apis/albums/albums.module';
 import { ShowcasesModule } from './modules/apis/showcases/showcases.module';
 
