@@ -13,7 +13,16 @@ export class User {
         nullable: false
     })
     username: string
+
+
+    @Column({
+        type: 'varchar',
+        unique: true,
+        nullable: true
+    })
+    defaultAlbumId: string
     
+
     @Column({
         type: 'varchar',
         nullable: false,

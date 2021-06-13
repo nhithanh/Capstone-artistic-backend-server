@@ -65,10 +65,12 @@ export class PhotosController {
   async uploadFile(@Req() req, @UploadedFile() photo: Express.MulterS3.File, @Body() body) {
     const socketId = body['socketId']
 
+
     const photoObject = await this.photosService.create({
         photoLocation: photo.location,
         userId: req.user.id,
-        photoName: photo.originalname
+        photoName: photo.originalname,
+        albumId: req.user.defaultAlbumId
     })
     
     const payload = {

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AlbumsService } from '../albums/albums.service';
@@ -11,6 +11,8 @@ export class UsersService {
 
   @InjectRepository(User)
   private readonly usersRepository: Repository<User>
+
+  @Inject()
   private readonly albumService: AlbumsService;
 
   private async verifyIsUsernameExist(username: string): Promise<boolean> {
@@ -33,12 +35,13 @@ export class UsersService {
         message: 'Username already taken!'
       }, HttpStatus.CONFLICT)
     }
-    const newUser = this.usersRepository.create(createUserDto)
-    const userId = newUser.id
-    await this.albumService.create({
+    let newUser = this.usersRepository.create(createUserDto)
+    newUser = await this.usersRepository.save(newUser)
+    const newAlbum = await this.albumService.create({
       name: 'Default',
-      userId: userId
+      userId: newUser.id
     })
+    newUser.defaultAlbumId = newAlbum.id
     return this.usersRepository.save(newUser)
   }
 
@@ -47,7 +50,7 @@ export class UsersService {
       where: {
         username
       },
-      select: ['password', "id", "username"]
+      select: ['password', "id", "username", "defaultAlbumId"]
     })
 
     if(!user) {
