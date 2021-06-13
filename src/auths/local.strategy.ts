@@ -8,13 +8,13 @@ import { UsersService } from 'src/modules/apis/users/users.service';
 export class LocalStrategy extends PassportStrategy(Strategy) {
 
   @Inject()
-  private readonly usersSerivce: UsersService;
+  private readonly userService: UsersService;
 
   constructor(private authService: AuthsService) {
     super();
   }
 
   async validate(username: string, password: string): Promise<any> {
-    return this.usersSerivce.findByCredential(username, password);
+    return this.userService.findByCredential(username, password);
   }
 }

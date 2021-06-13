@@ -5,6 +5,7 @@ import { AlbumsService } from '../albums/albums.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import * as _ from 'lodash'
 
 @Injectable()
 export class UsersService {
@@ -42,10 +43,12 @@ export class UsersService {
       userId: newUser.id
     })
     newUser.defaultAlbumId = newAlbum.id
-    return this.usersRepository.save(newUser)
+    return this.usersRepository.save(_.omit(newUser, ['password']))
   }
 
   async findByCredential(username: string, password: string): Promise<User | null> {
+    console.log("username:", username)
+    console.log("password:", password)
     const user = await this.usersRepository.findOne({
       where: {
         username
@@ -58,7 +61,7 @@ export class UsersService {
     }
     
     const isPasswordMatch = user.comparePassword(password)
-    
+    console.log(isPasswordMatch)
     if(!isPasswordMatch) {
       return null
     }

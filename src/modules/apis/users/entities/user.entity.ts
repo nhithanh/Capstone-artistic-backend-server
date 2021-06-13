@@ -60,6 +60,9 @@ export class User {
 
     public comparePassword(password: string): boolean {
         const encryptPassword = Base64.stringify(hmacSHA512(password, process.env.PASSWORD_HASH_SECRET_KEY));
+        console.log("Secret:", process.env.PASSWORD_HASH_SECRET_KEY)
+        console.log(encryptPassword)
+        console.log(this.password)
         return this.password === encryptPassword;
     }
 

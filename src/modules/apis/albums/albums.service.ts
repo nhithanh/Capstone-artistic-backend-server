@@ -1,6 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { PhotosService } from '../photos/photos.service';
 import { User } from '../users/entities/user.entity';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
@@ -11,6 +12,10 @@ export class AlbumsService {
 
   @InjectRepository(Album)
   private readonly albumRepository: Repository<Album>;
+
+  @Inject()
+  private readonly photosService: PhotosService
+
 
   private async checkUserAccessRight(user: User, albumId: string): Promise<boolean> {
     const album = await this.albumRepository.findOne({
@@ -29,15 +34,26 @@ export class AlbumsService {
 
   async findAll(user: User) {
     const userId = user.id
-    return this.albumRepository.find({
+    const albums = await this.albumRepository.find({
       where: {
         userId
       }
     })
+
+    const response = albums.map(async item => {
+        const {count, photos} = await this.photosService.findByAlbumId(item.id, 5)
+        return {...item, ...{count, photos}}
+    })
+
+    return response
+    
   }
 
   async findOne(id: string) {
-    return this.albumRepository.findOne(id)
+    const album = await this.albumRepository.findOne(id)
+    const {count, photos} = await this.photosService.findByAlbumId(album.id, null)
+
+    return {...album, ...{count, photos}}
   }
 
   async update(id: string, user: User, updateAlbumDto: UpdateAlbumDto) {

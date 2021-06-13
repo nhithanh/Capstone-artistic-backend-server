@@ -97,12 +97,21 @@ export class PhotosService {
   }
 
 
-  async findByAlbumId(albumId: string) {
-   const [photos, count] = await this.photoRepository.findAndCount({
-      where: {albumId},
-      order: {createdAt: 'DESC'},
-      take: 5
-   })
-   return {count, photos}
+  async findByAlbumId(albumId: string, limit: number) {
+    let photos = []
+    let count = 0
+    if(limit !== null) {
+        [photos, count] = await this.photoRepository.findAndCount({
+        where: {albumId},
+        order: {createdAt: 'DESC'},
+        take: limit,
+     })
+    } else {
+      [photos, count] = await this.photoRepository.findAndCount({
+        where: {albumId},
+        order: {createdAt: 'DESC'},
+     })
+    }
+    return {count, photos}
   }
 }

@@ -18,6 +18,7 @@ import { User } from '../users/entities/user.entity';
     inject: [S3Service],
   })],
   controllers: [PhotosController],
-  providers: [PhotosService]
+  providers: [PhotosService],
+  exports: [PhotosService]
 })
 export class PhotosModule {}
