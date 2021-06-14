@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { S3Service } from 'src/s3/s3.service';
-import { Repository } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { CreateShowcaseDto } from './dto/create-showcase.dto';
 import { UpdateShowcaseDto } from './dto/update-showcase.dto';
 import { Showcase } from './entities/showcase.entity';
@@ -9,7 +9,7 @@ import { Showcase } from './entities/showcase.entity';
 @Injectable()
 export class ShowcasesService {
   @Inject()
-  s3Service: S3Service;
+  private readonly s3Service: S3Service;
 
   @InjectRepository(Showcase)
   private readonly showCaseRepository: Repository<Showcase>;
@@ -54,5 +54,11 @@ export class ShowcasesService {
         id
       }
     }
+  }
+
+  getAvailableStyles() {
+    const connection = getConnection()
+    const query = "Select * from style where id in (Select style_id from showcase group by style_id having count(id) > 1)"
+    return connection.query(query)
   }
 }
