@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { PhotosService } from '../photos/photos.service';
 import { User } from '../users/entities/user.entity';
 import { CreateAlbumDto } from './dto/create-album.dto';
@@ -33,20 +33,19 @@ export class AlbumsService {
   }
 
   async findAll(user: User) {
-    const userId = user.id
-    const albums = await this.albumRepository.find({
+    const query = `Select album.id, album.name, album.created_at, album.thumbnail_url, count(p.id) as total from album left join photo p on album.id = p.album_id 
+    where album.user_id = '${user.id}' group by album.id, album.name, album.created_at, album.thumbnail_url`
+    const connection = getConnection()
+    const total = await this.albumRepository.count({
       where: {
-        userId
+        userId: user.id
       }
     })
-
-    const response = albums.map(async item => {
-        const {count, photos} = await this.photosService.findByAlbumId(item.id, 5)
-        return {...item, ...{count, photos}}
-    })
-
-    return response
-    
+    const rs = await connection.query(query)
+    return {
+      total,
+      data: rs
+    }
   }
 
   async findOne(id: string) {
