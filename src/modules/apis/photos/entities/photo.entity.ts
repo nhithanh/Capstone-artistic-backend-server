@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { AfterLoad, Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "src/modules/apis/users/entities/user.entity";
 import { Album } from "../../albums/entities/album.entity";
 
@@ -22,8 +22,6 @@ export class Photo {
     @JoinColumn()
     album: Album
 
-
-
     @Column({
         type: 'varchar',
         nullable: false
@@ -43,5 +41,5 @@ export class Photo {
     updatedAt: Date;
 
     @DeleteDateColumn()
-    deletedAt: string
+    deletedAt: string;
 }

@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { S3Service } from 'src/s3/s3.service';
 import { getConnection, Repository } from 'typeorm';
 import { PhotosService } from '../photos/photos.service';
 import { User } from '../users/entities/user.entity';
@@ -9,6 +10,9 @@ import { Album } from './entities/album.entity';
 
 @Injectable()
 export class AlbumsService {
+
+  @Inject()
+  private readonly s3Service: S3Service;
 
   @InjectRepository(Album)
   private readonly albumRepository: Repository<Album>;
@@ -50,8 +54,13 @@ export class AlbumsService {
 
   async findOne(id: string) {
     const album = await this.albumRepository.findOne(id)
-    const {count, photos} = await this.photosService.findByAlbumId(album.id, null)
-
+    let {count, photos} = await this.photosService.findByAlbumId(album.id, null)
+    photos = photos.map(photo => {
+      return {
+        ...photo,
+        accessURL: this.s3Service.getCDNURL(photo.photoLocation)
+      }
+    })
     return {...album, ...{count, photos}}
   }
 

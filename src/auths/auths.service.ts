@@ -23,7 +23,8 @@ export class AuthsService {
   async genToken(user: User) {
     const payload = {
       id: user.id,
-      username: user.username
+      username: user.username,
+      defaultAlbumId: user.defaultAlbumId
     }
     return {
       token: this.jwtService.sign(payload)
