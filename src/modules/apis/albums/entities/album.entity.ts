@@ -19,6 +19,14 @@ export class Album {
     })
     name: string;
 
+
+    @Column({ 
+        type: 'boolean',
+        default: false 
+    })
+    isDefault: boolean;
+
+
     @Column({
         type: 'varchar',
         nullable: false,

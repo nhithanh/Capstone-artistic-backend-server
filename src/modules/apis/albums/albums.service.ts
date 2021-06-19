@@ -33,7 +33,7 @@ export class AlbumsService {
     throw new HttpException("Album not found", HttpStatus.NOT_FOUND)
   }
   async create(createAlbumDto: CreateAlbumDto) {
-    return this.albumRepository.save(createAlbumDto);
+    return this.albumRepository.save({...createAlbumDto, isDefault: true});
   }
 
   async createNewAlbum(createAlbumDto: CreateAlbumDto, user: User) {
