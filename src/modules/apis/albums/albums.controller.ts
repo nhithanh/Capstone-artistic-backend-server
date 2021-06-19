@@ -8,9 +8,10 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createAlbumDto: CreateAlbumDto) {
-    return await this.albumsService.create(createAlbumDto);
+  async create(@Req() req, @Body() createAlbumDto: CreateAlbumDto) {
+    return await this.albumsService.createNewAlbum(createAlbumDto, req.user);
   }
 
   @Get()

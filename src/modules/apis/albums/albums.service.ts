@@ -36,6 +36,13 @@ export class AlbumsService {
     return this.albumRepository.save(createAlbumDto);
   }
 
+  async createNewAlbum(createAlbumDto: CreateAlbumDto, user: User) {
+    return this.albumRepository.save({
+      ...createAlbumDto,
+      userId: user.id
+    })
+  }
+
   async findAll(user: User) {
     const query = `Select album.id, album.name, album.created_at, album.thumbnail_url, count(p.id) as total from album left join photo p on album.id = p.album_id 
     where album.user_id = '${user.id}' group by album.id, album.name, album.created_at, album.thumbnail_url`

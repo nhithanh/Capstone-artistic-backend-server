@@ -10,6 +10,7 @@ export class CreateAlbumDto {
     id? : string;
 
     @ApiProperty({type: String, name: "userId", description: "userId of who own the albums"})
+    @IsOptional()
     @IsString()
     userId: string;
 
