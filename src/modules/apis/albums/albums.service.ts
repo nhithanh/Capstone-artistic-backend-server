@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { S3Service } from 'src/s3/s3.service';
 import { getConnection, Repository } from 'typeorm';
-import { PhotosService } from '../photos/photos.service';
+import { MediasService } from '../medias/medias.service';
 import { User } from '../users/entities/user.entity';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
@@ -18,7 +18,7 @@ export class AlbumsService {
   private readonly albumRepository: Repository<Album>;
 
   @Inject()
-  private readonly photosService: PhotosService
+  private readonly mediasService: MediasService
 
 
   private async checkUserAccessRight(user: User, albumId: string): Promise<boolean> {
@@ -61,7 +61,7 @@ export class AlbumsService {
 
   async findOne(id: string) {
     const album = await this.albumRepository.findOne(id)
-    let {count, photos} = await this.photosService.findByAlbumId(album.id, null)
+    let {count, photos} = await this.mediasService.findByAlbumId(album.id, null)
     photos = photos.map(photo => {
       return {
         ...photo,

@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
-export class SavePhotoToAlbumDto {
+export class SaveMediaToAlbumDto {
     @IsString()
     @IsNotEmpty()
     photoLocation: string

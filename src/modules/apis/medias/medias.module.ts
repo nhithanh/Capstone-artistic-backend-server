@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { PhotosService } from './photos.service';
-import { PhotosController } from './photos.controller';
+import { MediasService } from './medias.service';
+import { MediasController } from './medias.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Photo } from './entities/photo.entity';
+import { Media } from './entities/media.entity';
 import { ProducerModule } from 'src/modules/producer/producer.module';
 import { SocketModule } from 'src/gateway/socket.module';
 import { MulterModule } from '@nestjs/platform-express';
@@ -12,13 +12,13 @@ import { uploadImageToS3Option } from 'src/config/multer.service';
 import { User } from '../users/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Photo, User]), ProducerModule, S3Module, SocketModule, MulterModule.registerAsync({
+  imports: [TypeOrmModule.forFeature([Media, User]), ProducerModule, S3Module, SocketModule, MulterModule.registerAsync({
     imports: [S3Module],
     useFactory: async (s3Service: S3Service) => uploadImageToS3Option(s3Service.s3),
     inject: [S3Service],
   })],
-  controllers: [PhotosController],
-  providers: [PhotosService],
-  exports: [PhotosService]
+  controllers: [MediasController],
+  providers: [MediasService],
+  exports: [MediasService]
 })
-export class PhotosModule {}
+export class MediasModule {}

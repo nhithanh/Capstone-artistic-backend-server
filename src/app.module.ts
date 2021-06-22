@@ -8,7 +8,7 @@ import { StylesModule } from './modules/apis/styles/styles.module';
 import { ModelsModule } from './modules/apis/models/models.module';
 import { AiModelSnapshotsModule } from './modules/apis/snapshots/snapshot.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { PhotosModule } from './modules/apis/photos/photos.module'
+import { MediasModule } from './modules/apis/medias/medias.module'
 import { TranferImagesModule } from './modules/apis/tranfer-images/tranfer-images.module';
 import { ProducerModule } from './modules/producer/producer.module';
 import { ControllerController } from './modules/consumers/controller/controller.controller';
@@ -49,7 +49,7 @@ import { ShowcasesModule } from './modules/apis/showcases/showcases.module';
     StylesModule,
     ModelsModule,
     AiModelSnapshotsModule,
-    PhotosModule,
+    MediasModule,
     TranferImagesModule,
     SocketModule,
     S3Module,

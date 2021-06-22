@@ -1,9 +1,14 @@
-import { AfterLoad, Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "src/modules/apis/users/entities/user.entity";
 import { Album } from "../../albums/entities/album.entity";
 
+export enum MEDIA_TYPE {
+    PHOTO = "PHOTO",
+    VIDEO = "VIDEO"
+}
+
 @Entity()
-export class Photo {
+export class Media {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
@@ -26,13 +31,19 @@ export class Photo {
         type: 'varchar',
         nullable: false
     })
-    photoName: string;
+    name: string;
 
     @Column({
         type: 'varchar',
         nullable: false
     })
-    photoLocation: string;
+    storageLocation: string;
+
+    @Column({
+        type: 'varchar',
+        nullable: false
+    })
+    type: MEDIA_TYPE;
 
     @CreateDateColumn()
     createdAt: Date;

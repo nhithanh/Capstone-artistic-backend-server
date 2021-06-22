@@ -1,19 +1,19 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req, Inject, HttpStatus, Query, UseGuards } from '@nestjs/common';
-import { PhotosService } from './photos.service';
-import { CreatePhoToDTO } from './dto/create-photo.dto';
+import { MediasService } from './medias.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProducerService } from 'src/modules/producer/producer.service';
-import { TransferPhotoCompleteMetadatadDTO, TransferPhotoMetadataDTO } from './dto/transfer-photo-metadata.dto';
+import { TransferMediaMetadataDTO, TransferMediaCompleteMetadatadDTO } from './dto/transfer-media-metadata.dto';
 import { SocketService } from 'src/gateway/socket.service';
 import { S3Service } from 'src/s3/s3.service';
 import { ApiTags } from '@nestjs/swagger';
-import { PhotosQueryParams } from './dto/photos.query';
+import { MediasQueryParams } from './dto/medias.query';
 import { JwtAuthGuard } from 'src/auths/jwt-auth.guard';
-import { SavePhotoToAlbumDto } from './dto/save-photo-to-album.dto';
+import { SaveMediaToAlbumDto } from './dto/save-media-to-album.dto';
+import { MEDIA_TYPE } from './entities/media.entity'
 
-@ApiTags("photos")
-@Controller('photos')
-export class PhotosController {
+@ApiTags("medias")
+@Controller('medias')
+export class MediasController {
 
   @Inject()
   s3Service: S3Service;
@@ -25,12 +25,12 @@ export class PhotosController {
   private readonly producerService: ProducerService;
 
   @Inject()
-  private readonly photosService: PhotosService;
+  private readonly mediasService: MediasService;
 
   constructor() {}
 
   @Post('/transfer-photo')
-  async transferPhoto(@Body() transferPhotoMetadata: TransferPhotoMetadataDTO) {
+  async transferPhoto(@Body() transferPhotoMetadata: TransferMediaMetadataDTO) {
     const payload = {
       accessURL: transferPhotoMetadata.photoLocation,
       styleId: transferPhotoMetadata.style.id,
@@ -44,7 +44,7 @@ export class PhotosController {
   }
 
   @Post('/transfer-photo/completed')
-  transferPhotoCompleted(@Body() transferPhotoCompleteMetadataDTO: TransferPhotoCompleteMetadatadDTO) {
+  transferPhotoCompleted(@Body() transferPhotoCompleteMetadataDTO: TransferMediaCompleteMetadatadDTO) {
     const accessURL = this.s3Service.getCDNURL(transferPhotoCompleteMetadataDTO.transferPhotoLocation)
     const payload = {
       status: 'COMPLETED',
@@ -64,8 +64,9 @@ export class PhotosController {
   @UseInterceptors(FileInterceptor('photo'))
   async uploadFile(@Req() req, @UploadedFile() photo: Express.MulterS3.File, @Body() body) {
     const socketId = body['socketId']
-    const photoObject = await this.photosService.create({
-        photoLocation: photo.location,
+    const photoObject = await this.mediasService.create({
+        storageLocation: photo.location,
+        type: MEDIA_TYPE.VIDEO,
         userId: req.user.id,
         photoName: photo.originalname,
         albumId: req.user.defaultAlbumId
@@ -73,7 +74,7 @@ export class PhotosController {
     
     const payload = {
       ...photoObject,
-      accessURL: this.s3Service.getCDNURL(photoObject.photoLocation)
+      accessURL: this.s3Service.getCDNURL(photoObject.storageLocation)
     }
     this.socketService.emitToSpecificClient(socketId, 'UPLOAD_IMAGE_SUCCESS', payload)
     return {
@@ -84,32 +85,33 @@ export class PhotosController {
 
   @Post('save-to-album')
   @UseGuards(JwtAuthGuard)
-  async savePhotoToAlbum(@Req() req, @Body() saveToAlbumDto: SavePhotoToAlbumDto) {
+  async savePhotoToAlbum(@Req() req, @Body() saveToAlbumDto: SaveMediaToAlbumDto) {
     const photoName = new Date().toString()
     const key = `${req.user.id}/${photoName}`
     const rs = await this.s3Service.copyPhotoToPermanentBucket(saveToAlbumDto.photoLocation, key)
-    const photoObject = await this.photosService.create({
-        photoLocation: saveToAlbumDto.photoLocation,
+    const photoObject = await this.mediasService.create({
+        storageLocation: saveToAlbumDto.photoLocation,
         userId: req.user.id,
         photoName,
-        albumId: saveToAlbumDto.albumId
+        albumId: saveToAlbumDto.albumId,
+        type: MEDIA_TYPE.PHOTO
     })
     return photoObject
   }
 
   @Get()
-  findAll(@Query() queryParams: PhotosQueryParams) {
-    return this.photosService.findAll(queryParams);
+  findAll(@Query() queryParams: MediasQueryParams) {
+    return this.mediasService.findAll(queryParams);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.photosService.findOne(id);
+    return this.mediasService.findOne(id);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   remove(@Req() req, @Param('id') id: string) {
-    return this.photosService.remove(req.user, id);
+    return this.mediasService.remove(req.user, id);
   }
 }

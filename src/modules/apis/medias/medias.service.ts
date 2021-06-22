@@ -1,16 +1,16 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreatePhoToDTO } from './dto/create-photo.dto';
-import { PhotosQueryParams } from './dto/photos.query';
-import { UpdatePhotoDTO } from './dto/upload-photo.dto';
-import { Photo } from './entities/photo.entity';
+import { CreateMediaDTO } from './dto/create-media.dto';
+import { MediasQueryParams } from './dto/medias.query';
+import { UpdateMediaDTO } from './dto/upload-media.dto';
+import { Media } from './entities/media.entity';
 import * as _ from 'lodash'
 import { S3Service } from 'src/s3/s3.service';
 import { User } from '../users/entities/user.entity';
 
 @Injectable()
-export class PhotosService {
+export class MediasService {
 
   @Inject()
   s3Service: S3Service;
@@ -18,11 +18,11 @@ export class PhotosService {
   @InjectRepository(User)
   private readonly userRepository: Repository<User>
 
-  @InjectRepository(Photo)
-  private readonly photoRepository: Repository<Photo>;
+  @InjectRepository(Media)
+  private readonly mediaRepository: Repository<Media>;
 
   private async checkUserAccessRight(user: User, photoId: string): Promise<boolean> {
-    const photo = await this.photoRepository.findOne({
+    const photo = await this.mediaRepository.findOne({
       where: {
         id: photoId
       }
@@ -33,27 +33,26 @@ export class PhotosService {
     throw new HttpException("Photo not found", HttpStatus.NOT_FOUND)
   }
 
-  async create(createPhotoDTO: CreatePhoToDTO): Promise<Photo> {
-    return this.photoRepository.save(createPhotoDTO);
+  async create(createPhotoDTO: CreateMediaDTO): Promise<Media> {
+    return this.mediaRepository.save(createPhotoDTO);
   }
 
-  async findAll(queryParams: PhotosQueryParams): Promise<any> {
+  async findAll(queryParams: MediasQueryParams): Promise<any> {
     const page = queryParams['page'] || 0
     const limit = queryParams['limit'] || 5
     const skip = page * limit
 
     const where = _.omit(queryParams, ['page', 'limit'])
 
-    const [photos, count] = await this.photoRepository.findAndCount({
-      where: where,
+    const [photos, count] = await this.mediaRepository.findAndCount({
+      where,
       skip,
       take: limit,
-      order: {createdAt: "DESC"},
-      select: ['id', 'photoLocation', 'photoName']
+      order: {createdAt: "DESC"}      
     })
 
     const photosPublic = photos.map(photo => {
-      const accessURL = this.s3Service.getCDNURL(photo.photoLocation)
+      const accessURL = this.s3Service.getCDNURL(photo.storageLocation)
       return {
         ...photo,
         accessURL
@@ -70,18 +69,18 @@ export class PhotosService {
     }
   }
 
-  async findOne(id: string): Promise<Photo> {
-    return this.photoRepository.findOne(id);
+  async findOne(id: string): Promise<Media> {
+    return this.mediaRepository.findOne(id);
   }
 
-  update(id: number, updateUploadImageDto: UpdatePhotoDTO) {
+  update(id: number, updateUploadImageDto: UpdateMediaDTO) {
     return `This action updates a #${id} uploadImage`;
   }
 
   async remove(user: User, id: string) {
     const isHasRight = await this.checkUserAccessRight(user, id)
     if (isHasRight) {
-      const rs = await this.photoRepository.softDelete(id)
+      const rs = await this.mediaRepository.softDelete(id)
       if(rs.affected > 0) {
         return {
           id
@@ -101,13 +100,13 @@ export class PhotosService {
     let photos = []
     let count = 0
     if(limit !== null) {
-        [photos, count] = await this.photoRepository.findAndCount({
+        [photos, count] = await this.mediaRepository.findAndCount({
         where: {albumId},
         order: {createdAt: 'DESC'},
         take: limit,
      })
     } else {
-      [photos, count] = await this.photoRepository.findAndCount({
+      [photos, count] = await this.mediaRepository.findAndCount({
         where: {albumId},
         order: {createdAt: 'DESC'},
      })
