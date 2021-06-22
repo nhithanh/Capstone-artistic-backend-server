@@ -61,14 +61,14 @@ export class MediasController {
 
   @Post('upload')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('photo'))
-  async uploadFile(@Req() req, @UploadedFile() photo: Express.MulterS3.File, @Body() body) {
+  @UseInterceptors(FileInterceptor('media'))
+  async uploadFile(@Req() req, @UploadedFile() media: Express.MulterS3.File, @Body() body) {
     const socketId = body['socketId']
     const photoObject = await this.mediasService.create({
-        storageLocation: photo.location,
-        type: MEDIA_TYPE.VIDEO,
+        storageLocation: media.location,
+        type: media.contentType.includes("image") ? MEDIA_TYPE.PHOTO : MEDIA_TYPE.VIDEO,
         userId: req.user.id,
-        photoName: photo.originalname,
+        name: media.originalname,
         albumId: req.user.defaultAlbumId
     })
     
@@ -76,10 +76,12 @@ export class MediasController {
       ...photoObject,
       accessURL: this.s3Service.getCDNURL(photoObject.storageLocation)
     }
-    this.socketService.emitToSpecificClient(socketId, 'UPLOAD_IMAGE_SUCCESS', payload)
+    if(socketId) {
+      this.socketService.emitToSpecificClient(socketId, 'UPLOAD_IMAGE_SUCCESS', payload)
+    }
     return {
       status: 200,
-      msg: "Done"
+      data: payload
     }
   }
 
@@ -92,7 +94,7 @@ export class MediasController {
     const photoObject = await this.mediasService.create({
         storageLocation: saveToAlbumDto.photoLocation,
         userId: req.user.id,
-        photoName,
+        name: photoName,
         albumId: saveToAlbumDto.albumId,
         type: MEDIA_TYPE.PHOTO
     })

@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { S3Service } from 'src/s3/s3.service';
 import { getConnection, Repository } from 'typeorm';
+import { MEDIA_TYPE } from '../medias/entities/media.entity';
 import { MediasService } from '../medias/medias.service';
 import { User } from '../users/entities/user.entity';
 import { CreateAlbumDto } from './dto/create-album.dto';
@@ -44,7 +45,7 @@ export class AlbumsService {
   }
 
   async findAll(user: User) {
-    const query = `Select album.id, album.name, album.created_at, album.thumbnail_url, count(p.id) as total from album left join photo p on album.id = p.album_id 
+    const query = `Select album.id, album.name, album.created_at, album.thumbnail_url, count(m.id) as total from album left join media m on album.id = m.album_id
     where album.user_id = '${user.id}' group by album.id, album.name, album.created_at, album.thumbnail_url`
     const connection = getConnection()
     const total = await this.albumRepository.count({
@@ -61,14 +62,21 @@ export class AlbumsService {
 
   async findOne(id: string) {
     const album = await this.albumRepository.findOne(id)
-    let {count, photos} = await this.mediasService.findByAlbumId(album.id, null)
-    photos = photos.map(photo => {
+    let {count, medias} = await this.mediasService.findByAlbumId(album.id, null)
+    medias = medias.map(media => {
+      if(media.type === MEDIA_TYPE.VIDEO) {
+        return {
+          ...media,
+          accessURL: this.s3Service.getCDNURL(media.storageLocation),
+          isVideo: true
+        }
+      } 
       return {
-        ...photo,
-        accessURL: this.s3Service.getCDNURL(photo.photoLocation)
+        ...media,
+        accessURL: this.s3Service.getCDNURL(media.storageLocation)
       }
     })
-    return {...album, ...{count, photos}}
+    return {...album, ...{count, medias}}
   }
 
   async update(id: string, user: User, updateAlbumDto: UpdateAlbumDto) {

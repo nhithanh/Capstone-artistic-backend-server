@@ -97,20 +97,20 @@ export class MediasService {
 
 
   async findByAlbumId(albumId: string, limit: number) {
-    let photos = []
+    let medias = []
     let count = 0
     if(limit !== null) {
-        [photos, count] = await this.mediaRepository.findAndCount({
+        [medias, count] = await this.mediaRepository.findAndCount({
         where: {albumId},
         order: {createdAt: 'DESC'},
         take: limit,
      })
     } else {
-      [photos, count] = await this.mediaRepository.findAndCount({
+      [medias, count] = await this.mediaRepository.findAndCount({
         where: {albumId},
         order: {createdAt: 'DESC'},
      })
     }
-    return {count, photos}
+    return {count, medias}
   }
 }

@@ -19,7 +19,7 @@ export class CreateMediaDTO {
     
     @ApiProperty({type: String, name: "photoName", description: "original name of the photo"})
     @IsString()
-    photoName: string;
+    name: string;
 
     @IsString()
     type: MEDIA_TYPE;
