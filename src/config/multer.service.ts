@@ -20,7 +20,6 @@ export const uploadImageToS3Option = (s3: S3) => {
             bucket: 'artisan-photos',
             key: function (req: any, file, cb) {
                 const destination = `${req.user.id}/${Date.now().toString()}`
-                console.log(destination)
                 cb(null, destination)
             },
             contentType: multerS3.AUTO_CONTENT_TYPE

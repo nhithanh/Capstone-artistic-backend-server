@@ -64,7 +64,7 @@ export class MediasController {
   @UseInterceptors(FileInterceptor('media'))
   async uploadFile(@Req() req, @UploadedFile() media: Express.MulterS3.File, @Body() body) {
     const socketId = body['socketId']
-    const photoObject = await this.mediasService.create({
+    const mediaObject = await this.mediasService.create({
         storageLocation: media.location,
         type: media.contentType.includes("image") ? MEDIA_TYPE.PHOTO : MEDIA_TYPE.VIDEO,
         userId: req.user.id,
@@ -73,8 +73,8 @@ export class MediasController {
     })
     
     const payload = {
-      ...photoObject,
-      accessURL: this.s3Service.getCDNURL(photoObject.storageLocation)
+      ...mediaObject,
+      accessURL: this.s3Service.getCDNURL(mediaObject.storageLocation)
     }
     if(socketId) {
       this.socketService.emitToSpecificClient(socketId, 'UPLOAD_IMAGE_SUCCESS', payload)
