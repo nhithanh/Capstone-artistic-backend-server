@@ -48,7 +48,7 @@ export class MediasService {
       where,
       skip,
       take: limit,
-      order: {createdAt: "DESC"}      
+      order: { createdAt: "DESC" }
     })
 
     const photosPublic = photos.map(photo => {
@@ -56,7 +56,7 @@ export class MediasService {
       return {
         ...photo,
         accessURL
-      } 
+      }
     })
 
     return {
@@ -73,15 +73,29 @@ export class MediasService {
     return this.mediaRepository.findOne(id);
   }
 
-  update(id: number, updateUploadImageDto: UpdateMediaDTO) {
-    return `This action updates a #${id} uploadImage`;
+  async movePhotoToAnotherAlbum(id: string, user: User, updateUploadImageDto: UpdateMediaDTO) {
+    const isHasRight = await this.checkUserAccessRight(user, id)
+    if (isHasRight) {
+      const albumId = updateUploadImageDto.albumId
+      const updatedPhoto = await this.findOne(id)
+      return this.mediaRepository.save({
+        ...updatedPhoto,
+        albumId
+      })
+    } else {
+      throw new HttpException({
+        status: 401,
+        msg: "Not have permission"
+      }, HttpStatus.UNAUTHORIZED)
+    }
   }
+
 
   async remove(user: User, id: string) {
     const isHasRight = await this.checkUserAccessRight(user, id)
     if (isHasRight) {
       const rs = await this.mediaRepository.softDelete(id)
-      if(rs.affected > 0) {
+      if (rs.affected > 0) {
         return {
           id
         }
@@ -99,18 +113,18 @@ export class MediasService {
   async findByAlbumId(albumId: string, limit: number) {
     let medias = []
     let count = 0
-    if(limit !== null) {
-        [medias, count] = await this.mediaRepository.findAndCount({
-        where: {albumId},
-        order: {createdAt: 'DESC'},
+    if (limit !== null) {
+      [medias, count] = await this.mediaRepository.findAndCount({
+        where: { albumId },
+        order: { createdAt: 'DESC' },
         take: limit,
-     })
+      })
     } else {
       [medias, count] = await this.mediaRepository.findAndCount({
-        where: {albumId},
-        order: {createdAt: 'DESC'},
-     })
+        where: { albumId },
+        order: { createdAt: 'DESC' },
+      })
     }
-    return {count, medias}
+    return { count, medias }
   }
 }

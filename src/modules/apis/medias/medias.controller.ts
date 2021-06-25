@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req, Inject, HttpStatus, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, UseInterceptors, UploadedFile, Req, Inject, HttpStatus, Query, UseGuards } from '@nestjs/common';
 import { MediasService } from './medias.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProducerService } from 'src/modules/producer/producer.service';
@@ -11,6 +11,7 @@ import { JwtAuthGuard } from 'src/auths/jwt-auth.guard';
 import { SaveMediaToAlbumDto } from './dto/save-media-to-album.dto';
 import { MEDIA_TYPE } from './entities/media.entity'
 import { TransferVideoMetadataDto } from './dto/transfer-video-metadata.dto';
+import { UpdateMediaDTO } from './dto/upload-media.dto';
 
 @ApiTags("medias")
 @Controller('medias')
@@ -50,7 +51,8 @@ export class MediasController {
     const payload = {
       videoLocation: this.s3Service.getCDNURL(transferVideoMetadata.storageLocation + "/original.mp4"),
       styleId: transferVideoMetadata.styleId,
-      userId: req.user.id
+      userId: req.user.id,
+      saveAlbumId: transferVideoMetadata.saveAlbumId
     }
     this.producerService.emitTransferVideoTask(payload);
     return {
@@ -59,6 +61,24 @@ export class MediasController {
       message: 'Your request is executing.'
     }
   }
+
+  @Post('/transfer-video/completed')
+  @UseGuards(JwtAuthGuard)
+  async transferVideoCompleted(@Body() transferVideoMetadata: TransferVideoMetadataDto, @Req() req) {
+    const payload = {
+      videoLocation: this.s3Service.getCDNURL(transferVideoMetadata.storageLocation + "/original.mp4"),
+      styleId: transferVideoMetadata.styleId,
+      userId: req.user.id,
+      saveAlbumId: transferVideoMetadata.saveAlbumId
+    }
+    this.producerService.emitTransferVideoTask(payload);
+    return {
+      payload,
+      status: HttpStatus.ACCEPTED,
+      message: 'Your request is executing.'
+    }
+  }
+
 
   @Post('/transfer-photo/completed')
   transferPhotoCompleted(@Body() transferPhotoCompleteMetadataDTO: TransferMediaCompleteMetadatadDTO) {
@@ -132,5 +152,11 @@ export class MediasController {
   @UseGuards(JwtAuthGuard)
   remove(@Req() req, @Param('id') id: string) {
     return this.mediasService.remove(req.user, id);
+  }
+
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  changeMediaAlbum(@Req() req, @Param('id') id: string,  @Body() updateMediaDTO: UpdateMediaDTO) {
+    return this.mediasService.movePhotoToAnotherAlbum(id, req.user, updateMediaDTO);
   }
 }
