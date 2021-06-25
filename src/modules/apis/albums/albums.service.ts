@@ -46,7 +46,7 @@ export class AlbumsService {
 
   async findAll(user: User) {
     const query = `Select album.id, album.name, album.created_at, album.thumbnail_url, count(m.id) as total from album left join media m on album.id = m.album_id
-    where album.user_id = '${user.id}' group by album.id, album.name, album.created_at, album.thumbnail_url`
+    where album.user_id = '${user.id}' and album.deleted_at is null  group by album.id, album.name, album.created_at, album.thumbnail_url`
     const connection = getConnection()
     const total = await this.albumRepository.count({
       where: {
@@ -67,8 +67,11 @@ export class AlbumsService {
       if(media.type === MEDIA_TYPE.VIDEO) {
         return {
           ...media,
-          accessURL: this.s3Service.getCDNURL(media.storageLocation),
-          isVideo: true
+          originalVideoURL: this.s3Service.getCDNURL(media.storageLocation + "/original.mp4"),
+          m3u8_720p_playlsit: this.s3Service.getCDNURL(media.storageLocation + "/720p.m3u8"),
+          m3u8_480p_playlsit: this.s3Service.getCDNURL(media.storageLocation + "/480p.m3u8"),
+          m3u8_360p_playlsit: this.s3Service.getCDNURL(media.storageLocation + "/360p.m3u8"),
+          thumbnailURL: "https://i.ytimg.com/vi/2h1OcA7juOQ/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLD4zwvtB8ydkUTm0_kE6Z5XKnf7Yg"
         }
       } 
       return {

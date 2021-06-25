@@ -10,6 +10,7 @@ import { MediasQueryParams } from './dto/medias.query';
 import { JwtAuthGuard } from 'src/auths/jwt-auth.guard';
 import { SaveMediaToAlbumDto } from './dto/save-media-to-album.dto';
 import { MEDIA_TYPE } from './entities/media.entity'
+import { TransferVideoMetadataDto } from './dto/transfer-video-metadata.dto';
 
 @ApiTags("medias")
 @Controller('medias')
@@ -38,6 +39,22 @@ export class MediasController {
     }
     this.producerService.emitTransferPhotoTask(transferPhotoMetadata.style.routingKey, payload);
     return {
+      status: HttpStatus.ACCEPTED,
+      message: 'Your request is executing.'
+    }
+  }
+
+  @Post('/transfer-video')
+  @UseGuards(JwtAuthGuard)
+  async transferVideo(@Body() transferVideoMetadata: TransferVideoMetadataDto, @Req() req) {
+    const payload = {
+      videoLocation: this.s3Service.getCDNURL(transferVideoMetadata.storageLocation + "/original.mp4"),
+      styleId: transferVideoMetadata.styleId,
+      userId: req.user.id
+    }
+    this.producerService.emitTransferVideoTask(payload);
+    return {
+      payload,
       status: HttpStatus.ACCEPTED,
       message: 'Your request is executing.'
     }

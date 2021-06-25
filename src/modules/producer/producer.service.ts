@@ -3,6 +3,8 @@ import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ProducerService {
+
+    private readonly VIDEO_EXCHANGE = "EXCHANGE_TRANSFER_VIDEO"
     
     @Inject()
     private readonly amqpConnection: AmqpConnection
@@ -21,6 +23,10 @@ export class ProducerService {
 
     public emitTransferPhotoTask(routingKey: string, data:any) {
       return this.emitMessage(this.TRANSFER_PHOTO_EXCHANGE, routingKey, data)
+    }
+
+    public emitTransferVideoTask(data:any) {
+      return this.emitMessage(this.VIDEO_EXCHANGE, "", data)
     }
 
     public emitUpdateModel(routingKey: string, snapshotLocation: string) {
