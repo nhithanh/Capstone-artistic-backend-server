@@ -6,7 +6,7 @@ import { S3 } from 'aws-sdk';
 export const uploadImageToS3Option = (s3: S3) => {
     return {
         fileFilter: (req: any, file: any, cb: any) => {
-            if (file.mimetype.match(/\/(jpg|jpeg|png|mp4|avi)$/)) {
+            if (file.mimetype.match(/\/(jpg|jpeg|png|mp4)$/)) {
                 cb(null, true);
             } else {
                 cb(new HttpException({
@@ -19,7 +19,10 @@ export const uploadImageToS3Option = (s3: S3) => {
             s3: s3,
             bucket: 'artisan-photos',
             key: function (req: any, file, cb) {
-                const destination = `${req.user.id}/${Date.now().toString()}`
+                let destination = `${req.user.id}/${Date.now().toString()}`
+                if(file.mimetype.includes("video")) {
+                    destination = destination + "/original.mp4"
+                }
                 cb(null, destination)
             },
             contentType: multerS3.AUTO_CONTENT_TYPE

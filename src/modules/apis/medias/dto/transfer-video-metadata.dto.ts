@@ -12,5 +12,23 @@ export class TransferVideoMetadataDto {
 
     @IsNotEmpty()
     @IsString()
+    mediaId: string;
+
+    @IsNotEmpty()
+    @IsString()
     saveAlbumId: string;
+}
+
+export class TransferVideoCompleteMetadata {
+    @IsString()
+    @IsNotEmpty()
+    storageLocation: string;
+
+    @IsString()
+    @IsNotEmpty()
+    saveAlbumId: string;
+
+    @IsString()
+    @IsNotEmpty()
+    userId: string
 }

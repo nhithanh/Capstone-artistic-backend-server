@@ -10,7 +10,7 @@ import { MediasQueryParams } from './dto/medias.query';
 import { JwtAuthGuard } from 'src/auths/jwt-auth.guard';
 import { SaveMediaToAlbumDto } from './dto/save-media-to-album.dto';
 import { MEDIA_TYPE } from './entities/media.entity'
-import { TransferVideoMetadataDto } from './dto/transfer-video-metadata.dto';
+import { TransferVideoCompleteMetadata, TransferVideoMetadataDto } from './dto/transfer-video-metadata.dto';
 import { UpdateMediaDTO } from './dto/upload-media.dto';
 
 @ApiTags("medias")
@@ -48,35 +48,36 @@ export class MediasController {
   @Post('/transfer-video')
   @UseGuards(JwtAuthGuard)
   async transferVideo(@Body() transferVideoMetadata: TransferVideoMetadataDto, @Req() req) {
-    const payload = {
-      videoLocation: this.s3Service.getCDNURL(transferVideoMetadata.storageLocation + "/original.mp4"),
-      styleId: transferVideoMetadata.styleId,
-      userId: req.user.id,
-      saveAlbumId: transferVideoMetadata.saveAlbumId
-    }
-    this.producerService.emitTransferVideoTask(payload);
-    return {
-      payload,
-      status: HttpStatus.ACCEPTED,
-      message: 'Your request is executing.'
+    const media = await this.mediasService.findOne(transferVideoMetadata.mediaId)
+    if(media.type == MEDIA_TYPE.VIDEO) {
+      const payload = {
+        videoLocation: this.s3Service.getCDNURL(media.storageLocation + "/original.mp4"),
+        styleId: transferVideoMetadata.styleId,
+        userId: req.user.id,
+        saveAlbumId: transferVideoMetadata.saveAlbumId
+      }
+      this.producerService.emitTransferVideoTask(payload);
+      return {
+        payload,
+        status: HttpStatus.ACCEPTED,
+        message: 'Your request is executing.'
+      }
+    } else {
+      return {
+        message: "Media is not type video"
+      }
     }
   }
 
   @Post('/transfer-video/completed')
-  @UseGuards(JwtAuthGuard)
-  async transferVideoCompleted(@Body() transferVideoMetadata: TransferVideoMetadataDto, @Req() req) {
-    const payload = {
-      videoLocation: this.s3Service.getCDNURL(transferVideoMetadata.storageLocation + "/original.mp4"),
-      styleId: transferVideoMetadata.styleId,
-      userId: req.user.id,
-      saveAlbumId: transferVideoMetadata.saveAlbumId
-    }
-    this.producerService.emitTransferVideoTask(payload);
-    return {
-      payload,
-      status: HttpStatus.ACCEPTED,
-      message: 'Your request is executing.'
-    }
+  async transferVideoCompleted(@Body() transferVideoCompleteMetadata: TransferVideoCompleteMetadata) {
+    return this.mediasService.create({
+      albumId: transferVideoCompleteMetadata.saveAlbumId,
+      name: new Date().getTime().toString(),
+      type: MEDIA_TYPE.VIDEO,
+      userId: transferVideoCompleteMetadata.userId,
+      storageLocation: transferVideoCompleteMetadata.storageLocation
+    })
   }
 
 
@@ -113,9 +114,11 @@ export class MediasController {
       ...mediaObject,
       accessURL: this.s3Service.getCDNURL(mediaObject.storageLocation)
     }
+
     if(socketId) {
       this.socketService.emitToSpecificClient(socketId, 'UPLOAD_IMAGE_SUCCESS', payload)
     }
+    
     return {
       status: 200,
       data: payload
@@ -127,7 +130,7 @@ export class MediasController {
   async savePhotoToAlbum(@Req() req, @Body() saveToAlbumDto: SaveMediaToAlbumDto) {
     const photoName = new Date().toString()
     const key = `${req.user.id}/${photoName}`
-    const rs = await this.s3Service.copyPhotoToPermanentBucket(saveToAlbumDto.photoLocation, key)
+    await this.s3Service.copyPhotoToPermanentBucket(saveToAlbumDto.photoLocation, key)
     const photoObject = await this.mediasService.create({
         storageLocation: saveToAlbumDto.photoLocation,
         userId: req.user.id,
