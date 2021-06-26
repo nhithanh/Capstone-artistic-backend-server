@@ -71,6 +71,7 @@ export class MediasController {
 
   @Post('/transfer-video/completed')
   async transferVideoCompleted(@Body() transferVideoCompleteMetadata: TransferVideoCompleteMetadata) {
+    console.log("Transfer video completed")
     return this.mediasService.create({
       albumId: transferVideoCompleteMetadata.saveAlbumId,
       name: new Date().getTime().toString(),
@@ -102,9 +103,14 @@ export class MediasController {
   @UseInterceptors(FileInterceptor('media'))
   async uploadFile(@Req() req, @UploadedFile() media: Express.MulterS3.File, @Body() body) {
     const socketId = body['socketId']
+    const mediaType = media.contentType.includes("image") ? MEDIA_TYPE.PHOTO : MEDIA_TYPE.VIDEO
+    let storageLocation = media.location
+    if(mediaType == MEDIA_TYPE.VIDEO) {
+      storageLocation = storageLocation.slice(0, storageLocation.lastIndexOf('/'))
+    }
     const mediaObject = await this.mediasService.create({
-        storageLocation: media.location,
-        type: media.contentType.includes("image") ? MEDIA_TYPE.PHOTO : MEDIA_TYPE.VIDEO,
+        storageLocation: storageLocation,
+        type: mediaType,
         userId: req.user.id,
         name: media.originalname,
         albumId: req.user.defaultAlbumId

@@ -38,7 +38,7 @@ export class Style {
     @Column({
         type: 'varchar',
         unique: true,
-        nullable: false
+        nullable: true
     })
     routingKey: string;
 
