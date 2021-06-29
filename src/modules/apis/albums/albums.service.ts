@@ -54,9 +54,18 @@ export class AlbumsService {
       }
     })
     const rs = await connection.query(query)
+    const data = rs.map(album => {
+      return {
+        id: album.id,
+        name: album.name,
+        createdAt: album.created_at,
+        thumbnailUrl: album.thumbnail_url,
+        total: album.total
+      }
+    })
     return {
       total,
-      data: rs
+      data
     }
   }
 

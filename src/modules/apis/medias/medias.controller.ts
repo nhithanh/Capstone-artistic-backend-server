@@ -131,6 +131,25 @@ export class MediasController {
     }
   }
 
+  @Post('upload-photo-temporary')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('photo'))
+  async uploadFileTemporary(@Req() req, @UploadedFile() photo: Express.MulterS3.File, @Body() body) {
+    const socketId = body['socketId']
+    const payload = {
+      accessURL: this.s3Service.getCDNURL(photo.location)
+    }
+
+    if(socketId) {
+      this.socketService.emitToSpecificClient(socketId, 'UPLOAD_IMAGE_SUCCESS', payload)
+    }
+    
+    return {
+      status: 200,
+      data: payload
+    }
+  }
+
   @Post('save-to-album')
   @UseGuards(JwtAuthGuard)
   async savePhotoToAlbum(@Req() req, @Body() saveToAlbumDto: SaveMediaToAlbumDto) {

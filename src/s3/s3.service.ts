@@ -44,7 +44,6 @@ export class S3Service {
     }
 
     getCDNURL(locationURL: string): string {
-        console.log(locationURL)
         const {bucket, key} = AmazonS3URI(locationURL)
         if (bucket == this.bucketName) {
             return `${this.mainCDN}/${key}`
