@@ -33,6 +33,7 @@ export class AlbumsService {
     }
     throw new HttpException("Album not found", HttpStatus.NOT_FOUND)
   }
+
   async create(createAlbumDto: CreateAlbumDto) {
     return this.albumRepository.save({...createAlbumDto, isDefault: true});
   }
@@ -45,8 +46,8 @@ export class AlbumsService {
   }
 
   async findAll(user: User) {
-    const query = `Select album.id, album.name, album.created_at, album.thumbnail_url, count(m.id) as total from album left join media m on album.id = m.album_id
-    where album.user_id = '${user.id}' and album.deleted_at is null  group by album.id, album.name, album.created_at, album.thumbnail_url`
+    const query = `Select album.id, album.name, album.created_at, album.thumbnail_url, album.is_default, count(m.id) as total from album left join media m on album.id = m.album_id
+    where album.user_id = '${user.id}' and album.deleted_at is null and m.deleted_at is null group by album.id, album.name, album.created_at, album.thumbnail_url`
     const connection = getConnection()
     const total = await this.albumRepository.count({
       where: {
@@ -58,8 +59,9 @@ export class AlbumsService {
       return {
         id: album.id,
         name: album.name,
+        isDefault: album.is_default,
         createdAt: album.created_at,
-        thumbnailUrl: album.thumbnail_url,
+        thumbnailURL: album.thumbnail_url,
         total: album.total
       }
     })
