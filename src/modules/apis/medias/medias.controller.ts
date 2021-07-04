@@ -12,6 +12,7 @@ import { SaveMediaToAlbumDto } from './dto/save-media-to-album.dto';
 import { MEDIA_TYPE } from './entities/media.entity'
 import { TransferVideoCompleteMetadata, TransferVideoMetadataDto } from './dto/transfer-video-metadata.dto';
 import { UpdateMediaDTO } from './dto/upload-media.dto';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @ApiTags("medias")
 @Controller('medias')
@@ -19,6 +20,9 @@ export class MediasController {
 
   @Inject()
   s3Service: S3Service;
+
+  @Inject()
+  notficationsService: NotificationsService;
 
   @Inject()
   private readonly socketService: SocketService
@@ -70,15 +74,21 @@ export class MediasController {
   }
 
   @Post('/transfer-video/completed')
-  async transferVideoCompleted(@Body() metadata: TransferVideoCompleteMetadata) { 
-    console.log("Transfer video completed")
-    return this.mediasService.create({
-      albumId: metadata.saveAlbumId,
-      name: new Date().getTime().toString(),
-      type: MEDIA_TYPE.VIDEO,
-      userId: metadata.userId,
-      storageLocation: `https://artisan-photos.s3.ap-southeast-1.amazonaws.com/${metadata.saveLocation}`
-    })
+  async transferVideoCompleted(@Body() metadata: TransferVideoCompleteMetadata) {
+    const rs = await Promise.all([
+      this.mediasService.create({
+        albumId: metadata.saveAlbumId,
+        name: new Date().getTime().toString(),
+        type: MEDIA_TYPE.VIDEO,
+        userId: metadata.userId,
+        storageLocation: `https://artisan-photos.s3.ap-southeast-1.amazonaws.com/${metadata.saveLocation}`
+      }),
+      this.notficationsService.create({
+        userId: metadata.userId,
+        message: 'Transfer video completed!'
+      })
+    ])
+    return rs[0]
   }
 
 

@@ -15,7 +15,7 @@ export class NotificationsService {
   }
 
   async findAll(userId: string) {
-    const [count, notifications] = await this.notificationRespository.findAndCount({
+    const [notifications, count] = await this.notificationRespository.findAndCount({
       where: {
         userId
       }

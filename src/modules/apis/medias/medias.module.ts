@@ -10,9 +10,10 @@ import { S3Module } from 'src/s3/s3.module';
 import { S3Service } from 'src/s3/s3.service';
 import { uploadImageToS3Option } from 'src/config/multer.service';
 import { User } from '../users/entities/user.entity';
+import { NotificationsModule } from '../notifications/notifications.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Media, User]), ProducerModule, S3Module, SocketModule, MulterModule.registerAsync({
+  imports: [TypeOrmModule.forFeature([Media, User]), ProducerModule, NotificationsModule, S3Module, SocketModule, MulterModule.registerAsync({
     imports: [S3Module],
     useFactory: async (s3Service: S3Service) => uploadImageToS3Option(s3Service.s3),
     inject: [S3Service],
