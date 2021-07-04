@@ -56,9 +56,15 @@ export class ShowcasesService {
     }
   }
 
-  getAvailableStyles() {
+  async getAvailableStyles() {
     const connection = getConnection()
     const query = "Select * from style where id in (Select style_id from showcase group by style_id having count(id) > 1)"
-    return connection.query(query)
+    const rs = await connection.query(query)
+    return rs.map(style => {
+      return {
+        ...style,
+        iconURL: style.icon_url
+      }
+    })
   }
 }

@@ -47,8 +47,6 @@ export class UsersService {
   }
 
   async findByCredential(username: string, password: string): Promise<User | null> {
-    console.log("username:", username)
-    console.log("password:", password)
     const user = await this.usersRepository.findOne({
       where: {
         username
@@ -61,7 +59,6 @@ export class UsersService {
     }
     
     const isPasswordMatch = user.comparePassword(password)
-    console.log(isPasswordMatch)
     if(!isPasswordMatch) {
       return null
     }

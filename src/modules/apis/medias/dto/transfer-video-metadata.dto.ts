@@ -2,10 +2,6 @@ import { IsNotEmpty, IsString } from "class-validator";
 import { Style } from "../../styles/entities/style.entity";
 
 export class TransferVideoMetadataDto {
-    @IsString()
-    @IsNotEmpty()
-    storageLocation: string;
-
     @IsNotEmpty()
     @IsString()
     styleId: Style;
@@ -16,19 +12,23 @@ export class TransferVideoMetadataDto {
 
     @IsNotEmpty()
     @IsString()
-    saveAlbumId: string;
+    albumId: string;
 }
 
 export class TransferVideoCompleteMetadata {
-    @IsString()
     @IsNotEmpty()
-    storageLocation: string;
+    @IsString()
+    userId: string;
 
-    @IsString()
     @IsNotEmpty()
+    @IsString()
+    saveLocation: string;
+
+    @IsNotEmpty()
+    @IsString()
     saveAlbumId: string;
 
-    @IsString()
     @IsNotEmpty()
-    userId: string
+    @IsString()
+    styleId: string;
 }

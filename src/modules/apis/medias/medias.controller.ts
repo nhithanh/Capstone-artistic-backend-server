@@ -54,7 +54,7 @@ export class MediasController {
         videoLocation: this.s3Service.getCDNURL(media.storageLocation + "/original.mp4"),
         styleId: transferVideoMetadata.styleId,
         userId: req.user.id,
-        saveAlbumId: transferVideoMetadata.saveAlbumId
+        saveAlbumId: transferVideoMetadata.albumId
       }
       this.producerService.emitTransferVideoTask(payload);
       return {
@@ -70,14 +70,14 @@ export class MediasController {
   }
 
   @Post('/transfer-video/completed')
-  async transferVideoCompleted(@Body() transferVideoCompleteMetadata: TransferVideoCompleteMetadata) {
+  async transferVideoCompleted(@Body() metadata: TransferVideoCompleteMetadata) { 
     console.log("Transfer video completed")
     return this.mediasService.create({
-      albumId: transferVideoCompleteMetadata.saveAlbumId,
+      albumId: metadata.saveAlbumId,
       name: new Date().getTime().toString(),
       type: MEDIA_TYPE.VIDEO,
-      userId: transferVideoCompleteMetadata.userId,
-      storageLocation: transferVideoCompleteMetadata.storageLocation
+      userId: metadata.userId,
+      storageLocation: `https://artisan-photos.s3.ap-southeast-1.amazonaws.com/${metadata.saveLocation}`
     })
   }
 
@@ -120,25 +120,6 @@ export class MediasController {
     const payload = {
       ...mediaObject,
       accessURL: this.s3Service.getCDNURL(mediaObject.storageLocation)
-    }
-
-    if(socketId) {
-      this.socketService.emitToSpecificClient(socketId, 'UPLOAD_IMAGE_SUCCESS', payload)
-    }
-    
-    return {
-      status: 200,
-      data: payload
-    }
-  }
-
-  @Post('upload-photo-temporary')
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('photo'))
-  async uploadFileTemporary(@Req() req, @UploadedFile() photo: Express.MulterS3.File, @Body() body) {
-    const socketId = body['socketId']
-    const payload = {
-      accessURL: this.s3Service.getCDNURL(photo.location)
     }
 
     if(socketId) {
