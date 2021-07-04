@@ -19,6 +19,7 @@ import { ConfigModule } from '@nestjs/config';
 import { S3Module } from './s3/s3.module';
 import { AlbumsModule } from './modules/apis/albums/albums.module';
 import { ShowcasesModule } from './modules/apis/showcases/showcases.module';
+import { NotificationsModule } from './modules/apis/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -54,7 +55,8 @@ import { ShowcasesModule } from './modules/apis/showcases/showcases.module';
     SocketModule,
     S3Module,
     AlbumsModule,
-    ShowcasesModule
+    ShowcasesModule,
+    NotificationsModule
   ],
   controllers: [AppController, ControllerController],
   providers: [AppService, AppGateway]
