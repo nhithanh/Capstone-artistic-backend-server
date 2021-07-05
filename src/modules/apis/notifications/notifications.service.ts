@@ -15,7 +15,7 @@ export class NotificationsService {
   }
 
   async findAll(userId: string) {
-    const notifications = await this.notificationRespository.findAndCount({
+    const notifications = await this.notificationRespository.find({
       where: {
         userId
       }
@@ -26,6 +26,7 @@ export class NotificationsService {
         isReaded: false
       }
     })
+    
     return {
       count,
       data: notifications
@@ -33,6 +34,6 @@ export class NotificationsService {
   }
 
   removeAll(userId: string) {
-    return this.notificationRespository.createQueryBuilder().update().set({isReaded: true}).where(`user_id =: userId`, {userId}).execute()
+    return this.notificationRespository.createQueryBuilder().update().set({isReaded: true}).where(`user_id='${userId}'`).execute()
   }
 }

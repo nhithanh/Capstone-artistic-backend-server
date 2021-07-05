@@ -12,4 +12,15 @@ export class SocketService {
         this.clients[socketId].emit(eventName, payload)
     }
 
+    public emitToSpecificUser(userId: string, payload: any) {
+        this.server.emit(userId, payload)
+    }
+
+    public emitTransferVideoCompleted(userId: string, albumId: string) {
+        this.server.emit(userId, {
+            action: "TRANSFER_VIDEO_COMPLETE",
+            albumId
+        })
+    }
+
 }

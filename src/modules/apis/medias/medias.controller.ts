@@ -33,7 +33,9 @@ export class MediasController {
   @Inject()
   private readonly mediasService: MediasService;
 
-  constructor() {}
+  constructor() {
+
+  }
 
   @Post('/transfer-photo')
   async transferPhoto(@Body() transferPhotoMetadata: TransferMediaMetadataDTO) {
@@ -88,6 +90,7 @@ export class MediasController {
         message: 'Transfer video completed!'
       })
     ])
+    this.socketService.emitTransferVideoCompleted(metadata.userId, metadata.saveAlbumId)
     return rs[0]
   }
 
