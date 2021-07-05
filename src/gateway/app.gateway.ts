@@ -1,4 +1,4 @@
-import { WebSocketGateway, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer } from '@nestjs/websockets';
+import { WebSocketGateway, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer, SubscribeMessage } from '@nestjs/websockets';
 import { Inject, Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { SocketService } from './socket.service';
@@ -26,7 +26,13 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   }
 
   handleConnection(client: Socket, ...args: any[]) {
-    this.socketService.clients[client.id] = client;
+    // this.socketService.clients[client.id] = client;
     client.emit('connection', {socketId: client.id})
+  }
+
+  @SubscribeMessage('JOIN_USER_ID')
+  handleEvent(client: Socket, userId: string) {
+    console.log('hello there')
+    client.join(userId)
   }
 }

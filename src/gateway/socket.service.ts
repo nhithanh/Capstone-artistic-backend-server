@@ -12,4 +12,9 @@ export class SocketService {
         this.clients[socketId].emit(eventName, payload)
     }
 
+    public emitToSpecificUserId(userId: string, payload: any) {
+        console.log(userId)
+        this.server.emit(userId, payload)
+    }
+
 }
