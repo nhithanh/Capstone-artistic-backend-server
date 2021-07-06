@@ -1,8 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { S3 } from 'aws-sdk';
-import { promisify } from 'util'
+import * as fs from 'fs';
+import * as util from 'util';
+import AmazonS3URI from 'amazon-s3-uri';
 
-const AmazonS3URI = require('amazon-s3-uri')
+const readFile = util.promisify(fs.readFile);
+const readDir = util.promisify(fs.readdir)
 
 
 @Injectable()
@@ -53,8 +56,24 @@ export class S3Service {
         }
     }
 
-    uploadFolder(dir: string, s3FolderName: string) {
-        console.log("Upload folder to S3:", s3FolderName)
+    async uploadFile(filePath: string, bucketName: string, key: string) {
+        const fileContent = await readFile(filePath)
+        const params = {
+            Bucket: bucketName,
+            Key: key,
+            Body: fileContent
+        };
+        this.s3.upload(params, function(err, data) {
+            if (err) {
+                console.log(err)
+                throw err;
+            }
+        });
+    };
+
+    async uploadFolder(dir: string, s3FolderName: string) {
+        const files = await readDir(dir)
+        await Promise.all(files.map(fileName => this.uploadFile(`${dir}/${fileName}`, 'artisan-photos', `${s3FolderName}/${fileName}`)))
     }
 
     async copyPhotoToPermanentBucket(temporaryLocationURL: string, key: string) {

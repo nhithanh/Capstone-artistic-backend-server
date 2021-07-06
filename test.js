@@ -1,5 +1,12 @@
-const shell = require('shelljs')
+const fs = require('fs')
 
-let video_path = './upload-video/rogi.mp4'
-let output_dir = './hls'
-shell.exec(`bash ./scripts/convert_video_to_hls.sh ${video_path} ${output_dir}`)
+const readDir = (directoryPath) => {
+    fs.readdir(directoryPath, function (err, files) {
+        if (err) {
+            return console.log('Unable to scan directory: ' + err);
+        } 
+        console.log(files)
+    });
+}
+
+readDir('./process-video')
