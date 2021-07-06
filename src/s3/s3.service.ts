@@ -53,6 +53,10 @@ export class S3Service {
         }
     }
 
+    uploadFolder(dir: string, s3FolderName: string) {
+        console.log("Upload folder to S3:", s3FolderName)
+    }
+
     async copyPhotoToPermanentBucket(temporaryLocationURL: string, key: string) {
         const rs = await this.s3.copyObject({
             Bucket: this.bucketName,

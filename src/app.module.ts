@@ -20,6 +20,7 @@ import { S3Module } from './s3/s3.module';
 import { AlbumsModule } from './modules/apis/albums/albums.module';
 import { ShowcasesModule } from './modules/apis/showcases/showcases.module';
 import { NotificationsModule } from './modules/apis/notifications/notifications.module';
+import { VideosModule } from './modules/apis/videos/videos.module';
 
 @Module({
   imports: [
@@ -56,7 +57,8 @@ import { NotificationsModule } from './modules/apis/notifications/notifications.
     S3Module,
     AlbumsModule,
     ShowcasesModule,
-    NotificationsModule
+    NotificationsModule,
+    VideosModule
   ],
   controllers: [AppController, ControllerController],
   providers: [AppService, AppGateway]

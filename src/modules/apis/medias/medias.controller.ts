@@ -33,15 +33,7 @@ export class MediasController {
   @Inject()
   private readonly mediasService: MediasService;
 
-  constructor() {
-
-  }
-
-  @Get('/send-message')
-  async sendMessage() {
-    this.socketService.emitToSpecificUserId('4c295211-7da2-4015-bfbe-dcbdf3e6a50b', {msg: "Hello there"})
-    return "OK"
-  }
+  constructor() {}
 
   @Post('/transfer-photo')
   async transferPhoto(@Body() transferPhotoMetadata: TransferMediaMetadataDTO) {
