@@ -19,6 +19,12 @@ export class Notification {
     })
     message: string;
 
+    @Column({
+        type: 'boolean',
+        default: false
+    })
+    isReaded: boolean;
+
     @CreateDateColumn()
     createdAt: Date;
 }

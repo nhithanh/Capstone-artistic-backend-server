@@ -33,7 +33,9 @@ export class MediasController {
   @Inject()
   private readonly mediasService: MediasService;
 
-  constructor() {}
+  constructor() {
+
+  }
 
   @Get('/send-message')
   async sendMessage() {
@@ -94,6 +96,7 @@ export class MediasController {
         message: 'Transfer video completed!'
       })
     ])
+    this.socketService.emitTransferVideoCompleted(metadata.userId, metadata.saveAlbumId)
     return rs[0]
   }
 

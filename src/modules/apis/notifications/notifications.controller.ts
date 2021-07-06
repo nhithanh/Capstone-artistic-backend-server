@@ -14,7 +14,7 @@ export class NotificationsController {
     return this.notificationsService.findAll(req.user.id);
   }
 
-  @Get()
+  @Get('/all-read')
   @UseGuards(JwtAuthGuard)
   remove(@Req() req) {
     return this.notificationsService.removeAll(req.user.id);
