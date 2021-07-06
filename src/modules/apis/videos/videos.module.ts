@@ -1,5 +1,4 @@
 import { HttpException, HttpStatus, Module } from '@nestjs/common';
-import { VideosService } from './videos.service';
 import { VideosController } from './videos.controller';
 import { S3Module } from 'src/s3/s3.module';
 import { MediasModule } from '../medias/medias.module';
@@ -26,7 +25,6 @@ import { diskStorage } from 'multer';
       }
   },
   })],
-  controllers: [VideosController],
-  providers: [VideosService]
+  controllers: [VideosController]
 })
 export class VideosModule {}

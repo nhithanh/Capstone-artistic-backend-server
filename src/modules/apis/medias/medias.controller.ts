@@ -109,20 +109,17 @@ export class MediasController {
     }
   }
 
+  // only use for upload photo
   @Post('upload')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('media'))
   async uploadFile(@Req() req, @UploadedFile() media: Express.MulterS3.File, @Body() body) {
     const socketId = body['socketId']
     const albumId = body['albumId']
-    const mediaType = media.contentType.includes("image") ? MEDIA_TYPE.PHOTO : MEDIA_TYPE.VIDEO
     let storageLocation = media.location
-    if(mediaType == MEDIA_TYPE.VIDEO) {
-      storageLocation = storageLocation.slice(0, storageLocation.lastIndexOf('/'))
-    }
     const mediaObject = await this.mediasService.create({
         storageLocation: storageLocation,
-        type: mediaType,
+        type: MEDIA_TYPE.PHOTO,
         userId: req.user.id,
         name: media.originalname,
         albumId: albumId ? albumId : req.user.defaultAlbumId
