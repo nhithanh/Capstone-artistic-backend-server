@@ -18,11 +18,6 @@ export class CreateMediaDTO {
     @IsString()
     @IsOptional() 
     storageLocation?: string;
-    
-    @ApiProperty({type: String, name: "photoName", description: "original name of the media"})
-    @IsString()
-    @IsOptional()
-    name?: string;
 
     @ApiProperty({type: String, name: "type", description: "type of the media VIDEO/PHOTO"})
     @IsString()

@@ -31,8 +31,9 @@ export class VideosController {
 
   @Post('/upload')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('video'))
+  @UseInterceptors(FileInterceptor('media'))
   async uploadVideo(@UploadedFile() file: Express.Multer.File, @Req() req, @Body() body) {
+    console.log(file.path)
     const albumId = body['albumId']
     const ts = new Date().getTime().toString()
     await mkdir(`process-video/${ts}`)
@@ -42,7 +43,6 @@ export class VideosController {
         storageLocation: `${this.S3_ABSOLUTE_PATH}/${uploadFolder}`,
         type: MEDIA_TYPE.VIDEO,
         userId: req.user.id,
-        name: '',
         albumId: albumId ? albumId : req.user.defaultAlbumId
       }),
       this.s3Service.uploadFile(file.path, 'artisan-photos', `${uploadFolder}/original.mp4`),
@@ -54,6 +54,17 @@ export class VideosController {
       rimrafAsync(`./process-video/${ts}`),
       unlink(file.path),
     ])
-    return result[0]
+    const media = result[0]
+
+    return {
+      data: {
+        ...media,
+        thumbnailURL: this.s3Service.getCDNURL(media.storageLocation + "/thumbnail.png"),
+        originalVideoURL: this.s3Service.getCDNURL(media.storageLocation + "/original.mp4"),
+        m3u8_720p_playlsit: this.s3Service.getCDNURL(media.storageLocation + "/720p.m3u8"),
+        m3u8_480p_playlsit: this.s3Service.getCDNURL(media.storageLocation + "/480p.m3u8"),
+        m3u8_360p_playlsit: this.s3Service.getCDNURL(media.storageLocation + "/360p.m3u8"),
+      }
+    }
   }
 }

@@ -2,10 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { S3 } from 'aws-sdk';
 import * as fs from 'fs';
 import * as util from 'util';
-import AmazonS3URI from 'amazon-s3-uri';
 
 const readFile = util.promisify(fs.readFile);
 const readDir = util.promisify(fs.readdir)
+const AmazonS3URI = require('amazon-s3-uri')
 
 
 @Injectable()

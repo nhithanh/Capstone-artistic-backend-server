@@ -78,7 +78,6 @@ export class MediasController {
     const rs = await Promise.all([
       this.mediasService.create({
         albumId: metadata.saveAlbumId,
-        name: new Date().getTime().toString(),
         type: MEDIA_TYPE.VIDEO,
         userId: metadata.userId,
         storageLocation: `https://artisan-photos.s3.ap-southeast-1.amazonaws.com/${metadata.saveLocation}`
@@ -121,7 +120,6 @@ export class MediasController {
         storageLocation: storageLocation,
         type: MEDIA_TYPE.PHOTO,
         userId: req.user.id,
-        name: media.originalname,
         albumId: albumId ? albumId : req.user.defaultAlbumId
     })
     
@@ -149,7 +147,6 @@ export class MediasController {
     const photoObject = await this.mediasService.create({
         storageLocation: saveToAlbumDto.photoLocation,
         userId: req.user.id,
-        name: photoName,
         albumId: saveToAlbumDto.albumId,
         type: MEDIA_TYPE.PHOTO
     })

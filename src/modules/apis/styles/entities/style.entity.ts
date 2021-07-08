@@ -20,10 +20,10 @@ export class Style {
     iconURL: string;
 
     @Column({
-        type: 'varchar',
+        type: 'boolean',
         nullable: true
     })
-    description: string;
+    isActive: boolean;
 
     @Column({
         type: 'varchar',

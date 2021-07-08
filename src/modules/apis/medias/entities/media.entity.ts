@@ -31,12 +31,6 @@ export class Media {
         type: 'varchar',
         nullable: false
     })
-    name: string;
-
-    @Column({
-        type: 'varchar',
-        nullable: false
-    })
     storageLocation: string;
 
     @Column({

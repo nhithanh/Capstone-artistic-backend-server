@@ -16,7 +16,7 @@ export class StylesService {
 
   async findAll(): Promise<Style[]> {
     return this.stylesRepository.find({
-      select: ['id', 'styleName', 'iconURL', 'description', 'routingKey']
+      select: ['id', 'styleName', 'iconURL', 'routingKey']
     });
   }
 
