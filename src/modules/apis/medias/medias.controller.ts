@@ -132,10 +132,8 @@ export class MediasController {
       this.socketService.emitToSpecificClient(socketId, 'UPLOAD_IMAGE_SUCCESS', payload)
     }
     
-    return {
-      status: 200,
-      data: payload
-    }
+    return payload
+    
   }
 
   @Post('save-to-album')
