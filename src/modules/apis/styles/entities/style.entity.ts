@@ -52,7 +52,7 @@ export class Style {
     isSupportVideo: boolean;
 
     @Column({
-        type: 'string',
+        type: 'varchar',
         unique: false,
         nullable: true,
     })
