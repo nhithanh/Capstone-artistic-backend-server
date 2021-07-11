@@ -8,7 +8,7 @@ export class Style {
 
     @Column({
         type: 'varchar',
-        unique: true,
+        unique: false,
         nullable: false
     })
     styleName: string;
@@ -27,7 +27,8 @@ export class Style {
 
     @Column({
         type: 'varchar',
-        nullable: true
+        nullable: true,
+        unique: false
     })
     activeModelId: string
 
@@ -37,10 +38,25 @@ export class Style {
 
     @Column({
         type: 'varchar',
-        unique: true,
+        unique: false,
         nullable: true
     })
     routingKey: string;
+
+    @Column({
+        type: 'boolean',
+        unique: false,
+        nullable: true,
+        default: true
+    })
+    isSupportVideo: boolean;
+
+    @Column({
+        type: 'string',
+        unique: false,
+        nullable: true,
+    })
+    demoVideoURL: string;
 
     @CreateDateColumn()
     createdAt: Date;

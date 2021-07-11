@@ -27,6 +27,11 @@ export class StylesController {
     return this.stylesService.findAll();
   }
 
+  @Get('/video-transfer')
+  getVideoSupportStyles() {
+    return this.stylesService.findAllVideoSupportedStyles();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
 

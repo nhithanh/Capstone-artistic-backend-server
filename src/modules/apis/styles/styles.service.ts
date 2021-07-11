@@ -16,7 +16,20 @@ export class StylesService {
 
   async findAll(): Promise<Style[]> {
     return this.stylesRepository.find({
+      where: {
+        isActive: true
+      },
       select: ['id', 'styleName', 'iconURL', 'routingKey']
+    });
+  }
+
+  async findAllVideoSupportedStyles(): Promise<Style[]> {
+    return this.stylesRepository.find({
+      where: {
+        isActive: true,
+        isSupportVideo: true
+      },
+      select: ['id', 'styleName', 'iconURL', 'routingKey', 'demoVideoURL']
     });
   }
 

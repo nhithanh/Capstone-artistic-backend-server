@@ -8,7 +8,6 @@ export class Snapshot {
 
     @Column({
         type: 'varchar',
-        unique: true,
         nullable: false
     })
     modelId: string;

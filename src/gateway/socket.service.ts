@@ -9,7 +9,13 @@ export class SocketService {
     public clients: { [Key: string]: Socket } = {}
 
     public emitToSpecificClient(socketId: string, eventName: string, payload: any) {
-        this.clients[socketId].emit(eventName, payload)
+        console.log(socketId)
+        if(this.clients[socketId]) {
+            this.clients[socketId].emit(eventName, payload)
+        }
+        else {
+            this.server.to(socketId).emit(eventName, payload)
+        }
     }
 
     public emitToSpecificUser(userId: string, payload: any) {

@@ -42,6 +42,7 @@ export class MediasController {
       styleId: transferPhotoMetadata.style.id,
       socketId: transferPhotoMetadata.socketId,
     }
+    console.log(payload)
     this.producerService.emitTransferPhotoTask(transferPhotoMetadata.style.routingKey, payload);
     return {
       status: HttpStatus.ACCEPTED,
@@ -61,6 +62,7 @@ export class MediasController {
         saveAlbumId: transferVideoMetadata.albumId
       }
       this.producerService.emitTransferVideoTask(payload);
+      console.log({payload})
       return {
         payload,
         status: HttpStatus.ACCEPTED,

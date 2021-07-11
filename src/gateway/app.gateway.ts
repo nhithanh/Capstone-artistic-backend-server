@@ -15,24 +15,20 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
 
 
   afterInit(server: Server) {
+    console.log("After init")
     this.socketService.server = server;
   }
 
   handleDisconnect(client: Socket) {
-    // TODO: Remove socketID when user disconnected
-
-    // this.socketService.clients = _.omit(this.socketService.clients, [client.id])
+    console.log("Disconnected")
+    delete this.socketService.clients[client.id]
     this.logger.log(`Client disconnected: ${client.id}`);
   }
 
   handleConnection(client: Socket, ...args: any[]) {
-    // this.socketService.clients[client.id] = client;
+    console.log("Connected")
+    this.socketService.clients[client.id] = client;
+    this.logger.log(`Client connected: ${client.id}`);
     client.emit('connection', {socketId: client.id})
-  }
-
-  @SubscribeMessage('JOIN_USER_ID')
-  handleEvent(client: Socket, userId: string) {
-    console.log('hello there')
-    client.join(userId)
   }
 }
