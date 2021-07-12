@@ -45,6 +45,11 @@ export class StylesController {
   findOne(@Param('id') id: string) {
     return this.stylesService.findOne(id)
   }
+
+  @Get(':id/snapshots')
+  getStyleSnapshots(@Param('id') id: string) {
+    return this.stylesService.findStyleSnapshots(id)
+  }
   
   @Get(':id/active-model')
   getStyleActiveModelDetail(@Param('id') id: string) {

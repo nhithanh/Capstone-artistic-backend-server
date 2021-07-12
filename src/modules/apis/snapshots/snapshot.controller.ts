@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { SnapshotsService } from './snapshot.service';
 import { CreateSnapshotDTO } from './dto/create-snapshot.dto';
 import { UpdateSnapshotDTO } from './dto/update-snapshot.dto';
 import { SnapshotQueryParams } from './dto/snapshot-query.params';
 import { ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 
 @ApiTags("snapshots")
@@ -12,8 +13,11 @@ export class SnapshotsController {
   constructor(private readonly snapshotsService: SnapshotsService) {}
 
   @Post()
-  create(@Body() createSnapshotDto: CreateSnapshotDTO) {
-    return this.snapshotsService.create(createSnapshotDto);
+  @UseInterceptors(FileInterceptor('snapshot'))
+  create(@UploadedFile() snapshotFile: Express.MulterS3.File, @Body() body) {
+    return this.snapshotsService.create({
+      
+    });
   }
 
   @Get()

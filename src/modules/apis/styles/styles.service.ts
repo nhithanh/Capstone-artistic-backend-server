@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { S3Service } from 'src/s3/s3.service';
 import { Repository } from 'typeorm';
+import { Snapshot } from '../snapshots/entities/snapshot.entity';
+import { SnapshotsService } from '../snapshots/snapshot.service';
 import { CreateStyleDto } from './dto/create-style.dto';
 import { UpdateStyleDto } from './dto/update-style.dto';
 import { Style } from './entities/style.entity';
@@ -11,6 +13,9 @@ export class StylesService {
 
   @Inject()
   private readonly s3Service: S3Service;
+
+  @InjectRepository(Snapshot)
+  private readonly snapshotsRepository: Repository<Snapshot>;
 
   @InjectRepository(Style)
   private readonly stylesRepository: Repository<Style>;
@@ -71,6 +76,15 @@ export class StylesService {
       ...style,
       iconURL: this.s3Service.getCDNURL(style.iconURL)
     }
+  }
+
+  async findStyleSnapshots(id: string) {
+    return this.snapshotsRepository.find({
+      where: {
+        styleId: id
+      },
+      order: {createdAt: 'DESC'}
+    })
   }
 
   update(id: number, updateStyleDto: UpdateStyleDto) {
