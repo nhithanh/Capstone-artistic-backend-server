@@ -12,6 +12,12 @@ export class Snapshot {
     })
     styleId: string;
 
+    @Column({
+        type: 'varchar',
+        nullable: false
+    })
+    name: string;
+
     @ManyToOne(() => Style)
     @JoinColumn()
     style: Style;
