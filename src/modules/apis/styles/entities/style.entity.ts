@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Model } from "../../models/entities/model.entity";
+import { Snapshot } from "../../snapshots/entities/snapshot.entity";
 
 @Entity()
 export class Style {
@@ -30,11 +30,11 @@ export class Style {
         nullable: true,
         unique: false
     })
-    activeModelId: string
+    activeSnapshotId: string
 
-    @OneToOne(() => Model)
+    @OneToOne(() => Snapshot)
     @JoinColumn()
-    activeModel: Promise<Model>
+    activeSnapshot: Promise<Snapshot>
 
     @Column({
         type: 'varchar',

@@ -1,6 +1,4 @@
 import { IsNotEmpty, IsOptional, IsString } from "class-validator"
-import { ModelType } from "../../models/entities/model.entity";
-
 export class CreateStyleDto {
     @IsString()
     @IsOptional()

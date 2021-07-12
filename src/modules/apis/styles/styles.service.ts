@@ -14,6 +14,14 @@ export class StylesService {
     return this.stylesRepository.save(createStyleDto);
   }
 
+  async getAllStyles() {
+    return this.stylesRepository.find({
+      order: {
+        createdAt: 'DESC'
+      }
+    })
+  }
+
   async findAll(): Promise<Style[]> {
     return this.stylesRepository.find({
       where: {
@@ -33,7 +41,7 @@ export class StylesService {
     });
   }
 
-  async findOne(id: number): Promise<Style> {
+  async findOne(id: string): Promise<Style> {
     return this.stylesRepository.findOne(id);
   }
 

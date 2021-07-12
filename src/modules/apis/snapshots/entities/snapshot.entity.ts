@@ -1,5 +1,5 @@
-import { Model } from "src/modules/apis/models/entities/model.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Style } from "../../styles/entities/style.entity";
 
 @Entity()
 export class Snapshot {
@@ -10,11 +10,11 @@ export class Snapshot {
         type: 'varchar',
         nullable: false
     })
-    modelId: string;
+    styleId: string;
 
-    @ManyToOne(() => Model)
+    @ManyToOne(() => Style)
     @JoinColumn()
-    model: Model;
+    style: Style;
 
     @Column({
         type: 'varchar',

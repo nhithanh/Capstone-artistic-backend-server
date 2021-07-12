@@ -5,7 +5,6 @@ import { AuthsModule } from './auths/auths.module';
 import { UsersModule } from './modules/apis/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StylesModule } from './modules/apis/styles/styles.module';
-import { ModelsModule } from './modules/apis/models/models.module';
 import { AiModelSnapshotsModule } from './modules/apis/snapshots/snapshot.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { MediasModule } from './modules/apis/medias/medias.module'
@@ -49,7 +48,6 @@ import { VideosModule } from './modules/apis/videos/videos.module';
       namingStrategy: new SnakeNamingStrategy()
     }),
     StylesModule,
-    ModelsModule,
     AiModelSnapshotsModule,
     MediasModule,
     TranferImagesModule,
