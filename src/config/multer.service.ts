@@ -54,7 +54,7 @@ export const uploadImageToS3OptionAdmin = (s3: S3) => {
 export const uploadSnapshotOption = (s3: S3) => {
     return {
         fileFilter: (req: any, file: any, cb: any) => {
-            if (file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+            if (file.originalname.includes('.pth')) {
                 cb(null, true);
             } else {
                 cb(new HttpException({
@@ -65,10 +65,10 @@ export const uploadSnapshotOption = (s3: S3) => {
         },
         storage: multerS3({
             s3: s3,
-            bucket: 'artisan-snapshots',
+            bucket: 'artisan-model-snapshots',
             key: function (req: any, file, cb) {
-                console.log(req.body)
-                let destination = `${file.originalname}`
+                const styleRoutingKey = req.body['routingKey']
+                let destination = `${styleRoutingKey}/${new Date().getTime().toString()}`
                 cb(null, destination)
             },
             contentType: multerS3.AUTO_CONTENT_TYPE

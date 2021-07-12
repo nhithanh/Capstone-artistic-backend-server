@@ -15,8 +15,14 @@ export class SnapshotsController {
   @Post()
   @UseInterceptors(FileInterceptor('snapshot'))
   create(@UploadedFile() snapshotFile: Express.MulterS3.File, @Body() body) {
+
+    const snapshotName = body['snapshotName']
+    const styleId = body['styleId']
+
     return this.snapshotsService.create({
-      
+      name: snapshotName,
+      location: snapshotFile.location,
+      styleId
     });
   }
 
