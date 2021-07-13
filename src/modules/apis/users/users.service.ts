@@ -85,4 +85,26 @@ export class UsersService {
       ...updateUserDto
     })
   }
+
+  async changePassword(userId: string, oldPassword: string, newPassword: string) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        id: userId
+      }
+    })
+    
+    const isPasswordMatch = user.comparePassword(oldPassword)
+
+    if(!isPasswordMatch) {
+      throw new HttpException(
+        {
+          statusCode: 400,
+          message: `Password not correct`,
+        },
+        HttpStatus.BAD_REQUEST,
+      );    
+    }
+    user.password = newPassword
+    return this.usersRepository.save(user)
+  }
 }
