@@ -26,3 +26,52 @@ export const uploadImageToS3Option = (s3: S3) => {
         })
     }
 };
+
+export const uploadImageToS3OptionAdmin = (s3: S3) => {
+    return {
+        fileFilter: (req: any, file: any, cb: any) => {
+            if (file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+                cb(null, true);
+            } else {
+                cb(new HttpException({
+                    status: 400,
+                    message: `Unsupported file type ${extname(file.originalname)}`
+                }, HttpStatus.BAD_REQUEST), false);
+            }
+        },
+        storage: multerS3({
+            s3: s3,
+            bucket: 'artisan-photos',
+            key: function (req: any, file, cb) {
+                let destination = `assets/${Date.now().toString()}`
+                cb(null, destination)
+            },
+            contentType: multerS3.AUTO_CONTENT_TYPE
+        })
+    }
+};
+
+export const uploadSnapshotOption = (s3: S3) => {
+    return {
+        fileFilter: (req: any, file: any, cb: any) => {
+            if (file.originalname.includes('.pth')) {
+                cb(null, true);
+            } else {
+                cb(new HttpException({
+                    status: 400,
+                    message: `Unsupported file type ${extname(file.originalname)}`
+                }, HttpStatus.BAD_REQUEST), false);
+            }
+        },
+        storage: multerS3({
+            s3: s3,
+            bucket: 'artisan-model-snapshots',
+            key: function (req: any, file, cb) {
+                const styleRoutingKey = req.body['routingKey']
+                let destination = `${styleRoutingKey}/${new Date().getTime().toString()}`
+                cb(null, destination)
+            },
+            contentType: multerS3.AUTO_CONTENT_TYPE
+        })
+    }
+};

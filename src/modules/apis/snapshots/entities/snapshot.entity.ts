@@ -28,6 +28,12 @@ export class Snapshot {
     })
     location: string
 
+    @Column({
+        type: 'varchar',
+        default: ""
+    })
+    description: string
+
     
     @CreateDateColumn()
     createdAt: Date;

@@ -2,7 +2,7 @@ import { IsNotEmpty, IsOptional, IsString } from "class-validator"
 export class CreateStyleDto {
     @IsString()
     @IsOptional()
-    id: string;
+    id?: string;
 
     @IsNotEmpty()
     @IsString()

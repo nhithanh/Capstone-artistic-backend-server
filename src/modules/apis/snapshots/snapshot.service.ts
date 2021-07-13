@@ -13,8 +13,8 @@ export class SnapshotsService {
   private readonly snapshotRepository: Repository<Snapshot>
 
 
-  async create(createAiModelSnapshotDto: CreateSnapshotDTO): Promise<Snapshot> {
-    return await this.snapshotRepository.save(createAiModelSnapshotDto);
+  async create(createSnapshotDTO: CreateSnapshotDTO): Promise<Snapshot> {
+    return await this.snapshotRepository.save(createSnapshotDTO);
   }
 
   async findAll(queryParams: any): Promise<any> {
