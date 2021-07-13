@@ -53,6 +53,7 @@ export class StylesController {
   
   @Get(':id/active-model')
   getStyleActiveModelDetail(@Param('id') id: string) {
+    return this.stylesService.findOne(id)
   }
 
   @Put(':id/upload-file')
@@ -72,11 +73,15 @@ export class StylesController {
   async update(@UploadedFile() styleIcon: Express.MulterS3.File, @Body() body, @Param('id') id: string) : Promise<Style>{
     const styleName = body['styleName']
     const description = body['descriptiopn'] || ''
+    const activeSnapshotId = body['activeSnapshotId']
+    const isActive = body['isActive']
+    console.log("isActive", isActive)
     return await this.stylesService.update(id, {
-      iconURL: styleIcon.location,
       styleName,
+      activeSnapshotId,
       routingKey: styleName.toLowerCase().split(" ").join("_"),
-      description
+      description,
+      isActive
     });
   }
 
