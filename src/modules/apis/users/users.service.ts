@@ -90,8 +90,11 @@ export class UsersService {
     const user = await this.usersRepository.findOne({
       where: {
         id: userId
-      }
+      },
+      select: ['id', 'password']
     })
+
+    console.log("user", user)
     
     const isPasswordMatch = user.comparePassword(oldPassword)
 
