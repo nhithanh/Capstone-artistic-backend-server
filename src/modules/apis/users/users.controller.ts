@@ -43,6 +43,7 @@ export class UsersController {
   getSelfInformation(@Req() req) {
     return req.user
   }
+  
 
   @UseGuards(JwtAuthGuard)
   @Post('/change-password')
