@@ -43,10 +43,14 @@ export class UsersController {
   getSelfInformation(@Req() req) {
     return req.user
   }
+  
 
   @UseGuards(JwtAuthGuard)
   @Post('/change-password')
   changeUserPassword(@Req() req, @Body() body) {
+    const oldPassword = body['oldPassword']
+    const newPassword = body['newPassword']
+    this.usersService
     return req.user
   }
 }
