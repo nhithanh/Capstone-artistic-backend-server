@@ -21,6 +21,7 @@ export class AuthsService {
   }
 
   async genToken(user: User) {
+    console.log("In token" ,user)
     const payload = {
       id: user.id,
       username: user.username,

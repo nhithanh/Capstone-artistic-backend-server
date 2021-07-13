@@ -41,7 +41,7 @@ export class UsersService {
     const newAlbum = await this.albumService.create({
       name: 'Default',
       userId: newUser.id
-    })
+    })    
     newUser.defaultAlbumId = newAlbum.id
     return this.usersRepository.save(_.omit(newUser, ['password']))
   }
@@ -93,8 +93,6 @@ export class UsersService {
       },
       select: ['id', 'password']
     })
-
-    console.log("user", user)
     
     const isPasswordMatch = user.comparePassword(oldPassword)
 

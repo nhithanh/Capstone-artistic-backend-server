@@ -33,16 +33,19 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('/self')
+  getSelfInformation(@Req() req) {
+    console.log("HERE baby")
+    return req.user
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('/self')
-  getSelfInformation(@Req() req) {
-    return req.user
-  }
+  
   
 
   @UseGuards(JwtAuthGuard)
