@@ -87,8 +87,11 @@ export class StylesService {
     })
   }
 
-  update(id: number, updateStyleDto: UpdateStyleDto) {
-    return `This action updates a #${id} style`;
+  update(id: string, updateStyleDto: UpdateStyleDto) {
+    return this.stylesRepository.save({
+      id,
+      ...updateStyleDto
+    })
   }
 
   remove(id: number) {

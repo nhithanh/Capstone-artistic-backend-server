@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, UseInterceptors, UploadedFile, Put } from '@nestjs/common';
 import { StylesService } from './styles.service';
 import { CreateStyleDto } from './dto/create-style.dto';
 import { UpdateStyleDto } from './dto/update-style.dto';
@@ -55,9 +55,29 @@ export class StylesController {
   getStyleActiveModelDetail(@Param('id') id: string) {
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStyleDto: UpdateStyleDto) {
-    return this.stylesService.update(+id, updateStyleDto);
+  @Put(':id/upload-file')
+  @UseInterceptors(FileInterceptor('icon'))
+  async updateWithFile(@UploadedFile() styleIcon: Express.MulterS3.File, @Body() body, @Param('id') id: string) : Promise<Style>{
+    const styleName = body['styleName']
+    const description = body['descriptiopn'] || ''
+    return await this.stylesService.update(id, {
+      iconURL: styleIcon.location,
+      styleName,
+      routingKey: styleName.toLowerCase().split(" ").join("_"),
+      description
+    });
+  }
+
+  @Put(':id')
+  async update(@UploadedFile() styleIcon: Express.MulterS3.File, @Body() body, @Param('id') id: string) : Promise<Style>{
+    const styleName = body['styleName']
+    const description = body['descriptiopn'] || ''
+    return await this.stylesService.update(id, {
+      iconURL: styleIcon.location,
+      styleName,
+      routingKey: styleName.toLowerCase().split(" ").join("_"),
+      description
+    });
   }
 
   @Delete(':id')
