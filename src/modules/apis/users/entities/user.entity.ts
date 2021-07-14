@@ -12,7 +12,7 @@ export class User {
         unique: true,
         nullable: false
     })
-    username: string
+    email: string
 
 
     @Column({
@@ -39,11 +39,6 @@ export class User {
         default: ''
     })
     lastName: string;
-
-    @Column({
-        default: ''
-    })
-    email: string;
 
     @Column({
         type: 'date',

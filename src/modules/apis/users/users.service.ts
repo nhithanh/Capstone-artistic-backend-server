@@ -16,10 +16,10 @@ export class UsersService {
   @Inject()
   private readonly albumService: AlbumsService;
 
-  private async verifyIsUsernameExist(username: string): Promise<boolean> {
+  private async verifyEmailExist(email: string): Promise<boolean> {
     const user = await this.usersRepository.findOne({
       where: {
-        username
+        email
       }
     });
     if(user) {
@@ -29,11 +29,11 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const isUsernameAlreadyExist = await this.verifyIsUsernameExist(createUserDto.username)
-    if(isUsernameAlreadyExist) {
+    const isEmailAlreadyExist = await this.verifyEmailExist(createUserDto.email)
+    if(isEmailAlreadyExist) {
       throw new HttpException({
         status: 409,
-        message: 'Username already taken!'
+        message: 'Email already taken!'
       }, HttpStatus.CONFLICT)
     }
     let newUser = this.usersRepository.create(createUserDto)
@@ -46,12 +46,13 @@ export class UsersService {
     return this.usersRepository.save(_.omit(newUser, ['password']))
   }
 
-  async findByCredential(username: string, password: string): Promise<User | null> {
+  async findByCredential(email: string, password: string): Promise<User | null> {
+    console.log("Call")
     const user = await this.usersRepository.findOne({
       where: {
-        username
+        email
       },
-      select: ['password', "id", "username", "defaultAlbumId"]
+      select: ['password', "id", "email", "defaultAlbumId"]
     })
 
     if(!user) {

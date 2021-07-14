@@ -16,15 +16,15 @@ export class AuthsService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<any> {
-    return this.usersService.findByCredential(username, password)
+  async validateUser(email: string, password: string): Promise<any> {
+    return this.usersService.findByCredential(email, password)
   }
 
   async genToken(user: User) {
     console.log("In token" ,user)
     const payload = {
       id: user.id,
-      username: user.username,
+      email: user.email,
       defaultAlbumId: user.defaultAlbumId
     }
     return {

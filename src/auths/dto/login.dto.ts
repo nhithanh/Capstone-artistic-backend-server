@@ -3,7 +3,7 @@ import { MinLength } from 'class-validator';
 
 export class LoginDTO {
   @ApiProperty()
-  readonly username: string;
+  readonly email: string;
 
   @MinLength(5)
   @ApiProperty()
