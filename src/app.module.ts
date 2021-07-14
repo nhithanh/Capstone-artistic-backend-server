@@ -20,6 +20,7 @@ import { AlbumsModule } from './modules/apis/albums/albums.module';
 import { ShowcasesModule } from './modules/apis/showcases/showcases.module';
 import { NotificationsModule } from './modules/apis/notifications/notifications.module';
 import { VideosModule } from './modules/apis/videos/videos.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -56,7 +57,8 @@ import { VideosModule } from './modules/apis/videos/videos.module';
     AlbumsModule,
     ShowcasesModule,
     NotificationsModule,
-    VideosModule
+    VideosModule,
+    MailModule
   ],
   controllers: [AppController, ControllerController],
   providers: [AppService, AppGateway]

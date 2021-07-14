@@ -1,14 +1,19 @@
-import { Controller, Get, Post, Body, Param, Req, UseGuards, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Req, UseGuards, Put, Inject } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../../../auths/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto'
+import { MailService } from 'src/mail/mail.service';
 
 
 @ApiTags("users")
 @Controller('users')
 export class UsersController {
+
+  @Inject()
+  private readonly mailService: MailService;
+
   constructor(private readonly usersService: UsersService) {}
 
   @Get('/profile')
@@ -38,6 +43,13 @@ export class UsersController {
   getSelfInformation(@Req() req) {
     console.log("HERE baby")
     return req.user
+  }
+
+  @Get('/reset-password')
+  resetUserPassword() {
+    this.mailService.sendResetPasswordToUserMail('nhithanhtranho@gmail.com', 'lalala123456').then(() => {
+      return 'success'
+    }).catch(err => console.log(err))
   }
 
   @Get(':id')

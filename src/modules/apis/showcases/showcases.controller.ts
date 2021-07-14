@@ -30,6 +30,7 @@ export class ShowcasesController {
 
   @Get()
   async findAll(@Query('styleId') styleId: string) {
+    console.log("HERE")
     return await this.showcasesService.findAll(styleId);
   }
 
