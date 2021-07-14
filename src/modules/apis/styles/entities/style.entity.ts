@@ -21,7 +21,8 @@ export class Style {
 
     @Column({
         type: 'boolean',
-        nullable: true
+        nullable: true, 
+        default: false
     })
     isActive: boolean;
 

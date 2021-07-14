@@ -33,7 +33,7 @@ export class SnapshotsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.snapshotsService.findOne(+id);
+    return this.snapshotsService.findOne(id);
   }
 
   @Patch(':id')
@@ -43,6 +43,6 @@ export class SnapshotsController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.snapshotsService.remove(+id);
+    return this.snapshotsService.remove(id);
   }
 }

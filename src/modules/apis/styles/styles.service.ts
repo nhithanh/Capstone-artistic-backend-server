@@ -94,7 +94,12 @@ export class StylesService {
     })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} style`;
+  async remove(id: string) {
+    const rs = await this.stylesRepository.softDelete(id)
+    if (rs.affected > 0) {
+      return {
+        id
+      }
+    }
   }
 }

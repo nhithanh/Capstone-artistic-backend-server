@@ -41,7 +41,7 @@ export class SnapshotsService {
     }
   }
 
-  async findOne(id: number): Promise<Snapshot> {
+  async findOne(id: string): Promise<Snapshot> {
     return await this.snapshotRepository.findOne(id)
   }
 
@@ -49,7 +49,12 @@ export class SnapshotsService {
     return `This action updates a #${id} aiModelSnapshot`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} aiModelSnapshot`;
+  async remove(id: string) {
+    const rs = await this.snapshotRepository.softDelete(id)
+    if (rs.affected > 0) {
+      return {
+        id
+      }
+    }
   }
 }

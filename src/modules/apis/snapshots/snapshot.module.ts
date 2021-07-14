@@ -15,6 +15,7 @@ import { uploadSnapshotOption } from 'src/config/multer.service';
     inject: [S3Service],
   })],
   controllers: [SnapshotsController],
-  providers: [SnapshotsService]
+  providers: [SnapshotsService],
+  exports: [SnapshotsService]
 })
 export class SnapshotsModule {}

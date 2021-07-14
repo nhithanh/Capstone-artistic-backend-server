@@ -5,6 +5,8 @@ import { UpdateStyleDto } from './dto/update-style.dto';
 import { Style } from './entities/style.entity';
 import { ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { SnapshotsService } from '../snapshots/snapshot.service';
+import { S3Service } from 'src/s3/s3.service';
 
 
 @ApiTags("styles")
@@ -13,6 +15,12 @@ export class StylesController {
 
   @Inject()
   private readonly stylesService: StylesService;
+
+  @Inject()
+  private readonly snapshotsService: SnapshotsService;
+
+  @Inject()
+  private readonly s3Service: S3Service;
 
   @Post()
   @UseInterceptors(FileInterceptor('icon'))
@@ -52,8 +60,13 @@ export class StylesController {
   }
   
   @Get(':id/active-model')
-  getStyleActiveModelDetail(@Param('id') id: string) {
-    return this.stylesService.findOne(id)
+  async getStyleActiveModelDetail(@Param('id') id: string) {
+    const style = await this.stylesService.findOne(id)
+    const snapshot = await this.snapshotsService.findOne(style.activeSnapshotId)
+    return {
+      ...style,
+      snapshotPath: this.s3Service.getS3SignedURL(snapshot.location)
+    }
   }
 
   @Put(':id/upload-file')
@@ -87,6 +100,6 @@ export class StylesController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.stylesService.remove(+id);
+    return this.stylesService.remove(id);
   }
 }
