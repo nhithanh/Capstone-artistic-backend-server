@@ -17,7 +17,6 @@ export class ShowcasesController {
   constructor(private readonly showcasesService: ShowcasesService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('photo'))
   async create(@UploadedFile() photo: Express.MulterS3.File, @Body() body) {
     const photoObject = await this.showcasesService.create({

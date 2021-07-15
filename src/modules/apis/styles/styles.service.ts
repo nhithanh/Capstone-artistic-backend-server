@@ -95,7 +95,7 @@ export class StylesService {
   }
 
   async remove(id: string) {
-    const rs = await this.stylesRepository.softDelete(id)
+    const rs = await this.stylesRepository.delete(id)
     if (rs.affected > 0) {
       return {
         id

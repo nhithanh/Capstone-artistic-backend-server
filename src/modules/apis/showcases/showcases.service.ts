@@ -63,7 +63,7 @@ export class ShowcasesService {
     return rs.map(style => {
       return {
         ...style,
-        iconURL: style.icon_url
+        iconURL: this.s3Service.getCDNURL(style.icon_url)
       }
     })
   }
