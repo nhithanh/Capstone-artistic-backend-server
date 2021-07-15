@@ -16,4 +16,8 @@ export class CreateSnapshotDTO {
     @IsString()
     @IsNotEmpty()
     location: string;
+
+    @IsString()
+    @IsOptional()
+    description?: string;
 }

@@ -18,11 +18,13 @@ export class SnapshotsController {
 
     const snapshotName = body['snapshotName']
     const styleId = body['styleId']
+    const description = body['description']
 
     return this.snapshotsService.create({
       name: snapshotName,
       location: snapshotFile.location,
-      styleId
+      styleId,
+      description
     });
   }
 
