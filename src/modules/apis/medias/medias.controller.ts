@@ -36,11 +36,12 @@ export class MediasController {
   constructor() {}
 
   @Post('/transfer-photo')
-  async transferPhoto(@Body() transferPhotoMetadata: TransferMediaMetadataDTO) {
+  @UseGuards(JwtAuthGuard)
+  async transferPhoto(@Body() transferPhotoMetadata: TransferMediaMetadataDTO, @Req() req) {
     const payload = {
       accessURL: transferPhotoMetadata.photoLocation,
       styleId: transferPhotoMetadata.style.id,
-      socketId: transferPhotoMetadata.socketId,
+      userId: req.user.id
     }
     console.log(payload)
     this.producerService.emitTransferPhotoTask(transferPhotoMetadata.style.routingKey, payload);
@@ -98,12 +99,12 @@ export class MediasController {
   transferPhotoCompleted(@Body() transferPhotoCompleteMetadataDTO: TransferMediaCompleteMetadatadDTO) {
     const accessURL = this.s3Service.getCDNURL(transferPhotoCompleteMetadataDTO.transferPhotoLocation)
     const payload = {
-      status: 'COMPLETED',
+      action: 'TRANSFER_PHOTO_COMPLETED',
       accessURL,
       ...transferPhotoCompleteMetadataDTO
     }
 
-    this.socketService.emitToSpecificClient(transferPhotoCompleteMetadataDTO.socketId, 'TRANSFER_COMPLETED', payload)
+    this.socketService.emitToSpecificUser(transferPhotoCompleteMetadataDTO.userId, payload)
     return {
       status: HttpStatus.OK,
       message: 'Your request is completed!'
@@ -115,7 +116,6 @@ export class MediasController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('media'))
   async uploadFile(@Req() req, @UploadedFile() media: Express.MulterS3.File, @Body() body) {
-    const socketId = body['socketId']
     const albumId = body['albumId']
     let storageLocation = media.location
     const mediaObject = await this.mediasService.create({
@@ -126,14 +126,13 @@ export class MediasController {
     })
     
     const payload = {
+      action: 'UPLOAD_IMAGE_SUCCESS',
       ...mediaObject,
       accessURL: this.s3Service.getCDNURL(mediaObject.storageLocation)
     }
 
-    if(socketId) {
-      this.socketService.emitToSpecificClient(socketId, 'UPLOAD_IMAGE_SUCCESS', payload)
-    }
-    
+    this.socketService.emitToSpecificUser(req.user.id, payload)
+
     return payload
     
   }

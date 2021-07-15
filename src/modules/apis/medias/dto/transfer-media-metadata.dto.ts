@@ -17,7 +17,7 @@ export class TransferMediaMetadataDTO {
 export class TransferMediaCompleteMetadatadDTO {
     @IsNotEmpty()
     @IsString()
-    socketId: string;
+    userId: string;
 
     @IsNotEmpty()
     @IsString()
