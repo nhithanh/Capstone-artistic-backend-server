@@ -14,6 +14,12 @@ export class User {
     })
     email: string
 
+    @Column({
+        type: 'varchar',
+        nullable: true,
+        default: 'user'
+    })
+    role: string;
 
     @Column({
         type: 'varchar',
