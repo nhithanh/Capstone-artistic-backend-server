@@ -47,7 +47,7 @@ export class VideosController {
       }),
       this.s3Service.uploadFile(file.path, 'artisan-photos', `${uploadFolder}/original.mp4`),
       exec(`bash ./scripts/generate_thumbnail.sh ${file.path} ./process-video/${ts}/thumbnail.png`),
-      exec(`bash ./scripts/convert_video_to_hls.sh ${file.path} ./process-video/${ts}`),
+      // exec(`bash ./scripts/convert_video_to_hls.sh ${file.path} ./process-video/${ts}`),
     ])
     await Promise.all([
       this.s3Service.uploadFolder(`./process-video/${ts}`, uploadFolder),
