@@ -19,6 +19,7 @@ export declare class StylesController {
         updatedAt: Date;
         deletedAt: Date;
     }[]>;
+    getAllStylesWithSnapshots(): Promise<any>;
     getAllStyles(): Promise<{
         iconURL: string;
         id: string;

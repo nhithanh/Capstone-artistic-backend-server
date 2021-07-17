@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { S3Service } from 'src/s3/s3.service';
-import { Repository } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { Snapshot } from '../snapshots/entities/snapshot.entity';
 import { SnapshotsService } from '../snapshots/snapshot.service';
 import { CreateStyleDto } from './dto/create-style.dto';
@@ -50,6 +50,18 @@ export class StylesService {
       return {
         ...style, 
         iconURL: this.s3Service.getCDNURL(style.iconURL)
+      }
+    })
+  }
+
+  async getAllStylesWithSnapshotPath() {
+    const query = 'select s.id, s.style_name, sn.location from style s join snapshot sn on s.id = sn.style_id where s.active_snapshot_id = sn.id and s.is_active = true'
+    const connection = getConnection()
+    const data = await connection.query(query)
+    return data.map(style => {
+      return {
+        id: style.id,
+        snapshotPath: this.s3Service.getS3SignedURL(style.location)
       }
     })
   }

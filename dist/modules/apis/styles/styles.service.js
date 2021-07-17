@@ -41,6 +41,17 @@ let StylesService = class StylesService {
             return Object.assign(Object.assign({}, style), { iconURL: this.s3Service.getCDNURL(style.iconURL) });
         });
     }
+    async getAllStylesWithSnapshotPath() {
+        const query = 'select s.id, s.style_name, sn.location from style s join snapshot sn on s.id = sn.style_id where s.active_snapshot_id = sn.id and s.is_active = true';
+        const connection = typeorm_2.getConnection();
+        const data = await connection.query(query);
+        return data.map(style => {
+            return {
+                id: style.id,
+                snapshotPath: this.s3Service.getS3SignedURL(style.location)
+            };
+        });
+    }
     async findAllVideoSupportedStyles() {
         const data = await this.stylesRepository.find({
             where: {

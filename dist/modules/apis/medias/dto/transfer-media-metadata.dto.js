@@ -11,14 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TransferMediaCompleteMetadatadDTO = exports.TransferMediaMetadataDTO = void 0;
 const class_validator_1 = require("class-validator");
-const style_entity_1 = require("../../styles/entities/style.entity");
 class TransferMediaMetadataDTO {
 }
-__decorate([
-    class_validator_1.IsNotEmpty(),
-    class_validator_1.IsString(),
-    __metadata("design:type", String)
-], TransferMediaMetadataDTO.prototype, "socketId", void 0);
 __decorate([
     class_validator_1.IsNotEmpty(),
     class_validator_1.IsString(),
@@ -26,8 +20,9 @@ __decorate([
 ], TransferMediaMetadataDTO.prototype, "photoLocation", void 0);
 __decorate([
     class_validator_1.IsNotEmpty(),
-    __metadata("design:type", style_entity_1.Style)
-], TransferMediaMetadataDTO.prototype, "style", void 0);
+    class_validator_1.IsString(),
+    __metadata("design:type", String)
+], TransferMediaMetadataDTO.prototype, "styleId", void 0);
 exports.TransferMediaMetadataDTO = TransferMediaMetadataDTO;
 class TransferMediaCompleteMetadatadDTO {
 }

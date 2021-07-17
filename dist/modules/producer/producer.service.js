@@ -15,14 +15,14 @@ const common_1 = require("@nestjs/common");
 let ProducerService = class ProducerService {
     constructor() {
         this.VIDEO_EXCHANGE = "EXCHANGE_TRANSFER_VIDEO";
-        this.TRANSFER_PHOTO_EXCHANGE = process.env.EXCHANGE_TRANSFER_PHOTO;
+        this.PHOTO_EXCHANGE = "TRANSFER_PHOTO_EXCHANGE";
         this.UPDATE_MODEL_EXCHANGE = process.env.EXCHANGE_UPDATE_MODEL;
     }
     emitMessage(exchange, routingKey, data) {
         return this.amqpConnection.publish(exchange, routingKey, data);
     }
-    emitTransferPhotoTask(routingKey, data) {
-        return this.emitMessage(this.TRANSFER_PHOTO_EXCHANGE, routingKey, data);
+    emitTransferPhotoTask(data) {
+        return this.emitMessage(this.PHOTO_EXCHANGE, "", data);
     }
     emitTransferVideoTask(data) {
         return this.emitMessage(this.VIDEO_EXCHANGE, "", data);

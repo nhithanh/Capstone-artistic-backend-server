@@ -35,6 +35,7 @@ export declare class StylesService {
         updatedAt: Date;
         deletedAt: Date;
     }[]>;
+    getAllStylesWithSnapshotPath(): Promise<any>;
     findAllVideoSupportedStyles(): Promise<{
         iconURL: string;
         id: string;

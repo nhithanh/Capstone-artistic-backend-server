@@ -32,6 +32,9 @@ let StylesController = class StylesController {
     findAll() {
         return this.stylesService.findAll();
     }
+    getAllStylesWithSnapshots() {
+        return this.stylesService.getAllStylesWithSnapshotPath();
+    }
     getAllStyles() {
         return this.stylesService.getAllStyles();
     }
@@ -103,6 +106,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], StylesController.prototype, "findAll", null);
+__decorate([
+    common_1.Get('/all-snapshots'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], StylesController.prototype, "getAllStylesWithSnapshots", null);
 __decorate([
     common_1.Get('/all'),
     __metadata("design:type", Function),

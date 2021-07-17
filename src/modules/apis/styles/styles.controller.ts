@@ -39,6 +39,11 @@ export class StylesController {
     return this.stylesService.findAll();
   }
 
+  @Get('/all-snapshots')
+  getAllStylesWithSnapshots() {
+    return this.stylesService.getAllStylesWithSnapshotPath();
+  }
+
   @Get('/all')
   getAllStyles() {
     return this.stylesService.getAllStyles();

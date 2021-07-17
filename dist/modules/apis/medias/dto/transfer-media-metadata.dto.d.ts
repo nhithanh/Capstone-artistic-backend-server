@@ -1,8 +1,6 @@
-import { Style } from "../../styles/entities/style.entity";
 export declare class TransferMediaMetadataDTO {
-    socketId: string;
     photoLocation: string;
-    style: Style;
+    styleId: string;
 }
 export declare class TransferMediaCompleteMetadatadDTO {
     userId: string;

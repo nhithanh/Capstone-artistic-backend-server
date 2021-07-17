@@ -1,17 +1,13 @@
 import { IsNotEmpty, IsOptional, IsString } from "class-validator";
-import { Style } from "../../styles/entities/style.entity";
 
 export class TransferMediaMetadataDTO {
-    @IsNotEmpty()
-    @IsString()
-    socketId: string;
-
     @IsNotEmpty()
     @IsString()
     photoLocation: string;
     
     @IsNotEmpty()
-    style: Style;
+    @IsString()
+    styleId: string;
 }
 
 export class TransferMediaCompleteMetadatadDTO {

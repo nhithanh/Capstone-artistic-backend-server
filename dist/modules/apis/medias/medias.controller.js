@@ -33,11 +33,11 @@ let MediasController = class MediasController {
     async transferPhoto(transferPhotoMetadata, req) {
         const payload = {
             accessURL: transferPhotoMetadata.photoLocation,
-            styleId: transferPhotoMetadata.style.id,
+            styleId: transferPhotoMetadata.styleId,
             userId: req.user.id
         };
         console.log(payload);
-        this.producerService.emitTransferPhotoTask(transferPhotoMetadata.style.routingKey, payload);
+        this.producerService.emitTransferPhotoTask(payload);
         return {
             status: common_1.HttpStatus.ACCEPTED,
             message: 'Your request is executing.'
@@ -85,6 +85,7 @@ let MediasController = class MediasController {
     transferPhotoCompleted(transferPhotoCompleteMetadataDTO) {
         const accessURL = this.s3Service.getCDNURL(transferPhotoCompleteMetadataDTO.transferPhotoLocation);
         const payload = Object.assign({ action: 'TRANSFER_PHOTO_COMPLETED', accessURL }, transferPhotoCompleteMetadataDTO);
+        console.log(payload);
         this.socketService.emitToSpecificUser(transferPhotoCompleteMetadataDTO.userId, payload);
         return {
             status: common_1.HttpStatus.OK,

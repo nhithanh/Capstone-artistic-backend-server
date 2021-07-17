@@ -65,7 +65,7 @@ let AlbumsService = class AlbumsService {
         let { count, medias } = await this.mediasService.findByAlbumId(album.id, null);
         medias = medias.map(media => {
             if (media.type === media_entity_1.MEDIA_TYPE.VIDEO) {
-                return Object.assign(Object.assign({}, media), { thumbnailURL: this.s3Service.getCDNURL(media.storageLocation + "/thumbnail.png"), originalVideoURL: this.s3Service.getCDNURL(media.storageLocation + "/original.mp4"), m3u8_720p_playlsit: this.s3Service.getCDNURL(media.storageLocation + "/720p.m3u8"), m3u8_480p_playlsit: this.s3Service.getCDNURL(media.storageLocation + "/480p.m3u8"), m3u8_360p_playlsit: this.s3Service.getCDNURL(media.storageLocation + "/360p.m3u8") });
+                return Object.assign(Object.assign({}, media), { thumbnailURL: this.s3Service.getCDNURL(media.storageLocation + "/thumbnail.png"), originalVideoURL: this.s3Service.getCDNURL(media.storageLocation + "/original.mp4"), m3u8_720p_playlsit: this.s3Service.getCDNURL(media.storageLocation + "/480p.m3u8"), m3u8_480p_playlsit: this.s3Service.getCDNURL(media.storageLocation + "/480p.m3u8"), m3u8_360p_playlsit: this.s3Service.getCDNURL(media.storageLocation + "/360p.m3u8") });
             }
             return Object.assign(Object.assign({}, media), { accessURL: this.s3Service.getCDNURL(media.storageLocation) });
         });

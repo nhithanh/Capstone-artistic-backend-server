@@ -40,11 +40,11 @@ export class MediasController {
   async transferPhoto(@Body() transferPhotoMetadata: TransferMediaMetadataDTO, @Req() req) {
     const payload = {
       accessURL: transferPhotoMetadata.photoLocation,
-      styleId: transferPhotoMetadata.style.id,
+      styleId: transferPhotoMetadata.styleId,
       userId: req.user.id
     }
     console.log(payload)
-    this.producerService.emitTransferPhotoTask(transferPhotoMetadata.style.routingKey, payload);
+    this.producerService.emitTransferPhotoTask(payload);
     return {
       status: HttpStatus.ACCEPTED,
       message: 'Your request is executing.'
@@ -103,6 +103,8 @@ export class MediasController {
       accessURL,
       ...transferPhotoCompleteMetadataDTO
     }
+
+    console.log(payload)
 
     this.socketService.emitToSpecificUser(transferPhotoCompleteMetadataDTO.userId, payload)
     return {
