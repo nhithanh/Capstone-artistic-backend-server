@@ -1,5 +1,4 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, UploadedFile, Inject, Req } from '@nestjs/common';
-import { CreateVideoDto } from './dto/create-video.dto';
 import { JwtAuthGuard } from 'src/auths/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MediasService } from '../medias/medias.service';
@@ -46,11 +45,10 @@ export class VideosController {
         albumId: albumId ? albumId : req.user.defaultAlbumId
       }),
       this.s3Service.uploadFile(file.path, 'artisan-photos', `${uploadFolder}/original.mp4`),
-      // exec(`bash ./scripts/convert_video_to_hls.sh ${file.path} ./process-video/${ts}`),
+      exec(`bash ./scripts/generate_thumbnail.sh ${file.path} ./process-video/${ts}/thumbnail.png`),
+      exec(`bash ./scripts/convert_video_to_hls.sh ${file.path} ./process-video/${ts}`)
     ])
-    console.log("Here1")
-    await exec(`bash ./scripts/generate_thumbnail.sh ${file.path} ./process-video/${ts}/thumbnail.png`)
-    console.log("Here2")
+    
     await Promise.all([
       this.s3Service.uploadFolder(`./process-video/${ts}`, uploadFolder),
       rimrafAsync(`./process-video/${ts}`),
