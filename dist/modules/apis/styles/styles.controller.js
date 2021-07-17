@@ -67,7 +67,6 @@ let StylesController = class StylesController {
         const description = body['descriptiopn'] || '';
         const activeSnapshotId = body['activeSnapshotId'];
         const isActive = body['isActive'];
-        console.log("isActive", isActive);
         return await this.stylesService.update(id, {
             styleName,
             activeSnapshotId,

@@ -16,7 +16,7 @@ let ProducerService = class ProducerService {
     constructor() {
         this.VIDEO_EXCHANGE = "EXCHANGE_TRANSFER_VIDEO";
         this.PHOTO_EXCHANGE = "TRANSFER_PHOTO_EXCHANGE";
-        this.UPDATE_MODEL_EXCHANGE = process.env.EXCHANGE_UPDATE_MODEL;
+        this.UPDATE_WEIGHT_EXCHANGE = "UPDATE_WEIGHT_EXCHANGE";
     }
     emitMessage(exchange, routingKey, data) {
         return this.amqpConnection.publish(exchange, routingKey, data);
@@ -27,10 +27,8 @@ let ProducerService = class ProducerService {
     emitTransferVideoTask(data) {
         return this.emitMessage(this.VIDEO_EXCHANGE, "", data);
     }
-    emitUpdateModel(routingKey, snapshotLocation) {
-        return this.emitMessage(this.UPDATE_MODEL_EXCHANGE, routingKey, {
-            snapshotLocation
-        });
+    emitUpdatePhotoWeight(data) {
+        return this.emitMessage(this.UPDATE_WEIGHT_EXCHANGE, "", data);
     }
 };
 __decorate([

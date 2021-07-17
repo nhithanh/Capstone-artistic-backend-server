@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StylesService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
+const producer_service_1 = require("../../producer/producer.service");
 const s3_service_1 = require("../../../s3/s3.service");
 const typeorm_2 = require("typeorm");
 const snapshot_entity_1 = require("../snapshots/entities/snapshot.entity");
@@ -76,8 +77,21 @@ let StylesService = class StylesService {
             order: { createdAt: 'DESC' }
         });
     }
-    update(id, updateStyleDto) {
-        return this.stylesRepository.save(Object.assign({ id }, updateStyleDto));
+    async update(id, updateStyleDto) {
+        const style = await this.stylesRepository.findOne(id);
+        const updatedStyle = await this.stylesRepository.save(Object.assign({ id }, updateStyleDto));
+        if (style.activeSnapshotId != updatedStyle.activeSnapshotId || (style.isActive == false && updatedStyle.isActive == true)) {
+            const snapshot = await this.snapshotsRepository.findOne(updatedStyle.activeSnapshotId);
+            this.producerService.emitUpdatePhotoWeight({
+                styleId: id,
+                snapshotPath: this.s3Service.getS3SignedURL(snapshot.location)
+            });
+            console.log("Update weight:", {
+                styleId: id,
+                snapshotPath: this.s3Service.getS3SignedURL(snapshot.location)
+            });
+        }
+        return updatedStyle;
     }
     async remove(id) {
         const rs = await this.stylesRepository.delete(id);
@@ -92,6 +106,10 @@ __decorate([
     common_1.Inject(),
     __metadata("design:type", s3_service_1.S3Service)
 ], StylesService.prototype, "s3Service", void 0);
+__decorate([
+    common_1.Inject(),
+    __metadata("design:type", producer_service_1.ProducerService)
+], StylesService.prototype, "producerService", void 0);
 __decorate([
     typeorm_1.InjectRepository(snapshot_entity_1.Snapshot),
     __metadata("design:type", typeorm_2.Repository)

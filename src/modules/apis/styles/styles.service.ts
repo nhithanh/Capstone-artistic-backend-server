@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ProducerService } from 'src/modules/producer/producer.service';
 import { S3Service } from 'src/s3/s3.service';
 import { getConnection, Repository } from 'typeorm';
 import { Snapshot } from '../snapshots/entities/snapshot.entity';
@@ -13,6 +14,9 @@ export class StylesService {
 
   @Inject()
   private readonly s3Service: S3Service;
+
+  @Inject()
+  private readonly producerService: ProducerService; 
 
   @InjectRepository(Snapshot)
   private readonly snapshotsRepository: Repository<Snapshot>;
@@ -99,11 +103,25 @@ export class StylesService {
     })
   }
 
-  update(id: string, updateStyleDto: UpdateStyleDto) {
-    return this.stylesRepository.save({
+  async update(id: string, updateStyleDto: UpdateStyleDto) {
+    const style = await this.stylesRepository.findOne(id)
+    const updatedStyle = await this.stylesRepository.save({
       id,
       ...updateStyleDto
     })
+    if (style.activeSnapshotId != updatedStyle.activeSnapshotId || (style.isActive == false && updatedStyle.isActive == true)) {
+      
+      const snapshot = await this.snapshotsRepository.findOne(updatedStyle.activeSnapshotId)
+      this.producerService.emitUpdatePhotoWeight({
+        styleId: id,
+        snapshotPath: this.s3Service.getS3SignedURL(snapshot.location)
+      })
+      console.log("Update weight:", {
+        styleId: id,
+        snapshotPath: this.s3Service.getS3SignedURL(snapshot.location)
+      })
+    }
+    return updatedStyle;
   }
 
   async remove(id: string) {

@@ -4,6 +4,7 @@ import { UpdateStyleDto } from './dto/update-style.dto';
 import { Style } from './entities/style.entity';
 export declare class StylesService {
     private readonly s3Service;
+    private readonly producerService;
     private readonly snapshotsRepository;
     private readonly stylesRepository;
     create(createStyleDto: CreateStyleDto): Promise<Style>;

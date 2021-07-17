@@ -18,11 +18,12 @@ const multer_service_1 = require("../../../config/multer.service");
 const s3_service_1 = require("../../../s3/s3.service");
 const snapshot_entity_1 = require("../snapshots/entities/snapshot.entity");
 const snapshot_module_1 = require("../snapshots/snapshot.module");
+const producer_module_1 = require("../../producer/producer.module");
 let StylesModule = class StylesModule {
 };
 StylesModule = __decorate([
     common_1.Module({
-        imports: [snapshot_module_1.SnapshotsModule, typeorm_1.TypeOrmModule.forFeature([style_entity_1.Style, snapshot_entity_1.Snapshot]), s3_module_1.S3Module, platform_express_1.MulterModule.registerAsync({
+        imports: [snapshot_module_1.SnapshotsModule, typeorm_1.TypeOrmModule.forFeature([style_entity_1.Style, snapshot_entity_1.Snapshot]), s3_module_1.S3Module, producer_module_1.ProducerModule, platform_express_1.MulterModule.registerAsync({
                 imports: [s3_module_1.S3Module],
                 useFactory: async (s3Service) => multer_service_1.uploadImageToS3OptionAdmin(s3Service.s3),
                 inject: [s3_service_1.S3Service],
