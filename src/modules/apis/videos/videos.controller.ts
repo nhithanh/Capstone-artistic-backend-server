@@ -46,9 +46,11 @@ export class VideosController {
         albumId: albumId ? albumId : req.user.defaultAlbumId
       }),
       this.s3Service.uploadFile(file.path, 'artisan-photos', `${uploadFolder}/original.mp4`),
-      exec(`bash ./scripts/generate_thumbnail.sh ${file.path} ./process-video/${ts}/thumbnail.png`),
       // exec(`bash ./scripts/convert_video_to_hls.sh ${file.path} ./process-video/${ts}`),
     ])
+    console.log("Here1")
+    await exec(`bash ./scripts/generate_thumbnail.sh ${file.path} ./process-video/${ts}/thumbnail.png`)
+    console.log("Here2")
     await Promise.all([
       this.s3Service.uploadFolder(`./process-video/${ts}`, uploadFolder),
       rimrafAsync(`./process-video/${ts}`),
