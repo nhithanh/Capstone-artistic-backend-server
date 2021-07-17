@@ -25,6 +25,7 @@ export class S3Service {
         this.temporaryCDN = process.env.S3_ARTISAN_TEMPORARY_CDN
 
         const env = process.env.ENV || 'dev'
+
         if(env == 'production') {
             this.s3 = new S3()
         } else {
