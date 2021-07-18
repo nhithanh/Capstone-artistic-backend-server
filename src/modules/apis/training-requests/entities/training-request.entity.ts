@@ -1,5 +1,12 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
+export enum STATUS {
+    WAITING = 'WAITING',
+    ON_PROGRESS = 'ON PROGRESS',
+    STOPPED = 'STOPPED',
+    COMPLETED = 'COMPLETED'
+}
+
 @Entity()
 export class TrainingRequest {
     @PrimaryGeneratedColumn('uuid')
@@ -11,6 +18,12 @@ export class TrainingRequest {
         nullable: false
     })
     name: string;
+
+    @Column({
+        type: 'varchar',
+        nullable: false
+    })
+    referenceStyleLocation: string
 
     @Column({
         type: 'varchar',
@@ -50,9 +63,36 @@ export class TrainingRequest {
     @Column({
         type: 'float',
         unique: false,
-        default: 0.7
+        default: 1.0
     })
     relu12Weight: number;
+
+    @Column({
+        type: 'float',
+        unique: false,
+        default: 1.0
+    })
+    relu22Weight: number;
+
+    @Column({
+        type: 'float',
+        unique: false,
+        default: 1.0
+    })
+    relu33Weight: number;
+
+    @Column({
+        type: 'float',
+        unique: false,
+        default: 1.0
+    })
+    relu43Weight: number;
+
+    @Column({
+        type: 'varchar',
+        nullable: false
+    })
+    stauts: STATUS;
 
     @CreateDateColumn()
     createdAt: Date;
