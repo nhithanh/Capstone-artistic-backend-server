@@ -21,6 +21,8 @@ import { ShowcasesModule } from './modules/apis/showcases/showcases.module';
 import { NotificationsModule } from './modules/apis/notifications/notifications.module';
 import { VideosModule } from './modules/apis/videos/videos.module';
 import { MailModule } from './mail/mail.module';
+import { TrainingRequestsModule } from './modules/apis/training-requests/training-requests.module';
+import { TrainingResultsModule } from './modules/apis/training-results/training-results.module';
 
 @Module({
   imports: [
@@ -58,7 +60,9 @@ import { MailModule } from './mail/mail.module';
     ShowcasesModule,
     NotificationsModule,
     VideosModule,
-    MailModule
+    MailModule,
+    TrainingRequestsModule,
+    TrainingResultsModule
   ],
   controllers: [AppController, ControllerController],
   providers: [AppService, AppGateway]

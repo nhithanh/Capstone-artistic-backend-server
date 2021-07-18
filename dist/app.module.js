@@ -30,6 +30,8 @@ const showcases_module_1 = require("./modules/apis/showcases/showcases.module");
 const notifications_module_1 = require("./modules/apis/notifications/notifications.module");
 const videos_module_1 = require("./modules/apis/videos/videos.module");
 const mail_module_1 = require("./mail/mail.module");
+const training_requests_module_1 = require("./modules/apis/training-requests/training-requests.module");
+const training_results_module_1 = require("./modules/apis/training-results/training-results.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -69,7 +71,9 @@ AppModule = __decorate([
             showcases_module_1.ShowcasesModule,
             notifications_module_1.NotificationsModule,
             videos_module_1.VideosModule,
-            mail_module_1.MailModule
+            mail_module_1.MailModule,
+            training_requests_module_1.TrainingRequestsModule,
+            training_results_module_1.TrainingResultsModule
         ],
         controllers: [app_controller_1.AppController, controller_controller_1.ControllerController],
         providers: [app_service_1.AppService, app_gateway_1.AppGateway]
