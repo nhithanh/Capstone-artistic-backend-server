@@ -5,7 +5,10 @@ import { SocketService } from './socket.service';
 import _ from 'lodash'
 
 @WebSocketGateway()
-export class AppGateway implements OnGatewayInit {
+export class AppGateway implements OnGatewayInit, OnGatewayConnection {
+  handleConnection(client: any, ...args: any[]) {
+    console.log("New connection to socket")
+  }
 
   @Inject()
   private socketService: SocketService;

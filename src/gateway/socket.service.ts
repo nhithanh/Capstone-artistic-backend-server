@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 
 @Injectable()
 export class SocketService {
@@ -14,6 +14,13 @@ export class SocketService {
         this.server.emit(userId, {
             action: "TRANSFER_VIDEO_COMPLETED",
             albumId
+        })
+    }
+
+    public emitStopTraining() {
+        console.log("emit stop training baby")
+        this.server.emit('stop-training', {
+            requestId: "hehehe"
         })
     }
 

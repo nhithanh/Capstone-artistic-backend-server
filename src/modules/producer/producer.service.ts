@@ -38,10 +38,10 @@ export class ProducerService {
     }
 
     public emitStopTraining(trainingRequestId: string) {
+      console.log("emit event stop")
       return this.emitMessage(this.STOP_TRAINING_EXCHANGE, "", {
         trainingRequestId,
         action: "STOP"
       })
     }
-
 }

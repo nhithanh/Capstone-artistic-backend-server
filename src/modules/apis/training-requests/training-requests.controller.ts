@@ -74,6 +74,11 @@ export class TrainingRequestsController {
     return this.trainingRequestsService.findOne(id);
   }
 
+  @Get(':id/stop')
+  stop(@Param('id') id: string) {
+    return this.trainingRequestsService.stopTraingRequest(id);
+  }
+
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateTrainingRequestDto: UpdateTrainingRequestDto) {
   //   return this.trainingRequestsService.update(+id, updateTrainingRequestDto);

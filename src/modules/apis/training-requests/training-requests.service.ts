@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SocketService } from 'src/gateway/socket.service';
 import { S3Service } from 'src/s3/s3.service';
 import { Repository } from 'typeorm';
 import { CreateTrainingRequestDto } from './dto/create-training-request.dto';
@@ -7,6 +8,9 @@ import { STATUS, TrainingRequest } from './entities/training-request.entity';
 
 @Injectable()
 export class TrainingRequestsService {
+
+  @Inject()
+  private readonly socketService: SocketService;
 
   @Inject()
   private readonly s3Service: S3Service;
@@ -33,11 +37,20 @@ export class TrainingRequestsService {
   }
 
   async findOne(id: string) {
-    const data = await this.trainingRequestRepository.findOne()
+    const data = await this.trainingRequestRepository.findOne(id)
     return {
       ...data, 
       styleAccessURL: this.s3Service.getCDNURL(data.referenceStyleLocation),
     }
+  }
+
+  async stopTraingRequest(id: string) {
+    const trainingRequest = await this.trainingRequestRepository.findOne(id)
+    this.socketService.emitStopTraining()
+    return this.trainingRequestRepository.save({
+      ...trainingRequest,
+      status: STATUS.STOPPED
+    })
   }
 
   update(id: number, updateTrainingRequestDto) {
