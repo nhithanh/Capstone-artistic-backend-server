@@ -42,7 +42,7 @@ let S3Service = class S3Service {
             Bucket: bucket,
             Key: key
         };
-        return this.s3.getSignedUrl('getObject', Object.assign(Object.assign({}, params), { Expires: 60 }));
+        return this.s3.getSignedUrl('getObject', Object.assign(Object.assign({}, params), { Expires: 600000 }));
     }
     getCDNURL(locationURL) {
         const { bucket, key } = AmazonS3URI(locationURL);
