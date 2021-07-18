@@ -27,7 +27,7 @@ export class TrainingRequestsController {
     const relu33Weight = +data['relu33Weight'] || 1
     const relu43Weight = +data['relu43Weight'] || 1
     const saveStep = +data['saveStep'] || 1000
-    const epochs = +data['epochs'] || 500
+    const numOfIterations = +data['numOfIterations'] || 20000
     const description = data['description'] || ''
 
     const trainingReqest = await this.trainingRequestsService.create({
@@ -41,7 +41,7 @@ export class TrainingRequestsController {
       relu43Weight,
       saveStep,
       styleWeight,
-      epochs,
+      numOfIterations,
       description
     });
 
@@ -50,7 +50,7 @@ export class TrainingRequestsController {
       accessURL: this.s3Service.getCDNURL(photo.location),
       contentWeight,
       lr,
-      epochs,
+      numOfIterations,
       relu12Weight,
       relu22Weight,
       relu33Weight,
@@ -71,7 +71,7 @@ export class TrainingRequestsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.trainingRequestsService.findOne(+id);
+    return this.trainingRequestsService.findOne(id);
   }
 
   // @Patch(':id')

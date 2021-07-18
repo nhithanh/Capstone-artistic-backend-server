@@ -92,7 +92,7 @@ export class TrainingRequest {
         type: 'varchar',
         nullable: false
     })
-    stauts: STATUS;
+    status: STATUS;
 
     @Column({
         type: 'integer',
@@ -104,9 +104,9 @@ export class TrainingRequest {
     @Column({
         type: 'integer',
         unique: false,
-        default: 500
+        default: 20000
     })
-    epochs: number;
+    numOfIterations: number;
 
     @CreateDateColumn()
     createdAt: Date;

@@ -49,4 +49,20 @@ export class TrainingResultsService {
   remove(id: number) {
     return `This action removes a #${id} trainingResult`;
   }
+
+  async getTrainingResultByTrainingRequestId(id: string) {
+    const data = await this.trainingResultRepository.find({
+      where: {
+        trainingRequestId: id
+      }
+    })
+
+    return data.map(item => {
+      return {
+        ...item,
+        photoAccessURL: this.s3Service.getCDNURL(item.resultPhotoLocation),
+        snapshotAccessURL: this.s3Service.getCDNURL(item.snapshotLocation)
+      }
+    })
+  } 
 }

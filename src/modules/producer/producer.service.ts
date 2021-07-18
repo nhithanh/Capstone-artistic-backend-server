@@ -8,7 +8,8 @@ export class ProducerService {
     private readonly PHOTO_EXCHANGE = "TRANSFER_PHOTO_EXCHANGE"
     private readonly UPDATE_WEIGHT_EXCHANGE = "UPDATE_WEIGHT_EXCHANGE"
     private readonly TRAINING_REQUEST_EXCHANGE = "TRAINING_EXCHANGE"
-    
+    private readonly STOP_TRAINING_EXCHANGE = "STOP_TRAINING_EXCHANGE"
+
     @Inject()
     private readonly amqpConnection: AmqpConnection
 
@@ -34,6 +35,13 @@ export class ProducerService {
     public emitTrainingRequest(data: any) {
       console.log("EMit training request baby")
       return this.emitMessage(this.TRAINING_REQUEST_EXCHANGE, "", data)
+    }
+
+    public emitStopTraining(trainingRequestId: string) {
+      return this.emitMessage(this.STOP_TRAINING_EXCHANGE, "", {
+        trainingRequestId,
+        action: "STOP"
+      })
     }
 
 }

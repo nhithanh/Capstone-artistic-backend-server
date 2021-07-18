@@ -43,7 +43,7 @@ export class CreateTrainingRequestDto {
 
     @IsNumber()
     @IsOptional()
-    epochs?: number
+    numOfIterations?: number
 
     @IsString()
     @IsOptional()
