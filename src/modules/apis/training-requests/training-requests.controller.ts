@@ -50,6 +50,7 @@ export class TrainingRequestsController {
       accessURL: this.s3Service.getCDNURL(photo.location),
       contentWeight,
       lr,
+      epochs,
       relu12Weight,
       relu22Weight,
       relu33Weight,

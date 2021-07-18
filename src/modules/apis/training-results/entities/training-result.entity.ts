@@ -24,9 +24,15 @@ export class TrainingResult {
 
     @Column({
         type: 'varchar',
-        nullable: false
+        nullable: true
     })
     resultPhotoLocation: string;
+
+    @Column({
+        type: 'varchar',
+        nullable: true
+    })
+    snapshotLocation: string;
 
     @CreateDateColumn()
     createdAt: Date;

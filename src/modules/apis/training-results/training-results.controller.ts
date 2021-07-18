@@ -12,9 +12,9 @@ export class TrainingResultsController {
     return this.trainingResultsService.create(createTrainingResultDto);
   }
 
-  @Get()
-  findAll() {
-    return this.trainingResultsService.findAll();
+  @Get(':id')
+  findAll(@Param('id') id: string) {
+    return this.trainingResultsService.findAll(id);
   }
 
   @Get(':id')
