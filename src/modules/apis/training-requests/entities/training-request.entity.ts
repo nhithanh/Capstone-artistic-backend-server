@@ -101,6 +101,13 @@ export class TrainingRequest {
     })
     checkpoint: number;
 
+    @Column({
+        type: 'integer',
+        unique: false,
+        default: 500
+    })
+    epochs: number;
+
     @CreateDateColumn()
     createdAt: Date;
 

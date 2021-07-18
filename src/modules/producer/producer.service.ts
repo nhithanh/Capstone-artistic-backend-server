@@ -7,6 +7,7 @@ export class ProducerService {
     private readonly VIDEO_EXCHANGE = "EXCHANGE_TRANSFER_VIDEO"
     private readonly PHOTO_EXCHANGE = "TRANSFER_PHOTO_EXCHANGE"
     private readonly UPDATE_WEIGHT_EXCHANGE = "UPDATE_WEIGHT_EXCHANGE"
+    private readonly TRAINING_REQUEST_EXCHANGE = "TRAINING_EXCHANGE"
     
     @Inject()
     private readonly amqpConnection: AmqpConnection
@@ -28,6 +29,11 @@ export class ProducerService {
 
     public emitUpdatePhotoWeight(data: any) {
       return this.emitMessage(this.UPDATE_WEIGHT_EXCHANGE, "", data)
+    }
+
+    public emitTrainingRequest(data: any) {
+      console.log("EMit training request baby")
+      return this.emitMessage(this.TRAINING_REQUEST_EXCHANGE, "", data)
     }
 
 }

@@ -8,7 +8,7 @@ import { ProducerService } from './producer.service';
         ConfigModule.forRoot(),
         RabbitMQModule.forRoot(RabbitMQModule, {
             uri: process.env.RABBITMQ_ENDPOINT,
-            connectionInitOptions: { wait: false }
+            connectionInitOptions: { wait: true }
         })
     ],
     providers: [ProducerService],

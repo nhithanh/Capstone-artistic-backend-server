@@ -11,10 +11,11 @@ export class TrainingRequestsService {
   private readonly trainingRequestRepository: Repository<TrainingRequest>
 
   create(createTrainingRequestDto: CreateTrainingRequestDto) {
-    return this.trainingRequestRepository.create({
+    const newTrainingRequest = this.trainingRequestRepository.create({
       ...createTrainingRequestDto,
       stauts: STATUS.WAITING
     })
+    return this.trainingRequestRepository.save(newTrainingRequest)
   }
 
   findAll() {

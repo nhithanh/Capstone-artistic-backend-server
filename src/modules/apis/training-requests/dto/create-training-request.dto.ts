@@ -36,7 +36,16 @@ export class CreateTrainingRequestDto {
     @IsNumber()
     @IsOptional()
     relu33Weight?: number
+
     @IsNumber()
     @IsOptional()
     relu43Weight?: number
+
+    @IsNumber()
+    @IsOptional()
+    epochs?: number
+
+    @IsString()
+    @IsOptional()
+    description?: string
 }
