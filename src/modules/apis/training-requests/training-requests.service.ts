@@ -27,7 +27,9 @@ export class TrainingRequestsService {
   }
 
   async findAll() {
-    const trainingRequests = await this.trainingRequestRepository.find()
+    const trainingRequests = await this.trainingRequestRepository.find({
+      order: {createdAt: 'DESC'}
+    })
     return trainingRequests.map(request => {
       return {
         ...request,
