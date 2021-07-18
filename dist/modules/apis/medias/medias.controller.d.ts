@@ -14,6 +14,7 @@ export declare class MediasController {
     private readonly socketService;
     private readonly producerService;
     private readonly mediasService;
+    private readonly styleService;
     constructor();
     transferPhoto(transferPhotoMetadata: TransferMediaMetadataDTO, req: any): Promise<{
         status: HttpStatus;

@@ -18,6 +18,7 @@ import { ProducerModule } from 'src/modules/producer/producer.module';
     inject: [S3Service],
   })],
   controllers: [StylesController],
-  providers: [StylesService]
+  providers: [StylesService],
+  exports: [StylesService]
 })
 export class StylesModule {}

@@ -101,6 +101,20 @@ let StylesService = class StylesService {
             };
         }
     }
+    async checkIsStyleSupport(styleId) {
+        const style = await this.findOne(styleId);
+        if (style) {
+            if (style.isActive === false) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            return false;
+        }
+    }
 };
 __decorate([
     common_1.Inject(),

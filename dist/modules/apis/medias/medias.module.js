@@ -20,11 +20,12 @@ const s3_service_1 = require("../../../s3/s3.service");
 const multer_service_1 = require("../../../config/multer.service");
 const user_entity_1 = require("../users/entities/user.entity");
 const notifications_module_1 = require("../notifications/notifications.module");
+const styles_module_1 = require("../styles/styles.module");
 let MediasModule = class MediasModule {
 };
 MediasModule = __decorate([
     common_1.Module({
-        imports: [typeorm_1.TypeOrmModule.forFeature([media_entity_1.Media, user_entity_1.User]), producer_module_1.ProducerModule, notifications_module_1.NotificationsModule, s3_module_1.S3Module, socket_module_1.SocketModule, platform_express_1.MulterModule.registerAsync({
+        imports: [typeorm_1.TypeOrmModule.forFeature([media_entity_1.Media, user_entity_1.User]), producer_module_1.ProducerModule, notifications_module_1.NotificationsModule, styles_module_1.StylesModule, s3_module_1.S3Module, socket_module_1.SocketModule, platform_express_1.MulterModule.registerAsync({
                 imports: [s3_module_1.S3Module],
                 useFactory: async (s3Service) => multer_service_1.uploadImageToS3Option(s3Service.s3),
                 inject: [s3_service_1.S3Service],

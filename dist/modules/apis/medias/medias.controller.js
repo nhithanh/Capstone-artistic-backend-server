@@ -28,6 +28,7 @@ const media_entity_1 = require("./entities/media.entity");
 const transfer_video_metadata_dto_1 = require("./dto/transfer-video-metadata.dto");
 const upload_media_dto_1 = require("./dto/upload-media.dto");
 const notifications_service_1 = require("../notifications/notifications.service");
+const styles_service_1 = require("../styles/styles.service");
 let MediasController = class MediasController {
     constructor() { }
     async transferPhoto(transferPhotoMetadata, req) {
@@ -36,12 +37,20 @@ let MediasController = class MediasController {
             styleId: transferPhotoMetadata.styleId,
             userId: req.user.id
         };
-        console.log(payload);
-        this.producerService.emitTransferPhotoTask(payload);
-        return {
-            status: common_1.HttpStatus.ACCEPTED,
-            message: 'Your request is executing.'
-        };
+        const isSupport = await this.styleService.checkIsStyleSupport(payload.styleId);
+        if (isSupport === true) {
+            this.producerService.emitTransferPhotoTask(payload);
+            return {
+                status: common_1.HttpStatus.ACCEPTED,
+                message: 'Your request is executing.'
+            };
+        }
+        else {
+            throw new common_1.HttpException({
+                statusCode: 404,
+                message: `This style is not supported now!`,
+            }, common_1.HttpStatus.NOT_FOUND);
+        }
     }
     async transferVideo(transferVideoMetadata, req) {
         const media = await this.mediasService.findOne(transferVideoMetadata.mediaId);
@@ -150,6 +159,10 @@ __decorate([
     common_1.Inject(),
     __metadata("design:type", medias_service_1.MediasService)
 ], MediasController.prototype, "mediasService", void 0);
+__decorate([
+    common_1.Inject(),
+    __metadata("design:type", styles_service_1.StylesService)
+], MediasController.prototype, "styleService", void 0);
 __decorate([
     common_1.Post('/transfer-photo'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),

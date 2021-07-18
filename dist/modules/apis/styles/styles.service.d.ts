@@ -65,4 +65,5 @@ export declare class StylesService {
     remove(id: string): Promise<{
         id: string;
     }>;
+    checkIsStyleSupport(styleId: string): Promise<Boolean>;
 }

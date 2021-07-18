@@ -29,7 +29,8 @@ StylesModule = __decorate([
                 inject: [s3_service_1.S3Service],
             })],
         controllers: [styles_controller_1.StylesController],
-        providers: [styles_service_1.StylesService]
+        providers: [styles_service_1.StylesService],
+        exports: [styles_service_1.StylesService]
     })
 ], StylesModule);
 exports.StylesModule = StylesModule;
