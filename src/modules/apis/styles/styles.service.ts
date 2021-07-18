@@ -132,4 +132,17 @@ export class StylesService {
       }
     }
   }
+
+  async checkIsStyleSupport(styleId: string) : Promise<Boolean>{  
+    const style = await this.findOne(styleId)
+    if(style) {
+      if(style.isActive === false) {
+        return false
+      } else {
+        return true
+      }
+    } else {
+      return false
+    }
+  }
 }

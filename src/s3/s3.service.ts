@@ -44,7 +44,7 @@ export class S3Service {
             Bucket: bucket,
             Key: key
         }
-        return this.s3.getSignedUrl('getObject', {...params,Expires: 60});
+        return this.s3.getSignedUrl('getObject', {...params,Expires: 600000});
     }
 
     getCDNURL(locationURL: string): string {

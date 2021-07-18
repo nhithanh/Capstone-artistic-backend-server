@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, UseInterceptors, UploadedFile, Req, Inject, HttpStatus, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, UseInterceptors, UploadedFile, Req, Inject, HttpStatus, Query, UseGuards, HttpException } from '@nestjs/common';
 import { MediasService } from './medias.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProducerService } from 'src/modules/producer/producer.service';
@@ -13,6 +13,7 @@ import { MEDIA_TYPE } from './entities/media.entity'
 import { TransferVideoCompleteMetadata, TransferVideoMetadataDto } from './dto/transfer-video-metadata.dto';
 import { UpdateMediaDTO } from './dto/upload-media.dto';
 import { NotificationsService } from '../notifications/notifications.service';
+import { StylesService } from '../styles/styles.service';
 
 @ApiTags("medias")
 @Controller('medias')
@@ -33,6 +34,8 @@ export class MediasController {
   @Inject()
   private readonly mediasService: MediasService;
 
+  @Inject()
+  private readonly styleService: StylesService;
   constructor() {}
 
   @Post('/transfer-photo')
@@ -43,11 +46,21 @@ export class MediasController {
       styleId: transferPhotoMetadata.styleId,
       userId: req.user.id
     }
-    console.log(payload)
-    this.producerService.emitTransferPhotoTask(payload);
-    return {
-      status: HttpStatus.ACCEPTED,
-      message: 'Your request is executing.'
+    
+    const isSupport = await this.styleService.checkIsStyleSupport(payload.styleId)
+    if(isSupport === true) {
+      this.producerService.emitTransferPhotoTask(payload);
+      return {
+        status: HttpStatus.ACCEPTED,
+        message: 'Your request is executing.'
+      }
+    } else {
+      throw new HttpException({
+        statusCode: 404,
+        message: `This style is not supported now!`,
+      },
+      HttpStatus.NOT_FOUND,
+      )
     }
   }
 
