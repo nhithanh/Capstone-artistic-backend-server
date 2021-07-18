@@ -94,6 +94,13 @@ export class TrainingRequest {
     })
     stauts: STATUS;
 
+    @Column({
+        type: 'integer',
+        unique: false,
+        default: 0
+    })
+    checkpoint: number;
+
     @CreateDateColumn()
     createdAt: Date;
 
