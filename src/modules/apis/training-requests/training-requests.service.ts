@@ -46,7 +46,7 @@ export class TrainingRequestsService {
     }
   }
 
-  async stopTraingRequest(id: string) {
+  async stopTrainingRequest(id: string) {
     const trainingRequest = await this.trainingRequestRepository.findOne(id)
     this.socketService.emitStopTraining()
     return this.trainingRequestRepository.save({
@@ -59,7 +59,9 @@ export class TrainingRequestsService {
     return `This action updates a #${id} trainingRequest`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} trainingRequest`;
+  remove(id: string) {
+    return this.trainingRequestRepository.softDelete({
+      id
+    })
   }
 }

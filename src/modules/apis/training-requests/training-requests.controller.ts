@@ -76,7 +76,7 @@ export class TrainingRequestsController {
 
   @Get(':id/stop')
   stop(@Param('id') id: string) {
-    return this.trainingRequestsService.stopTraingRequest(id);
+    return this.trainingRequestsService.stopTrainingRequest(id);
   }
 
   // @Patch(':id')
@@ -86,6 +86,6 @@ export class TrainingRequestsController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.trainingRequestsService.remove(+id);
+    return this.trainingRequestsService.remove(id);
   }
 }
