@@ -24,4 +24,11 @@ export class SocketService {
         })
     }
 
+    public emitUpdateTrainingRequestToAdmin(updatedTrainingRequest) {
+        this.server.emit('ADMIN', {
+            action: "UPDATE_TRAINING_REQUEST",
+            updatedTrainingRequest
+        })
+    }
+
 }

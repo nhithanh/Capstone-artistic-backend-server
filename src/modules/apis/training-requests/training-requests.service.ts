@@ -55,8 +55,13 @@ export class TrainingRequestsService {
     })
   }
 
-  update(id: number, updateTrainingRequestDto) {
-    return `This action updates a #${id} trainingRequest`;
+  async startTrainingRequest(id: string) {
+    const trainingRequest = await this.trainingRequestRepository.findOne(id)
+    const updatedTrainingRequest = await this.trainingRequestRepository.save({
+      ...trainingRequest,
+      status: STATUS.ON_PROGRESS
+    })
+    this.socketService.emitUpdateTrainingRequestToAdmin(updatedTrainingRequest)
   }
 
   remove(id: string) {

@@ -48,15 +48,15 @@ export class TrainingRequestsController {
     const payload = {
       id: trainingReqest.id,
       accessURL: this.s3Service.getCDNURL(photo.location),
-      contentWeight,
-      lr,
-      numOfIterations,
-      relu12Weight,
-      relu22Weight,
-      relu33Weight,
-      relu43Weight,
-      saveStep,
-      styleWeight
+      contentWeight: +contentWeight,
+      lr: +lr,
+      numOfIterations: +numOfIterations,
+      relu12Weight: +relu12Weight,
+      relu22Weight: +relu22Weight,
+      relu33Weight: +relu33Weight,
+      relu43Weight: +relu43Weight,
+      saveStep: +saveStep,
+      styleWeight: +styleWeight
     }
 
     this.producerService.emitTrainingRequest(payload)
@@ -77,6 +77,11 @@ export class TrainingRequestsController {
   @Get(':id/stop')
   stop(@Param('id') id: string) {
     return this.trainingRequestsService.stopTrainingRequest(id);
+  }
+
+  @Get(':id/start')
+  start(@Param('id') id: string) {
+    return this.trainingRequestsService.startTrainingRequest(id);
   }
 
   // @Patch(':id')

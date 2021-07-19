@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SocketService } from 'src/gateway/socket.service';
 import { S3Service } from 'src/s3/s3.service';
 import { Repository } from 'typeorm';
+import { TrainingRequest } from '../training-requests/entities/training-request.entity';
 import { CreateTrainingResultDto } from './dto/create-training-result.dto';
 import { UpdateTrainingResultDto } from './dto/update-training-result.dto';
 import { TrainingResult } from './entities/training-result.entity';
@@ -12,10 +14,25 @@ export class TrainingResultsService {
   @InjectRepository(TrainingResult)
   private readonly trainingResultRepository: Repository<TrainingResult>
 
+  @InjectRepository(TrainingRequest)
+  private readonly trainingRequestReposiory: Repository<TrainingRequest>
+
   @Inject()
   private readonly s3Service: S3Service;
 
-  create(createTrainingResultDto: CreateTrainingResultDto) {
+  @Inject()
+  private readonly socketService: SocketService;
+
+  async create(createTrainingResultDto: CreateTrainingResultDto) {
+    const trainingRequest = await this.trainingRequestReposiory.findOne(createTrainingResultDto.trainingRequestId)
+    const updateTrainingRequest = {
+      ...trainingRequest,
+      checkpoint: +createTrainingResultDto.step
+    }
+    this.trainingRequestReposiory.save(updateTrainingRequest).then(() => {
+      console.log("emit")
+      this.socketService.emitUpdateTrainingRequestToAdmin(updateTrainingRequest)
+    })
     const newTrainingResult = this.trainingResultRepository.create({...createTrainingResultDto,
       resultPhotoLocation: `https://artisan-photos.s3.amazonaws.com/${createTrainingResultDto.resultPhotoLocation}`,
       snapshotLocation: `https://artisan-photos.s3.amazonaws.com/${createTrainingResultDto.snapshotLocation}`, 
