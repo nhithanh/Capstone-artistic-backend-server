@@ -1,0 +1,1 @@
+export const QUEUE_HOST = "amqps://vkcupcps:7aZAQs_SrFQ8_xUtIsC_phHlwl_KpuLf@baboon.rmq.cloudamqp.com/vkcupcps"

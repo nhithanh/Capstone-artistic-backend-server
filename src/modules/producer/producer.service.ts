@@ -1,5 +1,15 @@
-import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import {QUEUE_HOST} from '../../config'
+
+var amqp = require('amqp-connection-manager');
+
+const enum ACTIONS {
+  TRANSFER_PHOTO = "TRANSFER_PHOTO",
+  TRANSFER_VIDEO = "TRANSFER_VIDEO",
+  UPDATE_WEIGHT = "UPDATE_WEIGHT",
+  START_TRAINING = "START_TRAINING",
+  STOP_TRAINING = "STOP_TRAINING"
+}
 
 @Injectable()
 export class ProducerService {
@@ -10,38 +20,75 @@ export class ProducerService {
     private readonly TRAINING_REQUEST_EXCHANGE = "TRAINING_EXCHANGE"
     private readonly STOP_TRAINING_EXCHANGE = "STOP_TRAINING_EXCHANGE"
 
-    @Inject()
-    private readonly amqpConnection: AmqpConnection
-
+    private readonly connection = amqp.connect([QUEUE_HOST]);
+    private readonly channelWrapper = this.connection.createChannel();
+    private awaitRequests = []
     
-    constructor() {}
+    constructor() {
+      setInterval(() => {
+        if(this.awaitRequests.length > 0) {
+          const waitingRequests = this.awaitRequests
+          this.awaitRequests = []
+          for(let awaitRequest of waitingRequests) {
+            const {data, action} = awaitRequest
+            this.deliveryMessage(action, data)
+          }
+        }
+      }, 2000)
+    }
 
-    private emitMessage(exchange: string, routingKey:string, data: any) {
-      return this.amqpConnection.publish(exchange, routingKey, data)
+    private deliveryMessage(action, data) {
+      switch(action) {
+        case ACTIONS.TRANSFER_PHOTO:
+          this.emitTransferPhotoTask(data)
+          break;
+        case ACTIONS.TRANSFER_VIDEO:
+          this.emitTransferVideoTask(data)
+          break;
+        case ACTIONS.UPDATE_WEIGHT:
+          this.emitUpdatePhotoWeight(data)
+          break;
+        case ACTIONS.START_TRAINING:
+          this.emitTrainingRequest(data)
+          break;
+        case ACTIONS.STOP_TRAINING:
+          this.emitStopTraining(data)
+          break
+      }
+    }
+
+    private emitMessage(exchange: string, routingKey: string, data: any, action: string) {
+      return this.channelWrapper.publish(exchange, routingKey, data).catch(err => {
+        this.awaitRequests.push({
+          data,
+          action
+        })
+      })
     }
 
     public emitTransferPhotoTask(data: any) {
-      return this.emitMessage(this.PHOTO_EXCHANGE, "", data)
+      return this.emitMessage(this.PHOTO_EXCHANGE, "", data, ACTIONS.TRANSFER_PHOTO)
     }
 
     public emitTransferVideoTask(data:any) {
-      return this.emitMessage(this.VIDEO_EXCHANGE, "", data)
+      return this.emitMessage(this.VIDEO_EXCHANGE, "", data, ACTIONS.TRANSFER_VIDEO)
     }
 
     public emitUpdatePhotoWeight(data: any) {
-      return this.emitMessage(this.UPDATE_WEIGHT_EXCHANGE, "", data)
+      return this.emitMessage(this.UPDATE_WEIGHT_EXCHANGE, "", data, ACTIONS.UPDATE_WEIGHT)
     }
 
     public emitTrainingRequest(data: any) {
       console.log("EMit training request baby")
-      return this.emitMessage(this.TRAINING_REQUEST_EXCHANGE, "", data)
+      return this.emitMessage(this.TRAINING_REQUEST_EXCHANGE, "", data, ACTIONS.START_TRAINING)
     }
 
     public emitStopTraining(trainingRequestId: string) {
       console.log("emit event stop")
-      return this.emitMessage(this.STOP_TRAINING_EXCHANGE, "", {
+      const data = {
         trainingRequestId,
         action: "STOP"
-      })
+      }
+      return this.emitMessage(this.STOP_TRAINING_EXCHANGE, "", data, ACTIONS.STOP_TRAINING)
     }
 }
