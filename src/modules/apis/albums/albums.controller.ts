@@ -1,11 +1,17 @@
-import { Controller, Get, Post, Body, Param, Delete, UseGuards, Req, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards, Req, Put, UseInterceptors, UploadedFile, Inject } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auths/jwt-auth.guard';
+import { S3Service } from 'src/s3/s3.service';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 
 @Controller('albums')
 export class AlbumsController {
+
+  @Inject()
+  private readonly s3Service: S3Service;
+
   constructor(private readonly albumsService: AlbumsService) {}
 
   @UseGuards(JwtAuthGuard)
@@ -29,6 +35,19 @@ export class AlbumsController {
   @UseGuards(JwtAuthGuard)
   async update(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto, @Req() req) {
     return await this.albumsService.update(id,req.user, updateAlbumDto);
+  }
+
+  @Put(':id/update-background-with-upload')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('photo'))
+  async updateBackgroundWithFileUpload(@Param('id') id, @Req() req, @UploadedFile() photo: Express.MulterS3.File, @Body() body) {
+    const updatedAlbum = await this.albumsService.update(id, req.user, {
+      thumbnailURL: photo.location
+    })
+    return {
+      ...updatedAlbum,
+      accessURL: this.s3Service.getCDNURL(updatedAlbum.thumbnailURL)
+    }
   }
 
   @Delete(':id')
