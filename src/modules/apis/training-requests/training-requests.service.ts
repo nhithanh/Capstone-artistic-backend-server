@@ -40,9 +40,15 @@ export class TrainingRequestsService {
 
   async findOne(id: string) {
     const data = await this.trainingRequestRepository.findOne(id)
+    if(data) {
+      return {
+        ...data, 
+        styleAccessURL: this.s3Service.getCDNURL(data.referenceStyleLocation),
+      }
+    }
     return {
-      ...data, 
-      styleAccessURL: this.s3Service.getCDNURL(data.referenceStyleLocation),
+      id,
+      status: "DELETED"
     }
   }
 
@@ -65,8 +71,11 @@ export class TrainingRequestsService {
   }
 
   remove(id: string) {
-    return this.trainingRequestRepository.softDelete({
+    return this.trainingRequestRepository.update({
       id
+    }, {
+      deletedAt: new Date(),
+      status: STATUS.DELETED
     })
   }
 }

@@ -2,6 +2,8 @@ import { extname } from 'path';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import  * as multerS3 from 'multer-s3'
 import { S3 } from 'aws-sdk';
+import { v4 as uuidv4 } from 'uuid';
+
 
 export const uploadImageToS3Option = (s3: S3) => {
     return {
@@ -43,7 +45,7 @@ export const uploadImageToS3OptionAdmin = (s3: S3) => {
             s3: s3,
             bucket: 'artisan-photos',
             key: function (req: any, file, cb) {
-                let destination = `assets/${Date.now().toString()}`
+                let destination = `assets/${Date.now().toString()}/${uuidv4()}`
                 cb(null, destination)
             },
             contentType: multerS3.AUTO_CONTENT_TYPE
@@ -65,10 +67,10 @@ export const uploadSnapshotOption = (s3: S3) => {
         },
         storage: multerS3({
             s3: s3,
-            bucket: 'artisan-model-snapshots',
+            bucket: 'artisan-photos',
             key: function (req: any, file, cb) {
                 const styleRoutingKey = req.body['routingKey']
-                let destination = `${styleRoutingKey}/${new Date().getTime().toString()}`
+                let destination = `snapshots/${styleRoutingKey}/${Date.now().toString()}/${uuidv4()}`
                 cb(null, destination)
             },
             contentType: multerS3.AUTO_CONTENT_TYPE

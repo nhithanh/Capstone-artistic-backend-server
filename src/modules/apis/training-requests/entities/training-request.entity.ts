@@ -4,7 +4,8 @@ export enum STATUS {
     WAITING = 'WAITING',
     ON_PROGRESS = 'ON PROGRESS',
     STOPPED = 'STOPPED',
-    COMPLETED = 'COMPLETED'
+    COMPLETED = 'COMPLETED',
+    DELETED = 'DELETED'
 }
 
 @Entity()
