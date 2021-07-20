@@ -61,7 +61,7 @@ export class AlbumsService {
         name: album.name,
         isDefault: album.is_default,
         createdAt: album.created_at,
-        thumbnailURL: album.thumbnail_url,
+        thumbnailURL: this.s3Service.getCDNURL(album.thumbnail_url),
         total: album.total
       }
     })
@@ -97,10 +97,14 @@ export class AlbumsService {
     const isHasRight = await this.checkUserAccessRight(user, id)
     if (isHasRight) {
       const updateAlbum = await this.findOne(id)
-      return this.albumRepository.save({
+      const updatedAlbum = await this.albumRepository.save({
         ...updateAlbum,
         ...updateAlbumDto
       })
+      return {
+        ...updatedAlbum,
+        thumbnailURL: this.s3Service.getCDNURL(updatedAlbum.thumbnailURL)
+      }
     }
     else {
       throw new HttpException({

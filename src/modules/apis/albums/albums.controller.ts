@@ -9,9 +9,6 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 @Controller('albums')
 export class AlbumsController {
 
-  @Inject()
-  private readonly s3Service: S3Service;
-
   constructor(private readonly albumsService: AlbumsService) {}
 
   @UseGuards(JwtAuthGuard)
@@ -41,13 +38,9 @@ export class AlbumsController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('photo'))
   async updateBackgroundWithFileUpload(@Param('id') id, @Req() req, @UploadedFile() photo: Express.MulterS3.File, @Body() body) {
-    const updatedAlbum = await this.albumsService.update(id, req.user, {
+    return this.albumsService.update(id, req.user, {
       thumbnailURL: photo.location
     })
-    return {
-      ...updatedAlbum,
-      accessURL: this.s3Service.getCDNURL(updatedAlbum.thumbnailURL)
-    }
   }
 
   @Delete(':id')

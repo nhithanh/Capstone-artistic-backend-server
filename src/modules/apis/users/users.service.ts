@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AlbumsService } from '../albums/albums.service';
@@ -8,9 +8,13 @@ import { User } from './entities/user.entity';
 import * as _ from 'lodash'
 import {generate} from 'generate-password'
 import { MailService } from 'src/mail/mail.service';
+import { AuthsService } from 'src/auths/auths.service';
 
 @Injectable()
 export class UsersService {
+
+  @Inject(forwardRef(() => AuthsService))
+  private readonly authsService: AuthsService;
 
   @InjectRepository(User)
   private readonly usersRepository: Repository<User>
@@ -140,5 +144,27 @@ export class UsersService {
         HttpStatus.NOT_FOUND,
       )
     }
+  }
+
+  async handleGoogleLogin({email, given_name, family_name}) {
+    const user = await this.usersRepository.findOne({email})
+    if(user) {
+      const token = await this.authsService.genToken(user)
+      return token
+    }
+    let newUser = this.usersRepository.create({
+      email,
+      firstName: given_name,
+      lastName: family_name,
+    })
+    newUser = await this.usersRepository.save(newUser)
+    const newAlbum = await this.albumService.create({
+      name: 'Default',
+      userId: newUser.id
+    })
+    newUser.defaultAlbumId = newAlbum.id
+    newUser = await this.usersRepository.save(newUser)
+    const token = await this.authsService.genToken(newUser)
+    return token
   }
 }

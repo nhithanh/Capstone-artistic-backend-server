@@ -1,4 +1,5 @@
 import {
+  forwardRef,
   Inject,
   Injectable,
 } from '@nestjs/common';
@@ -9,7 +10,7 @@ import { UsersService } from 'src/modules/apis/users/users.service';
 @Injectable()
 export class AuthsService {
 
-  @Inject()
+  @Inject(forwardRef(() => UsersService))
   private readonly usersService: UsersService;
 
   constructor(
@@ -21,7 +22,6 @@ export class AuthsService {
   }
 
   async genToken(user: User) {
-    console.log("In token" ,user)
     const payload = {
       id: user.id,
       email: user.email,
