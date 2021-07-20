@@ -16,7 +16,7 @@ export class S3Service {
 
     constructor() {
         this.BUCKET_NAME = process.env.S3_BUCKET_NAME
-        this.CDN_ENDPOINT = process.env.S3_ARTISAN_CDN
+        this.CDN_ENDPOINT = process.env.S3_CDN
 
         const env = process.env.ENV || 'dev'
 
