@@ -70,7 +70,7 @@ export class StylesController {
     const snapshot = await this.snapshotsService.findOne(style.activeSnapshotId)
     return {
       ...style,
-      snapshotPath: this.s3Service.getS3SignedURL(snapshot.location)
+      snapshotPath: this.s3Service.getCDNURL(snapshot.location)
     }
   }
 

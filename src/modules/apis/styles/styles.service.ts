@@ -65,7 +65,7 @@ export class StylesService {
     return data.map(style => {
       return {
         id: style.id,
-        snapshotPath: this.s3Service.getS3SignedURL(style.location)
+        snapshotPath: this.s3Service.getCDNURL(style.location)
       }
     })
   }
@@ -114,11 +114,11 @@ export class StylesService {
       const snapshot = await this.snapshotsRepository.findOne(updatedStyle.activeSnapshotId)
       this.producerService.emitUpdatePhotoWeight({
         styleId: id,
-        snapshotPath: this.s3Service.getS3SignedURL(snapshot.location)
+        snapshotPath: this.s3Service.getCDNURL(snapshot.location)
       })
       console.log("Update weight:", {
         styleId: id,
-        snapshotPath: this.s3Service.getS3SignedURL(snapshot.location)
+        snapshotPath: this.s3Service.getCDNURL(snapshot.location)
       })
     }
     return updatedStyle;

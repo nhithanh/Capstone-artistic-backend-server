@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { S3 } from 'aws-sdk';
 import * as fs from 'fs';
 import * as util from 'util';
@@ -11,18 +11,12 @@ const AmazonS3URI = require('amazon-s3-uri')
 @Injectable()
 export class S3Service {
     public s3: S3;
-    private bucketName: string;
-    private mainCDN: string;
-    private temporaryBucketName: string;
-    private temporaryCDN: string;
+    private BUCKET_NAME: string;
+    private CDN_ENDPOINT: string;
 
     constructor() {
-
-        this.bucketName = process.env.S3_BUCKET_NAME
-        this.temporaryBucketName = process.env.S3_TEMPORARY_BUCKET_NAME
-
-        this.mainCDN = process.env.S3_ARTISAN_CDN
-        this.temporaryCDN = process.env.S3_ARTISAN_TEMPORARY_CDN
+        this.BUCKET_NAME = process.env.S3_BUCKET_NAME
+        this.CDN_ENDPOINT = process.env.S3_ARTISAN_CDN
 
         const env = process.env.ENV || 'dev'
 
@@ -38,29 +32,15 @@ export class S3Service {
         }
     }
 
-    getS3SignedURL(locationURL: string): string {
-        const {bucket, key} = AmazonS3URI(locationURL)
-        const params = {
-            Bucket: bucket,
-            Key: key
-        }
-        return this.s3.getSignedUrl('getObject', {...params,Expires: 600000});
-    }
-
     getCDNURL(locationURL: string): string {
-        const {bucket, key} = AmazonS3URI(locationURL)
-        if (bucket == this.bucketName) {
-            return `${this.mainCDN}/${key}`
-        }
-        else if(bucket == this.temporaryBucketName) {
-            return `${this.temporaryCDN}/${key}`
-        }
+        const {_, key} = AmazonS3URI(locationURL)
+        return `${this.CDN_ENDPOINT}/${key}`
     }
 
-    async uploadFile(filePath: string, bucketName: string, key: string) {
+    async uploadFile(filePath: string, key: string) {
         const fileContent = await readFile(filePath)
         const params = {
-            Bucket: bucketName,
+            Bucket: this.BUCKET_NAME,
             Key: key,
             Body: fileContent
         };
@@ -74,15 +54,6 @@ export class S3Service {
 
     async uploadFolder(dir: string, s3FolderName: string) {
         const files = await readDir(dir)
-        await Promise.all(files.map(fileName => this.uploadFile(`${dir}/${fileName}`, 'artisan-photos', `${s3FolderName}/${fileName}`)))
-    }
-
-    async copyPhotoToPermanentBucket(temporaryLocationURL: string, key: string) {
-        const rs = await this.s3.copyObject({
-            Bucket: this.bucketName,
-            CopySource: temporaryLocationURL,
-            Key: key
-        }).promise()
-        return rs
+        await Promise.all(files.map(fileName => this.uploadFile(`${dir}/${fileName}`, `${s3FolderName}/${fileName}`)))
     }
 }

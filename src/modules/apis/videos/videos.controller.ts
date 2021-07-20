@@ -44,7 +44,7 @@ export class VideosController {
         userId: req.user.id,
         albumId: albumId ? albumId : req.user.defaultAlbumId
       }),
-      this.s3Service.uploadFile(file.path, 'artisan-photos', `${uploadFolder}/original.mp4`),
+      this.s3Service.uploadFile(file.path, `${uploadFolder}/original.mp4`),
       exec(`bash ./scripts/generate_thumbnail.sh ${file.path} ./process-video/${ts}/thumbnail.png`),
       exec(`bash ./scripts/convert_video_to_hls.sh ${file.path} ./process-video/${ts}`)
     ])

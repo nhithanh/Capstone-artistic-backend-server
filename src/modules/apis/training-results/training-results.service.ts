@@ -50,7 +50,7 @@ export class TrainingResultsService {
       return {
         ...trainingResult,
         photoAccessURL: this.s3Service.getCDNURL(trainingResult.resultPhotoLocation),
-        snapshotAccessURL: this.s3Service.getS3SignedURL(trainingResult.snapshotLocation)
+        snapshotAccessURL: this.s3Service.getCDNURL(trainingResult.snapshotLocation)
       }
     })
   }

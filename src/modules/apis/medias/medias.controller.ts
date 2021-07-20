@@ -156,9 +156,6 @@ export class MediasController {
   @Post('save-to-album')
   @UseGuards(JwtAuthGuard)
   async savePhotoToAlbum(@Req() req, @Body() saveToAlbumDto: SaveMediaToAlbumDto) {
-    const photoName = new Date().toString()
-    const key = `${req.user.id}/${photoName}`
-    await this.s3Service.copyPhotoToPermanentBucket(saveToAlbumDto.photoLocation, key)
     const photoObject = await this.mediasService.create({
         storageLocation: saveToAlbumDto.photoLocation,
         userId: req.user.id,
