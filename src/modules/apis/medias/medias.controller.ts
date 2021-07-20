@@ -47,6 +47,9 @@ export class MediasController {
       userId: req.user.id
     }
     
+    if(transferPhotoMetadata.photoLocation.includes("file://")) {
+      return null
+    }
     const isSupport = await this.styleService.checkIsStyleSupport(payload.styleId)
     if(isSupport === true) {
       this.producerService.emitTransferPhotoTask(payload);
@@ -116,8 +119,6 @@ export class MediasController {
       accessURL,
       ...transferPhotoCompleteMetadataDTO
     }
-
-    console.log(payload)
 
     this.socketService.emitToSpecificUser(transferPhotoCompleteMetadataDTO.userId, payload)
     return {

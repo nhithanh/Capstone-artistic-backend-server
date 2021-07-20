@@ -37,18 +37,18 @@ export class User {
     password: string
 
     @Column({
-        default: ''
+        default: 'Aimé'
     })
     firstName: string;
 
     @Column({
-        default: ''
+        default: 'Favre' 
     })
     lastName: string;
 
     @Column({
         type: 'date',
-        default: new Date()
+        default: new Date(1998, 8, 10)
     })
     dateOfBirth: string;
 

@@ -21,7 +21,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@golevelup/nestjs-rabbitmq": "^1.16.2",
     "@nestjs-modules/mailer": "^1.6.0",
     "@nestjs/common": "^7.6.15",
     "@nestjs/config": "^0.6.3",
@@ -46,8 +45,8 @@
     "cookie-parser": "^1.4.5",
     "crypto-js": "^4.0.0",
     "dotenv": "^8.2.0",
-    "ejs": "^3.1.6",
     "forever": "^4.0.1",
+    "generate-password": "^1.6.0",
     "handlebars": "^4.7.7",
     "helmet": "^4.5.0",
     "lodash": "^4.17.21",
@@ -65,7 +64,6 @@
     "sharp": "^0.28.2",
     "socket.io": "^4.1.2",
     "socket.io-client": "^2.2.0",
-    "sqs-producer": "^2.1.0",
     "swagger-ui-express": "^4.1.6",
     "typeorm": "^0.2.32",
     "typeorm-naming-strategies": "^2.0.0",

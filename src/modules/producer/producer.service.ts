@@ -58,7 +58,9 @@ export class ProducerService {
     }
 
     private emitMessage(exchange: string, routingKey: string, data: any, action: string) {
-      return this.channelWrapper.publish(exchange, routingKey, data).catch(err => {
+      const buffer = Buffer.from(JSON.stringify(data));
+      return this.channelWrapper.publish(exchange, routingKey, buffer).catch(err => {
+        console.log("ERR:", err)
         this.awaitRequests.push({
           data,
           action

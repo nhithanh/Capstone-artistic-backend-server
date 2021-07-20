@@ -5,6 +5,7 @@ import { JwtAuthGuard } from '../../../auths/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto'
 import { MailService } from 'src/mail/mail.service';
+import { Query } from '@nestjs/common';
 
 
 @ApiTags("users")
@@ -41,24 +42,18 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get('/self')
   getSelfInformation(@Req() req) {
-    console.log("HERE baby")
     return req.user
   }
 
   @Get('/reset-password')
-  resetUserPassword() {
-    this.mailService.sendResetPasswordToUserMail('nhithanhtranho@gmail.com', 'lalala123456').then(() => {
-      return 'success'
-    }).catch(err => console.log(err))
+  resetUserPassword(@Query('email') email: string) {
+    return this.usersService.resetPassword(email)
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
-
-  
-  
 
   @UseGuards(JwtAuthGuard)
   @Post('/change-password')

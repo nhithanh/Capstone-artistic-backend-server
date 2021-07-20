@@ -6,6 +6,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import * as _ from 'lodash'
+import {generate} from 'generate-password'
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class UsersService {
@@ -15,6 +17,9 @@ export class UsersService {
 
   @Inject()
   private readonly albumService: AlbumsService;
+
+  @Inject()
+  private readonly mailService: MailService;
 
   private async verifyEmailExist(email: string): Promise<boolean> {
     const user = await this.usersRepository.findOne({
@@ -108,5 +113,32 @@ export class UsersService {
     }
     user.password = newPassword
     return this.usersRepository.save(user)
+  }
+
+  async resetPassword(email: string) {
+    const user = await this.usersRepository.findOne({
+      email: email
+    })
+
+    if(user) {
+      const newPassword = generate({
+        length: 10,
+        numbers: true
+      })
+
+      user.password = newPassword
+
+      await this.usersRepository.save(user)
+      await this.mailService.sendResetPasswordToUserMail(email, newPassword)
+      return {"message": "reset password success"}
+    } else {
+      throw new HttpException(
+        {
+          statusCode: 404,
+          message: `Email not found!`,
+        },
+        HttpStatus.NOT_FOUND,
+      )
+    }
   }
 }
