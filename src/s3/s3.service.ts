@@ -33,8 +33,13 @@ export class S3Service {
     }
 
     getCDNURL(locationURL: string): string {
-        const {_, key} = AmazonS3URI(locationURL)
-        return `${this.CDN_ENDPOINT}/${key}`
+        try {
+            const {_, key} = AmazonS3URI(locationURL)
+            return `${this.CDN_ENDPOINT}/${key}`
+        } catch(err) {
+            return locationURL
+        }
+        
     }
 
     async uploadFile(filePath: string, key: string) {
