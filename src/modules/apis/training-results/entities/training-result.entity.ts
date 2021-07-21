@@ -20,7 +20,7 @@ export class TrainingResult {
 
     @ManyToOne(() => TrainingRequest)
     @JoinColumn()
-    trainingRequset: TrainingRequest;
+    trainingRequest: TrainingRequest;
 
     @Column({
         type: 'varchar',

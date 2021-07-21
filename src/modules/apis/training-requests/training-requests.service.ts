@@ -65,7 +65,16 @@ export class TrainingRequestsService {
     const trainingRequest = await this.trainingRequestRepository.findOne(id)
     const updatedTrainingRequest = await this.trainingRequestRepository.save({
       ...trainingRequest,
-      status: STATUS.ON_PROGRESS
+      status: STATUS.IN_PROGRESS
+    })
+    this.socketService.emitUpdateTrainingRequestToAdmin(updatedTrainingRequest)
+  }
+
+  async completeTrainingReuest(id: string) {
+    const trainingRequest = await this.trainingRequestRepository.findOne(id)
+    const updatedTrainingRequest = await this.trainingRequestRepository.save({
+      ...trainingRequest,
+      status: STATUS.COMPLETED
     })
     this.socketService.emitUpdateTrainingRequestToAdmin(updatedTrainingRequest)
   }

@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedCol
 
 export enum STATUS {
     WAITING = 'WAITING',
-    ON_PROGRESS = 'ON PROGRESS',
+    IN_PROGRESS = 'IN PROGRESS',
     STOPPED = 'STOPPED',
     COMPLETED = 'COMPLETED',
     DELETED = 'DELETED'

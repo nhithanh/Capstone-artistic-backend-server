@@ -84,6 +84,11 @@ export class TrainingRequestsController {
     return this.trainingRequestsService.startTrainingRequest(id);
   }
 
+  @Get(':id/completed')
+  completed(@Param('id') id: string) {
+    return this.trainingRequestsService.completeTrainingReuest(id);
+  }
+
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateTrainingRequestDto: UpdateTrainingRequestDto) {
   //   return this.trainingRequestsService.update(+id, updateTrainingRequestDto);
