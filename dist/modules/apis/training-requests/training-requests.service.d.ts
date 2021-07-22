@@ -1,0 +1,73 @@
+import { CreateTrainingRequestDto } from './dto/create-training-request.dto';
+import { STATUS, TrainingRequest } from './entities/training-request.entity';
+export declare class TrainingRequestsService {
+    private readonly socketService;
+    private readonly s3Service;
+    private readonly trainingRequestRepository;
+    create(createTrainingRequestDto: CreateTrainingRequestDto): Promise<TrainingRequest>;
+    findAll(): Promise<{
+        accessURL: string;
+        id: string;
+        name: string;
+        referenceStyleLocation: string;
+        description: string;
+        lr: number;
+        saveStep: number;
+        contentWeight: number;
+        styleWeight: number;
+        relu12Weight: number;
+        relu22Weight: number;
+        relu33Weight: number;
+        relu43Weight: number;
+        status: STATUS;
+        checkpoint: number;
+        numOfIterations: number;
+        createdAt: Date;
+        deletedAt: Date;
+    }[]>;
+    findOne(id: string): Promise<{
+        styleAccessURL: string;
+        id: string;
+        name: string;
+        referenceStyleLocation: string;
+        description: string;
+        lr: number;
+        saveStep: number;
+        contentWeight: number;
+        styleWeight: number;
+        relu12Weight: number;
+        relu22Weight: number;
+        relu33Weight: number;
+        relu43Weight: number;
+        status: STATUS;
+        checkpoint: number;
+        numOfIterations: number;
+        createdAt: Date;
+        deletedAt: Date;
+    } | {
+        id: string;
+        status: string;
+    }>;
+    stopTrainingRequest(id: string): Promise<{
+        status: STATUS.STOPPED;
+        id: string;
+        name: string;
+        referenceStyleLocation: string;
+        description: string;
+        lr: number;
+        saveStep: number;
+        contentWeight: number;
+        styleWeight: number;
+        relu12Weight: number;
+        relu22Weight: number;
+        relu33Weight: number;
+        relu43Weight: number;
+        checkpoint: number;
+        numOfIterations: number;
+        createdAt: Date;
+        deletedAt: Date;
+    } & TrainingRequest>;
+    startTrainingRequest(id: string): Promise<void>;
+    completeTrainingReuest(id: string): Promise<void>;
+    remove(id: string): Promise<import("typeorm").UpdateResult>;
+}
