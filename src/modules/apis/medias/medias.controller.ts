@@ -160,9 +160,12 @@ export class MediasController {
         storageLocation: saveToAlbumDto.photoLocation,
         userId: req.user.id,
         albumId: saveToAlbumDto.albumId,
-        type: MEDIA_TYPE.PHOTO
+        type: MEDIA_TYPE.PHOTO,
     })
-    return photoObject
+    return {
+      ...photoObject,
+      accessURL: this.s3Service.getCDNURL(photoObject.storageLocation)
+    }
   }
 
   @Get()

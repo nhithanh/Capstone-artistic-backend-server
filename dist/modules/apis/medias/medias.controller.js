@@ -121,9 +121,9 @@ let MediasController = class MediasController {
             storageLocation: saveToAlbumDto.photoLocation,
             userId: req.user.id,
             albumId: saveToAlbumDto.albumId,
-            type: media_entity_1.MEDIA_TYPE.PHOTO
+            type: media_entity_1.MEDIA_TYPE.PHOTO,
         });
-        return photoObject;
+        return Object.assign(Object.assign({}, photoObject), { accessURL: this.s3Service.getCDNURL(photoObject.storageLocation) });
     }
     findAll(queryParams) {
         return this.mediasService.findAll(queryParams);

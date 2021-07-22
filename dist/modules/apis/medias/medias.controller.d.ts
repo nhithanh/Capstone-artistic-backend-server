@@ -53,7 +53,19 @@ export declare class MediasController {
         deletedAt: string;
         action: string;
     }>;
-    savePhotoToAlbum(req: any, saveToAlbumDto: SaveMediaToAlbumDto): Promise<import("./entities/media.entity").Media>;
+    savePhotoToAlbum(req: any, saveToAlbumDto: SaveMediaToAlbumDto): Promise<{
+        accessURL: string;
+        id: string;
+        userId: string;
+        user: import("../users/entities/user.entity").User;
+        albumId: string;
+        album: import("../albums/entities/album.entity").Album;
+        storageLocation: string;
+        type: MEDIA_TYPE;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt: string;
+    }>;
     findAll(queryParams: MediasQueryParams): Promise<any>;
     findOne(id: string): Promise<import("./entities/media.entity").Media>;
     remove(req: any, id: string): Promise<{
