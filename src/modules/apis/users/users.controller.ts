@@ -8,6 +8,7 @@ import { MailService } from 'src/mail/mail.service';
 import { Query } from '@nestjs/common';
 import {parseJwt} from './util'
 import { HttpException } from '@nestjs/common';
+import axios from 'axios';
 
 @ApiTags("users")
 @Controller('users')
@@ -68,7 +69,13 @@ export class UsersController {
   async loginByGoogle(@Body() body: any) {
     const tokenId = body['tokenId']
     
-    const data = parseJwt(tokenId)
+    let { data } = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo',
+      {
+          headers: {
+              Authorization: `Bearer ${tokenId}`
+          }
+      }
+    );
     if(data) {
       const token = await this.usersService.handleGoogleLogin(data)
       return token

@@ -21,8 +21,8 @@ const swagger_1 = require("@nestjs/swagger");
 const update_user_dto_1 = require("./dto/update-user.dto");
 const mail_service_1 = require("../../../mail/mail.service");
 const common_2 = require("@nestjs/common");
-const util_1 = require("./util");
 const common_3 = require("@nestjs/common");
+const axios_1 = require("axios");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -55,7 +55,11 @@ let UsersController = class UsersController {
     }
     async loginByGoogle(body) {
         const tokenId = body['tokenId'];
-        const data = util_1.parseJwt(tokenId);
+        let { data } = await axios_1.default.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+            headers: {
+                Authorization: `Bearer ${tokenId}`
+            }
+        });
         if (data) {
             const token = await this.usersService.handleGoogleLogin(data);
             return token;
