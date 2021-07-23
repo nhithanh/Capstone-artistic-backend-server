@@ -18,7 +18,7 @@ async function bootstrap() {
     app.use(cookieParser());
     app.use(ncsrf_1.nestCsrf({ ttl: 86400 }));
     app.enableCors({
-        origin: ['http://localhost:3000', 'http://capstone-web-admin.s3-website-ap-southeast-1.amazonaws.com/'],
+        origin: ['http://localhost:3000', 'http://capstone-web-admin.s3-website-ap-southeast-1.amazonaws.com'],
         credentials: true,
     });
     const config = new swagger_1.DocumentBuilder()
