@@ -22,14 +22,13 @@ export class TrainingRequestsController {
     const contentWeight = data['contentWeight'] || 1e5
     const styleWeight = data['styleWeight'] || 1e10
     const lr = +data['lr'] || 1e-3
-    const relu12Weight = +data['relu12Weight'] || 1
-    const relu22Weight = +data['relu22Weight'] || 1
-    const relu33Weight = +data['relu33Weight'] || 1
-    const relu43Weight = +data['relu43Weight'] || 1
+    const relu12Weight = +data['relu12Weight'] || 0
+    const relu22Weight = +data['relu22Weight'] || 0
+    const relu33Weight = +data['relu33Weight'] || 0
+    const relu43Weight = +data['relu43Weight'] || 0
     const saveStep = +data['saveStep'] || 1000
     const numOfIterations = +data['numOfIterations'] || 20000
     const description = data['description'] || ''
-
     const trainingReqest = await this.trainingRequestsService.create({
       name,
       referenceStyleLocation: photo.location,
@@ -60,7 +59,6 @@ export class TrainingRequestsController {
     }
 
     this.producerService.emitTrainingRequest(payload)
-
     return payload;
   }
 
