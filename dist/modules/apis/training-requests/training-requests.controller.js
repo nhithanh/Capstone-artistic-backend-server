@@ -34,8 +34,6 @@ let TrainingRequestsController = class TrainingRequestsController {
         const saveStep = +data['saveStep'] || 1000;
         const numOfIterations = +data['numOfIterations'] || 20000;
         const description = data['description'] || '';
-        console.log(data);
-        console.log(relu22Weight);
         const trainingReqest = await this.trainingRequestsService.create({
             name,
             referenceStyleLocation: photo.location,
