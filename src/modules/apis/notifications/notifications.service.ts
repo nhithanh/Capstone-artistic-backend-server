@@ -18,6 +18,9 @@ export class NotificationsService {
     const notifications = await this.notificationRespository.find({
       where: {
         userId
+      },
+      order: {
+        createdAt: "DESC"
       }
     })
     const count = await this.notificationRespository.count({
