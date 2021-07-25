@@ -9,6 +9,7 @@ export declare class TrainingRequest {
     id: string;
     name: string;
     referenceStyleLocation: string;
+    snapshotLocation: string;
     description: string;
     lr: number;
     saveStep: number;

@@ -9,6 +9,10 @@ export class CreateTrainingRequestDto {
     @IsNotEmpty()
     referenceStyleLocation: string
 
+    @IsString()
+    @IsOptional()
+    snapshotLocation?: string
+
     @IsNumber()
     @IsOptional()
     lr?: number

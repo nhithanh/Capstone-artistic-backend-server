@@ -5,16 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TrainingRequest } from './entities/training-request.entity';
 import { ProducerModule } from 'src/modules/producer/producer.module';
 import { S3Module } from 'src/s3/s3.module';
-import { S3Service } from 'src/s3/s3.service';
-import { uploadTrainingsOption } from 'src/config/multer.service';
-import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
-  imports: [ProducerModule, S3Module, TypeOrmModule.forFeature([TrainingRequest]), MulterModule.registerAsync({
-    imports: [S3Module],
-    useFactory: async (s3Service: S3Service) => uploadTrainingsOption(s3Service.s3),
-    inject: [S3Service],
-  })],
+  imports: [ProducerModule, S3Module, TypeOrmModule.forFeature([TrainingRequest])],
   controllers: [TrainingRequestsController],
   providers: [TrainingRequestsService]
 })

@@ -22,7 +22,24 @@ let TrainingRequestsController = class TrainingRequestsController {
     constructor(trainingRequestsService) {
         this.trainingRequestsService = trainingRequestsService;
     }
-    async create(data, photo) {
+    async create(data, files) {
+        let uploadTasks = [];
+        const photoContent = files ? files['photo'] : null;
+        const snapshotContent = files ? files['snapshot'] : null;
+        if (!photoContent) {
+            throw new common_1.HttpException("Please upload reference style file!", common_1.HttpStatus.BAD_REQUEST);
+        }
+        if (photoContent[0].mimetype.includes('image') == false) {
+            throw new common_1.HttpException("Not support reference style file!", common_1.HttpStatus.BAD_REQUEST);
+        }
+        uploadTasks.push(this.s3Service.uploadFileWithBuffer(photoContent[0].buffer, `trainings/${new Date().toISOString().substring(0, 10)}/${Date.now().toString()}`));
+        if (snapshotContent) {
+            if (snapshotContent[0].originalname.includes('.pth') == false) {
+                throw new common_1.HttpException("Not support snapshot file!", common_1.HttpStatus.BAD_REQUEST);
+            }
+            uploadTasks.push(this.s3Service.uploadFileWithBuffer(snapshotContent[0].buffer, `trainings/${new Date().toISOString().substring(0, 10)}/${Date.now().toString()}`));
+        }
+        const s3Files = await Promise.all(uploadTasks);
         const name = data['name'];
         const contentWeight = data['contentWeight'] || 1e5;
         const styleWeight = data['styleWeight'] || 1e10;
@@ -34,11 +51,10 @@ let TrainingRequestsController = class TrainingRequestsController {
         const saveStep = +data['saveStep'] || 1000;
         const numOfIterations = +data['numOfIterations'] || 20000;
         const description = data['description'] || '';
-        console.log(data);
-        console.log(relu22Weight);
         const trainingReqest = await this.trainingRequestsService.create({
             name,
-            referenceStyleLocation: photo.location,
+            referenceStyleLocation: s3Files[0].Location,
+            snapshotLocation: s3Files.length == 2 ? s3Files[1].Location : null,
             contentWeight,
             lr,
             relu12Weight,
@@ -50,9 +66,9 @@ let TrainingRequestsController = class TrainingRequestsController {
             numOfIterations,
             description
         });
-        const payload = {
+        let payload = {
             id: trainingReqest.id,
-            accessURL: this.s3Service.getCDNURL(photo.location),
+            accessURL: this.s3Service.getCDNURL(trainingReqest.referenceStyleLocation),
             contentWeight: +contentWeight,
             lr: +lr,
             numOfIterations: +numOfIterations,
@@ -61,7 +77,8 @@ let TrainingRequestsController = class TrainingRequestsController {
             relu33Weight: +relu33Weight,
             relu43Weight: +relu43Weight,
             saveStep: +saveStep,
-            styleWeight: +styleWeight
+            styleWeight: +styleWeight,
+            snapshotLocation: trainingReqest.snapshotLocation ? this.s3Service.getCDNURL(trainingReqest.snapshotLocation) : null,
         };
         this.producerService.emitTrainingRequest(payload);
         return payload;
@@ -95,10 +112,13 @@ __decorate([
 ], TrainingRequestsController.prototype, "s3Service", void 0);
 __decorate([
     common_1.Post(),
-    common_1.UseInterceptors(platform_express_1.FileInterceptor('photo')),
-    __param(0, common_1.Body()), __param(1, common_1.UploadedFile()),
+    common_1.UseInterceptors(platform_express_1.FileFieldsInterceptor([
+        { name: 'photo', maxCount: 1 },
+        { name: 'snapshot', maxCount: 1 },
+    ])),
+    __param(0, common_1.Body()), __param(1, common_1.UploadedFiles()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object, Array]),
     __metadata("design:returntype", Promise)
 ], TrainingRequestsController.prototype, "create", null);
 __decorate([

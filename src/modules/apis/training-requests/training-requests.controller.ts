@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Inject, UploadedFile } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Controller, Get, Post, Body, Param, Delete, UseInterceptors, Inject, UploadedFiles, HttpException, HttpStatus } from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ProducerService } from 'src/modules/producer/producer.service';
 import { S3Service } from 'src/s3/s3.service';
 import { TrainingRequestsService } from './training-requests.service';
@@ -16,8 +16,33 @@ export class TrainingRequestsController {
   constructor(private readonly trainingRequestsService: TrainingRequestsService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('photo'))
-  async create(@Body() data, @UploadedFile() photo: Express.MulterS3.File) {
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'photo', maxCount: 1 },
+    { name: 'snapshot', maxCount: 1 },
+  ]))
+  async create(@Body() data, @UploadedFiles() files: Express.Multer.File[]) {
+    let uploadTasks = []
+    const photoContent = files ? files['photo'] : null
+    const snapshotContent = files ? files['snapshot'] : null
+
+    if(!photoContent) {
+      throw new HttpException("Please upload reference style file!", HttpStatus.BAD_REQUEST)
+    }
+    
+    if(photoContent[0].mimetype.includes('image') == false) {
+      throw new HttpException("Not support reference style file!", HttpStatus.BAD_REQUEST)
+    }
+
+    uploadTasks.push(this.s3Service.uploadFileWithBuffer(photoContent[0].buffer, `trainings/${new Date().toISOString().substring(0, 10)}/${Date.now().toString()}`))
+    
+    if(snapshotContent) {
+      if(snapshotContent[0].originalname.includes('.pth') == false) {
+        throw new HttpException("Not support snapshot file!", HttpStatus.BAD_REQUEST)
+      }
+      uploadTasks.push(this.s3Service.uploadFileWithBuffer(snapshotContent[0].buffer, `trainings/${new Date().toISOString().substring(0, 10)}/${Date.now().toString()}`))
+    }
+    
+    const s3Files = await Promise.all(uploadTasks)
     const name = data['name']
     const contentWeight = data['contentWeight'] || 1e5
     const styleWeight = data['styleWeight'] || 1e10
@@ -29,9 +54,11 @@ export class TrainingRequestsController {
     const saveStep = +data['saveStep'] || 1000
     const numOfIterations = +data['numOfIterations'] || 20000
     const description = data['description'] || ''
+    
     const trainingReqest = await this.trainingRequestsService.create({
       name,
-      referenceStyleLocation: photo.location,
+      referenceStyleLocation: s3Files[0].Location,
+      snapshotLocation: s3Files.length == 2 ? s3Files[1].Location : null,
       contentWeight,
       lr,
       relu12Weight,
@@ -44,9 +71,9 @@ export class TrainingRequestsController {
       description
     });
 
-    const payload = {
+    let payload = {
       id: trainingReqest.id,
-      accessURL: this.s3Service.getCDNURL(photo.location),
+      accessURL: this.s3Service.getCDNURL(trainingReqest.referenceStyleLocation),
       contentWeight: +contentWeight,
       lr: +lr,
       numOfIterations: +numOfIterations,
@@ -55,9 +82,9 @@ export class TrainingRequestsController {
       relu33Weight: +relu33Weight,
       relu43Weight: +relu43Weight,
       saveStep: +saveStep,
-      styleWeight: +styleWeight
+      styleWeight: +styleWeight,
+      snapshotLocation: trainingReqest.snapshotLocation ? this.s3Service.getCDNURL(trainingReqest.snapshotLocation) : null,
     }
-
     this.producerService.emitTrainingRequest(payload)
     return payload;
   }
@@ -86,11 +113,6 @@ export class TrainingRequestsController {
   completed(@Param('id') id: string) {
     return this.trainingRequestsService.completeTrainingReuest(id);
   }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateTrainingRequestDto: UpdateTrainingRequestDto) {
-  //   return this.trainingRequestsService.update(+id, updateTrainingRequestDto);
-  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

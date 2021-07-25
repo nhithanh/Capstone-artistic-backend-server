@@ -24,6 +24,11 @@ __decorate([
     __metadata("design:type", String)
 ], CreateTrainingRequestDto.prototype, "referenceStyleLocation", void 0);
 __decorate([
+    class_validator_1.IsString(),
+    class_validator_1.IsOptional(),
+    __metadata("design:type", String)
+], CreateTrainingRequestDto.prototype, "snapshotLocation", void 0);
+__decorate([
     class_validator_1.IsNumber(),
     class_validator_1.IsOptional(),
     __metadata("design:type", Number)

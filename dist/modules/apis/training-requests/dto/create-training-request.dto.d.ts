@@ -1,6 +1,7 @@
 export declare class CreateTrainingRequestDto {
     name: string;
     referenceStyleLocation: string;
+    snapshotLocation?: string;
     lr?: number;
     contentWeight?: number;
     styleWeight?: number;

@@ -1,11 +1,11 @@
-/// <reference types="multer-s3" />
+/// <reference types="multer" />
 import { TrainingRequestsService } from './training-requests.service';
 export declare class TrainingRequestsController {
     private readonly trainingRequestsService;
     private readonly producerService;
     private readonly s3Service;
     constructor(trainingRequestsService: TrainingRequestsService);
-    create(data: any, photo: Express.MulterS3.File): Promise<{
+    create(data: any, files: Express.Multer.File[]): Promise<{
         id: string;
         accessURL: string;
         contentWeight: number;
@@ -17,12 +17,14 @@ export declare class TrainingRequestsController {
         relu43Weight: number;
         saveStep: number;
         styleWeight: number;
+        snapshotLocation: string;
     }>;
     findAll(): Promise<{
         accessURL: string;
         id: string;
         name: string;
         referenceStyleLocation: string;
+        snapshotLocation: string;
         description: string;
         lr: number;
         saveStep: number;
@@ -43,6 +45,7 @@ export declare class TrainingRequestsController {
         id: string;
         name: string;
         referenceStyleLocation: string;
+        snapshotLocation: string;
         description: string;
         lr: number;
         saveStep: number;
@@ -66,6 +69,7 @@ export declare class TrainingRequestsController {
         id: string;
         name: string;
         referenceStyleLocation: string;
+        snapshotLocation: string;
         description: string;
         lr: number;
         saveStep: number;

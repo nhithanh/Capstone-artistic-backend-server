@@ -58,6 +58,15 @@ let S3Service = class S3Service {
         });
     }
     ;
+    uploadFileWithBuffer(fileContent, key) {
+        const params = {
+            Bucket: this.BUCKET_NAME,
+            Key: key,
+            Body: fileContent
+        };
+        return this.s3.upload(params).promise();
+    }
+    ;
     async uploadFolder(dir, s3FolderName) {
         const files = await readDir(dir);
         await Promise.all(files.map(fileName => this.uploadFile(`${dir}/${fileName}`, `${s3FolderName}/${fileName}`)));

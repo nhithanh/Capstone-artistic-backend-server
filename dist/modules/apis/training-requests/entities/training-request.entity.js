@@ -43,6 +43,13 @@ __decorate([
 __decorate([
     typeorm_1.Column({
         type: 'varchar',
+        nullable: true
+    }),
+    __metadata("design:type", String)
+], TrainingRequest.prototype, "snapshotLocation", void 0);
+__decorate([
+    typeorm_1.Column({
+        type: 'varchar',
         unique: false,
         nullable: false
     }),

@@ -28,6 +28,12 @@ export class TrainingRequest {
 
     @Column({
         type: 'varchar',
+        nullable: true
+    })
+    snapshotLocation: string
+
+    @Column({
+        type: 'varchar',
         unique: false,
         nullable: false
     })
