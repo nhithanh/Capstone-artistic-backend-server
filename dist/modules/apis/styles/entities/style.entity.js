@@ -80,6 +80,13 @@ __decorate([
     __metadata("design:type", String)
 ], Style.prototype, "demoVideoURL", void 0);
 __decorate([
+    typeorm_1.Column({
+        type: 'integer',
+        nullable: true
+    }),
+    __metadata("design:type", Number)
+], Style.prototype, "priority", void 0);
+__decorate([
     typeorm_1.CreateDateColumn(),
     __metadata("design:type", Date)
 ], Style.prototype, "createdAt", void 0);

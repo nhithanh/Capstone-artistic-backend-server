@@ -24,7 +24,7 @@ let ShowcasesService = class ShowcasesService {
             where: {
                 styleId
             },
-            order: { createdAt: "DESC" },
+            order: { priority: "ASC" },
             select: ['id', 'photoLocation', 'photoName']
         });
         const publicShowcases = showCases.map(showcase => {
@@ -49,7 +49,7 @@ let ShowcasesService = class ShowcasesService {
     }
     async getAvailableStyles() {
         const connection = typeorm_2.getConnection();
-        const query = "Select * from style where id in (Select style_id from showcase group by style_id having count(id) > 1)";
+        const query = "Select * from style where id in (Select style_id from showcase group by style_id having count(id) > 1) order by priority";
         const rs = await connection.query(query);
         return rs.map(style => {
             return Object.assign(Object.assign({}, style), { iconURL: this.s3Service.getCDNURL(style.icon_url) });

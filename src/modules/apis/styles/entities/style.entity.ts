@@ -59,6 +59,12 @@ export class Style {
     })
     demoVideoURL: string;
 
+    @Column({
+        type: 'integer',
+        nullable: true
+    })
+    priority: number;
+
     @CreateDateColumn()
     createdAt: Date;
  

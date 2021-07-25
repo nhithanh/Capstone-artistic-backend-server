@@ -4,6 +4,7 @@ export declare class Showcase {
     styleId: string;
     style: Style;
     photoName: string;
+    priority: number;
     photoLocation: string;
     createdAt: Date;
     updatedAt: Date;

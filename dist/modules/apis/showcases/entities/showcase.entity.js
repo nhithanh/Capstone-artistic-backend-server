@@ -36,6 +36,13 @@ __decorate([
 ], Showcase.prototype, "photoName", void 0);
 __decorate([
     typeorm_1.Column({
+        type: 'integer',
+        nullable: true
+    }),
+    __metadata("design:type", Number)
+], Showcase.prototype, "priority", void 0);
+__decorate([
+    typeorm_1.Column({
         type: 'varchar',
         nullable: false
     }),

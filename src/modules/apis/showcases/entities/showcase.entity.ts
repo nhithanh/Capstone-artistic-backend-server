@@ -20,6 +20,12 @@ export class Showcase {
     photoName: string;
 
     @Column({
+        type: 'integer',
+        nullable: true
+    })
+    priority: number;
+
+    @Column({
         type: 'varchar',
         nullable: false
     })

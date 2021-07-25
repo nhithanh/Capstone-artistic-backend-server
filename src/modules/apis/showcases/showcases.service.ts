@@ -24,7 +24,7 @@ export class ShowcasesService {
       where: {
         styleId
       },
-      order: {createdAt: "DESC"},
+      order: {priority: "ASC"},
       select: ['id', 'photoLocation', 'photoName']
     })
 
@@ -58,7 +58,7 @@ export class ShowcasesService {
 
   async getAvailableStyles() {
     const connection = getConnection()
-    const query = "Select * from style where id in (Select style_id from showcase group by style_id having count(id) > 1)"
+    const query = "Select * from style where id in (Select style_id from showcase group by style_id having count(id) > 1) order by priority"
     const rs = await connection.query(query)
     return rs.map(style => {
       return {

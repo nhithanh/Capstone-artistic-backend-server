@@ -11,6 +11,7 @@ export declare class ShowcasesService {
         styleId: string;
         style: import("../styles/entities/style.entity").Style;
         photoName: string;
+        priority: number;
         photoLocation: string;
         createdAt: Date;
         updatedAt: Date;

@@ -9,6 +9,7 @@ export declare class Style {
     routingKey: string;
     isSupportVideo: boolean;
     demoVideoURL: string;
+    priority: number;
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date;

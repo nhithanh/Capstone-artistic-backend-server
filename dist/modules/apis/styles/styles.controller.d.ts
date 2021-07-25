@@ -15,6 +15,7 @@ export declare class StylesController {
         routingKey: string;
         isSupportVideo: boolean;
         demoVideoURL: string;
+        priority: number;
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date;
@@ -30,6 +31,7 @@ export declare class StylesController {
         routingKey: string;
         isSupportVideo: boolean;
         demoVideoURL: string;
+        priority: number;
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date;
@@ -44,6 +46,7 @@ export declare class StylesController {
         routingKey: string;
         isSupportVideo: boolean;
         demoVideoURL: string;
+        priority: number;
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date;
@@ -61,6 +64,7 @@ export declare class StylesController {
         routingKey: string;
         isSupportVideo: boolean;
         demoVideoURL: string;
+        priority: number;
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date;
