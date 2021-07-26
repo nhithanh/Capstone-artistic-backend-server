@@ -12,7 +12,7 @@ export declare const uploadSnapshotOption: (s3: S3) => {
     fileFilter: (req: any, file: any, cb: any) => void;
     storage: import("multer").StorageEngine;
 };
-export declare const uploadTrainingsOption: (s3: S3) => {
+export declare const uploadVideoOption: (s3: S3) => {
     fileFilter: (req: any, file: any, cb: any) => void;
     storage: import("multer").StorageEngine;
 };

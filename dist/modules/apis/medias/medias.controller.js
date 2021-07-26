@@ -65,7 +65,6 @@ let MediasController = class MediasController {
                 saveAlbumId: transferVideoMetadata.albumId
             };
             this.producerService.emitTransferVideoTask(payload);
-            console.log({ payload });
             return {
                 payload,
                 status: common_1.HttpStatus.ACCEPTED,
@@ -77,22 +76,6 @@ let MediasController = class MediasController {
                 message: "Media is not type video"
             };
         }
-    }
-    async transferVideoCompleted(metadata) {
-        const rs = await Promise.all([
-            this.mediasService.create({
-                albumId: metadata.saveAlbumId,
-                type: media_entity_1.MEDIA_TYPE.VIDEO,
-                userId: metadata.userId,
-                storageLocation: `https://artisan-photos.s3.ap-southeast-1.amazonaws.com/${metadata.saveLocation}`
-            }),
-            this.notficationsService.create({
-                userId: metadata.userId,
-                message: 'Transfer video completed!'
-            })
-        ]);
-        this.socketService.emitTransferVideoCompleted(metadata.userId, metadata.saveAlbumId);
-        return rs[0];
     }
     transferPhotoCompleted(transferPhotoCompleteMetadataDTO) {
         const accessURL = this.s3Service.getCDNURL(transferPhotoCompleteMetadataDTO.transferPhotoLocation);
@@ -178,13 +161,6 @@ __decorate([
     __metadata("design:paramtypes", [transfer_video_metadata_dto_1.TransferVideoMetadataDto, Object]),
     __metadata("design:returntype", Promise)
 ], MediasController.prototype, "transferVideo", null);
-__decorate([
-    common_1.Post('/transfer-video/completed'),
-    __param(0, common_1.Body()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [transfer_video_metadata_dto_1.TransferVideoCompleteMetadata]),
-    __metadata("design:returntype", Promise)
-], MediasController.prototype, "transferVideoCompleted", null);
 __decorate([
     common_1.Post('/transfer-photo/completed'),
     __param(0, common_1.Body()),

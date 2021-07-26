@@ -49,7 +49,6 @@ let UsersService = class UsersService {
         return this.usersRepository.save(_.omit(newUser, ['password']));
     }
     async findByCredential(email, password) {
-        console.log("Call");
         const user = await this.usersRepository.findOne({
             where: {
                 email

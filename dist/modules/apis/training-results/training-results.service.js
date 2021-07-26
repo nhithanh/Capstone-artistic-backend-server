@@ -22,7 +22,6 @@ let TrainingResultsService = class TrainingResultsService {
         const trainingRequest = await this.trainingRequestReposiory.findOne(createTrainingResultDto.trainingRequestId);
         const updateTrainingRequest = Object.assign(Object.assign({}, trainingRequest), { checkpoint: +createTrainingResultDto.step });
         this.trainingRequestReposiory.save(updateTrainingRequest).then(() => {
-            console.log("emit");
             this.socketService.emitUpdateTrainingRequestToAdmin(updateTrainingRequest);
         });
         const newTrainingResult = this.trainingResultRepository.create(Object.assign(Object.assign({}, createTrainingResultDto), { resultPhotoLocation: `https://artisan-photos.s3.amazonaws.com/${createTrainingResultDto.resultPhotoLocation}`, snapshotLocation: `https://artisan-photos.s3.amazonaws.com/${createTrainingResultDto.snapshotLocation}`, step: +createTrainingResultDto.step }));

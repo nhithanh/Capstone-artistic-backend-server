@@ -3,17 +3,11 @@ import { JwtAuthGuard } from 'src/auths/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MediasService } from '../medias/medias.service';
 import { S3Service } from 'src/s3/s3.service';
-import * as fs from 'fs';
-import * as util from 'util';
-import * as rimraf from 'rimraf'
-
 import { MEDIA_TYPE } from '../medias/entities/media.entity';
-
-const mkdir = util.promisify(fs.mkdir);
-const exec = util.promisify(require('child_process').exec);
-const unlink = util.promisify(fs.unlink)
-const rimrafAsync = util.promisify(rimraf)
-
+import { ProducerService } from 'src/modules/producer/producer.service';
+import { TransferVideoCompleteMetadata } from '../medias/dto/transfer-video-metadata.dto';
+import { NotificationsService } from '../notifications/notifications.service';
+import { SocketService } from 'src/gateway/socket.service';
 
 @Controller('videos')
 export class VideosController {
@@ -26,43 +20,65 @@ export class VideosController {
   @Inject()
   private readonly s3Service: S3Service;
 
+  @Inject()
+  private readonly producerService: ProducerService
+
+  @Inject()
+  private readonly notificationsService: NotificationsService
+
+  @Inject()
+  private readonly socketsService: SocketService;
+
   constructor() {}
 
   @Post('/upload')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('media'))
-  async uploadVideo(@UploadedFile() file: Express.Multer.File, @Req() req, @Body() body) {
-    console.log(file.path)
+  async uploadVideo(@UploadedFile() media: Express.MulterS3.File, @Req() req, @Body() body) {
     const albumId = body['albumId']
-    const ts = new Date().getTime().toString()
-    await mkdir(`process-video/${ts}`)
-    const uploadFolder = `${req.user.id}/${ts}`
-    const result = await Promise.all([
-      this.mediasService.create({
-        storageLocation: `${this.S3_ABSOLUTE_PATH}/${uploadFolder}`,
-        type: MEDIA_TYPE.VIDEO,
-        userId: req.user.id,
-        albumId: albumId ? albumId : req.user.defaultAlbumId
-      }),
-      this.s3Service.uploadFile(file.path, `${uploadFolder}/original.mp4`),
-      exec(`bash ./scripts/generate_thumbnail.sh ${file.path} ./process-video/${ts}/thumbnail.png`),
-      exec(`bash ./scripts/convert_video_to_hls.sh ${file.path} ./process-video/${ts}`)
-    ])
     
-    await Promise.all([
-      this.s3Service.uploadFolder(`./process-video/${ts}`, uploadFolder),
-      rimrafAsync(`./process-video/${ts}`),
-      unlink(file.path),
-    ])
-    const media = result[0]
+    const newVideo = await  this.mediasService.create({
+      storageLocation: `${this.S3_ABSOLUTE_PATH}/${req.folderName}`,
+      type: MEDIA_TYPE.VIDEO,
+      userId: req.user.id,
+      albumId: albumId ? albumId : req.user.defaultAlbumId
+    })
 
+    this.producerService.emitConvertVideoTask({
+      videoLocation: this.s3Service.getCDNURL(newVideo.storageLocation + '/original.mp4'),
+      saveFolder: req.folderName
+    })
+   
     return {
-      ...media,
-      thumbnailURL: this.s3Service.getCDNURL(media.storageLocation + "/thumbnail.png"),
-      originalVideoURL: this.s3Service.getCDNURL(media.storageLocation + "/original.mp4"),
-      m3u8_720p_playlsit: this.s3Service.getCDNURL(media.storageLocation + "/480p.m3u8"),
-      m3u8_480p_playlsit: this.s3Service.getCDNURL(media.storageLocation + "/480p.m3u8"),
-      m3u8_360p_playlsit: this.s3Service.getCDNURL(media.storageLocation + "/360p.m3u8"),
+      ...newVideo,
+      thumbnailURL: this.s3Service.getCDNURL(newVideo.storageLocation + "/thumbnail.png"),
+      originalVideoURL: this.s3Service.getCDNURL(newVideo.storageLocation + "/original.mp4"),
+      playlist: this.s3Service.getCDNURL(newVideo.storageLocation + "/playlist.m3u8"),
     }
+  }
+
+  @Post('/transfer-video/completed')
+  @UseInterceptors(FileInterceptor('media'))
+  async handleTransferVideoComplete(@UploadedFile() media: Express.MulterS3.File, @Req() req, @Body() body) {
+    const saveAlbumId = body['saveAlbumId']
+    const userId = body['userId']
+    const rs = await Promise.all([
+      this.mediasService.create({
+        albumId: saveAlbumId,
+        type: MEDIA_TYPE.VIDEO,
+        userId: userId,
+        storageLocation: `${this.S3_ABSOLUTE_PATH}/${req.folderName}`,
+      }),
+      this.notificationsService.create({
+        userId: userId,
+        message: `Video transfered completed [26-07-2021, 08:30]!`
+      })
+    ])
+    this.producerService.emitConvertVideoTask({
+      videoLocation: this.s3Service.getCDNURL(rs[0].storageLocation + '/original.mp4'),
+      saveFolder: req.folderName
+    })
+    this.socketsService.emitTransferVideoCompleted(userId, saveAlbumId)
+    return rs[0]
   }
 }

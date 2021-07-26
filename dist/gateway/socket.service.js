@@ -22,7 +22,6 @@ let SocketService = class SocketService {
         });
     }
     emitStopTraining() {
-        console.log("emit stop training baby");
         this.server.emit('stop-training', {
             requestId: "hehehe"
         });

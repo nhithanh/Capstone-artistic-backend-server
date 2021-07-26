@@ -34,7 +34,6 @@ let ShowcasesController = class ShowcasesController {
         return photoObject;
     }
     async findAll(styleId) {
-        console.log("HERE");
         return await this.showcasesService.findAll(styleId);
     }
     async getAvailableStyles() {

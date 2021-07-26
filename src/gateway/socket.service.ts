@@ -18,7 +18,6 @@ export class SocketService {
     }
 
     public emitStopTraining() {
-        console.log("emit stop training baby")
         this.server.emit('stop-training', {
             requestId: "hehehe"
         })

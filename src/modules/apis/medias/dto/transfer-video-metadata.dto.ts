@@ -22,10 +22,6 @@ export class TransferVideoCompleteMetadata {
 
     @IsNotEmpty()
     @IsString()
-    saveLocation: string;
-
-    @IsNotEmpty()
-    @IsString()
     saveAlbumId: string;
 
     @IsNotEmpty()

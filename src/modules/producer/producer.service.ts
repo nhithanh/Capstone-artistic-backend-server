@@ -8,7 +8,8 @@ const enum ACTIONS {
   TRANSFER_VIDEO = "TRANSFER_VIDEO",
   UPDATE_WEIGHT = "UPDATE_WEIGHT",
   START_TRAINING = "START_TRAINING",
-  STOP_TRAINING = "STOP_TRAINING"
+  STOP_TRAINING = "STOP_TRAINING",
+  CONVERT_VIDEO = "CONVERT_VIDEO"
 }
 
 @Injectable()
@@ -19,6 +20,7 @@ export class ProducerService {
     private readonly UPDATE_WEIGHT_EXCHANGE = "UPDATE_WEIGHT_EXCHANGE"
     private readonly TRAINING_REQUEST_EXCHANGE = "TRAINING_EXCHANGE"
     private readonly STOP_TRAINING_EXCHANGE = "STOP_TRAINING_EXCHANGE"
+    private readonly CONVERT_VIDEO_EXCHANGE = "CONVERT_VIDEO_EXCHANGE"
 
     private readonly connection = amqp.connect([QUEUE_HOST]);
     private readonly channelWrapper = this.connection.createChannel();
@@ -54,6 +56,8 @@ export class ProducerService {
         case ACTIONS.STOP_TRAINING:
           this.emitStopTraining(data)
           break
+        case ACTIONS.CONVERT_VIDEO:
+          this.emitConvertVideoTask(data)
       }
     }
 
@@ -66,6 +70,11 @@ export class ProducerService {
           action
         })
       })
+    }
+
+    public emitConvertVideoTask(data: any) {
+      console.log("Emit convert video")
+      return this.emitMessage(this.CONVERT_VIDEO_EXCHANGE, "", data, ACTIONS.CONVERT_VIDEO)
     }
 
     public emitTransferPhotoTask(data: any) {
@@ -81,12 +90,10 @@ export class ProducerService {
     }
 
     public emitTrainingRequest(data: any) {
-      console.log("EMit training request baby")
       return this.emitMessage(this.TRAINING_REQUEST_EXCHANGE, "", data, ACTIONS.START_TRAINING)
     }
 
     public emitStopTraining(trainingRequestId: string) {
-      console.log("emit event stop")
       const data = {
         trainingRequestId,
         action: "STOP"

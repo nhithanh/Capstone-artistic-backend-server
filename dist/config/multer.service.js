@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadTrainingsOption = exports.uploadSnapshotOption = exports.uploadImageToS3OptionAdmin = exports.uploadImageToS3Option = void 0;
+exports.uploadVideoOption = exports.uploadSnapshotOption = exports.uploadImageToS3OptionAdmin = exports.uploadImageToS3Option = void 0;
 const path_1 = require("path");
 const common_1 = require("@nestjs/common");
 const multerS3 = require("multer-s3");
@@ -79,16 +79,16 @@ const uploadSnapshotOption = (s3) => {
     };
 };
 exports.uploadSnapshotOption = uploadSnapshotOption;
-const uploadTrainingsOption = (s3) => {
+const uploadVideoOption = (s3) => {
     return {
         fileFilter: (req, file, cb) => {
-            if (file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+            if (file.mimetype.match(/\/(mp4)$/)) {
                 cb(null, true);
             }
             else {
                 cb(new common_1.HttpException({
                     status: 400,
-                    message: `Unsupported file type ${path_1.extname(file.originalname)}`
+                    message: `Unsupported video file type ${path_1.extname(file.originalname)} ${JSON.stringify(file)}`
                 }, common_1.HttpStatus.BAD_REQUEST), false);
             }
         },
@@ -96,12 +96,15 @@ const uploadTrainingsOption = (s3) => {
             s3: s3,
             bucket: 'artisan-photos',
             key: function (req, file, cb) {
-                let destination = `trainings/${new Date().toISOString().substring(0, 10)}/${Date.now().toString()}`;
+                const userId = req.body['userId'] ? req.body['userId'] : req.user.id;
+                const folderName = `users/${userId}/${new Date().toISOString().substring(0, 10)}/${Date.now().toString()}`;
+                req.folderName = folderName;
+                const destination = `${folderName}/original.mp4`;
                 cb(null, destination);
             },
             contentType: multerS3.AUTO_CONTENT_TYPE
         })
     };
 };
-exports.uploadTrainingsOption = uploadTrainingsOption;
+exports.uploadVideoOption = uploadVideoOption;
 //# sourceMappingURL=multer.service.js.map

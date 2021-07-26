@@ -76,15 +76,15 @@ export const uploadSnapshotOption = (s3: S3) => {
     }
 };
 
-export const uploadTrainingsOption = (s3: S3) => {
+export const uploadVideoOption = (s3: S3) => {
     return {
         fileFilter: (req: any, file: any, cb: any) => {
-            if (file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+            if (file.mimetype.match(/\/(mp4)$/)) {
                 cb(null, true);
             } else {
                 cb(new HttpException({
                     status: 400,
-                    message: `Unsupported file type ${extname(file.originalname)}`
+                    message: `Unsupported video file type ${extname(file.originalname)} ${JSON.stringify(file)}`
                 }, HttpStatus.BAD_REQUEST), false);
             }
         },
@@ -92,7 +92,10 @@ export const uploadTrainingsOption = (s3: S3) => {
             s3: s3,
             bucket: 'artisan-photos',
             key: function (req: any, file, cb) {
-                let destination = `trainings/${new Date().toISOString().substring(0, 10)}/${Date.now().toString()}`
+                const userId = req.body['userId'] ? req.body['userId'] : req.user.id
+                const folderName = `users/${userId}/${new Date().toISOString().substring(0, 10)}/${Date.now().toString()}`
+                req.folderName = folderName
+                const destination = `${folderName}/original.mp4`
                 cb(null, destination)
             },
             contentType: multerS3.AUTO_CONTENT_TYPE

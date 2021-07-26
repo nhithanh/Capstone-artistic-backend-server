@@ -4,12 +4,14 @@ export declare class ProducerService {
     private readonly UPDATE_WEIGHT_EXCHANGE;
     private readonly TRAINING_REQUEST_EXCHANGE;
     private readonly STOP_TRAINING_EXCHANGE;
+    private readonly CONVERT_VIDEO_EXCHANGE;
     private readonly connection;
     private readonly channelWrapper;
     private awaitRequests;
     constructor();
     private deliveryMessage;
     private emitMessage;
+    emitConvertVideoTask(data: any): any;
     emitTransferPhotoTask(data: any): any;
     emitTransferVideoTask(data: any): any;
     emitUpdatePhotoWeight(data: any): any;

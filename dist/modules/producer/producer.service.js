@@ -20,6 +20,7 @@ let ProducerService = class ProducerService {
         this.UPDATE_WEIGHT_EXCHANGE = "UPDATE_WEIGHT_EXCHANGE";
         this.TRAINING_REQUEST_EXCHANGE = "TRAINING_EXCHANGE";
         this.STOP_TRAINING_EXCHANGE = "STOP_TRAINING_EXCHANGE";
+        this.CONVERT_VIDEO_EXCHANGE = "CONVERT_VIDEO_EXCHANGE";
         this.connection = amqp.connect([config_1.QUEUE_HOST]);
         this.channelWrapper = this.connection.createChannel();
         this.awaitRequests = [];
@@ -51,6 +52,8 @@ let ProducerService = class ProducerService {
             case "STOP_TRAINING":
                 this.emitStopTraining(data);
                 break;
+            case "CONVERT_VIDEO":
+                this.emitConvertVideoTask(data);
         }
     }
     emitMessage(exchange, routingKey, data, action) {
@@ -63,6 +66,10 @@ let ProducerService = class ProducerService {
             });
         });
     }
+    emitConvertVideoTask(data) {
+        console.log("Emit convert video");
+        return this.emitMessage(this.CONVERT_VIDEO_EXCHANGE, "", data, "CONVERT_VIDEO");
+    }
     emitTransferPhotoTask(data) {
         return this.emitMessage(this.PHOTO_EXCHANGE, "", data, "TRANSFER_PHOTO");
     }
@@ -73,11 +80,9 @@ let ProducerService = class ProducerService {
         return this.emitMessage(this.UPDATE_WEIGHT_EXCHANGE, "", data, "UPDATE_WEIGHT");
     }
     emitTrainingRequest(data) {
-        console.log("EMit training request baby");
         return this.emitMessage(this.TRAINING_REQUEST_EXCHANGE, "", data, "START_TRAINING");
     }
     emitStopTraining(trainingRequestId) {
-        console.log("emit event stop");
         const data = {
             trainingRequestId,
             action: "STOP"

@@ -1,16 +1,17 @@
-/// <reference types="multer" />
+/// <reference types="multer-s3" />
 import { MEDIA_TYPE } from '../medias/entities/media.entity';
 export declare class VideosController {
     private readonly S3_ABSOLUTE_PATH;
     private readonly mediasService;
     private readonly s3Service;
+    private readonly producerService;
+    private readonly notificationsService;
+    private readonly socketsService;
     constructor();
-    uploadVideo(file: Express.Multer.File, req: any, body: any): Promise<{
+    uploadVideo(media: Express.MulterS3.File, req: any, body: any): Promise<{
         thumbnailURL: string;
         originalVideoURL: string;
-        m3u8_720p_playlsit: string;
-        m3u8_480p_playlsit: string;
-        m3u8_360p_playlsit: string;
+        playlist: string;
         id: string;
         userId: string;
         user: import("../users/entities/user.entity").User;
@@ -22,4 +23,5 @@ export declare class VideosController {
         updatedAt: Date;
         deletedAt: string;
     }>;
+    handleTransferVideoComplete(media: Express.MulterS3.File, req: any, body: any): Promise<import("../medias/entities/media.entity").Media>;
 }

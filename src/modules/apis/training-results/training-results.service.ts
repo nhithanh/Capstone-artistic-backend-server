@@ -30,7 +30,6 @@ export class TrainingResultsService {
       checkpoint: +createTrainingResultDto.step
     }
     this.trainingRequestReposiory.save(updateTrainingRequest).then(() => {
-      console.log("emit")
       this.socketService.emitUpdateTrainingRequestToAdmin(updateTrainingRequest)
     })
     const newTrainingResult = this.trainingResultRepository.create({...createTrainingResultDto,

@@ -56,7 +56,6 @@ export class UsersService {
   }
 
   async findByCredential(email: string, password: string): Promise<User | null> {
-    console.log("Call")
     const user = await this.usersRepository.findOne({
       where: {
         email

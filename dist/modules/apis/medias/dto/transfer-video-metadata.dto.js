@@ -41,11 +41,6 @@ __decorate([
     class_validator_1.IsNotEmpty(),
     class_validator_1.IsString(),
     __metadata("design:type", String)
-], TransferVideoCompleteMetadata.prototype, "saveLocation", void 0);
-__decorate([
-    class_validator_1.IsNotEmpty(),
-    class_validator_1.IsString(),
-    __metadata("design:type", String)
 ], TransferVideoCompleteMetadata.prototype, "saveAlbumId", void 0);
 __decorate([
     class_validator_1.IsNotEmpty(),

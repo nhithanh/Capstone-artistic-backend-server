@@ -12,30 +12,19 @@ const videos_controller_1 = require("./videos.controller");
 const s3_module_1 = require("../../../s3/s3.module");
 const medias_module_1 = require("../medias/medias.module");
 const platform_express_1 = require("@nestjs/platform-express");
-const path_1 = require("path");
-const multer_1 = require("multer");
+const s3_service_1 = require("../../../s3/s3.service");
+const multer_service_1 = require("../../../config/multer.service");
+const producer_module_1 = require("../../producer/producer.module");
+const notifications_module_1 = require("../notifications/notifications.module");
+const socket_module_1 = require("../../../gateway/socket.module");
 let VideosModule = class VideosModule {
 };
 VideosModule = __decorate([
     common_1.Module({
-        imports: [s3_module_1.S3Module, medias_module_1.MediasModule, platform_express_1.MulterModule.register({
-                storage: multer_1.diskStorage({
-                    destination: './upload-video',
-                    filename: (req, file, cb) => {
-                        cb(null, `${file.originalname}${path_1.extname(file.originalname)}`);
-                    }
-                }),
-                fileFilter: (req, file, cb) => {
-                    if (file.mimetype.match(/\/(mp4)$/)) {
-                        cb(null, true);
-                    }
-                    else {
-                        cb(new common_1.HttpException({
-                            status: 400,
-                            message: `Unsupported file type ${path_1.extname(file.originalname)}`
-                        }, common_1.HttpStatus.BAD_REQUEST), false);
-                    }
-                },
+        imports: [s3_module_1.S3Module, medias_module_1.MediasModule, producer_module_1.ProducerModule, notifications_module_1.NotificationsModule, socket_module_1.SocketModule, platform_express_1.MulterModule.registerAsync({
+                imports: [s3_module_1.S3Module],
+                useFactory: async (s3Service) => multer_service_1.uploadVideoOption(s3Service.s3),
+                inject: [s3_service_1.S3Service],
             })],
         controllers: [videos_controller_1.VideosController]
     })

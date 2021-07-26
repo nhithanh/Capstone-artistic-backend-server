@@ -5,7 +5,7 @@ import { S3Service } from 'src/s3/s3.service';
 import { MediasQueryParams } from './dto/medias.query';
 import { SaveMediaToAlbumDto } from './dto/save-media-to-album.dto';
 import { MEDIA_TYPE } from './entities/media.entity';
-import { TransferVideoCompleteMetadata, TransferVideoMetadataDto } from './dto/transfer-video-metadata.dto';
+import { TransferVideoMetadataDto } from './dto/transfer-video-metadata.dto';
 import { UpdateMediaDTO } from './dto/upload-media.dto';
 import { NotificationsService } from '../notifications/notifications.service';
 export declare class MediasController {
@@ -34,7 +34,6 @@ export declare class MediasController {
         payload?: undefined;
         status?: undefined;
     }>;
-    transferVideoCompleted(metadata: TransferVideoCompleteMetadata): Promise<import("./entities/media.entity").Media>;
     transferPhotoCompleted(transferPhotoCompleteMetadataDTO: TransferMediaCompleteMetadatadDTO): {
         status: HttpStatus;
         message: string;

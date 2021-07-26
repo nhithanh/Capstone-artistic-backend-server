@@ -6,7 +6,6 @@ export declare class TransferVideoMetadataDto {
 }
 export declare class TransferVideoCompleteMetadata {
     userId: string;
-    saveLocation: string;
     saveAlbumId: string;
     styleId: string;
 }

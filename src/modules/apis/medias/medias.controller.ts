@@ -79,7 +79,6 @@ export class MediasController {
         saveAlbumId: transferVideoMetadata.albumId
       }
       this.producerService.emitTransferVideoTask(payload);
-      console.log({payload})
       return {
         payload,
         status: HttpStatus.ACCEPTED,
@@ -90,25 +89,7 @@ export class MediasController {
         message: "Media is not type video"
       }
     }
-  }
-
-  @Post('/transfer-video/completed')
-  async transferVideoCompleted(@Body() metadata: TransferVideoCompleteMetadata) {
-    const rs = await Promise.all([
-      this.mediasService.create({
-        albumId: metadata.saveAlbumId,
-        type: MEDIA_TYPE.VIDEO,
-        userId: metadata.userId,
-        storageLocation: `https://artisan-photos.s3.ap-southeast-1.amazonaws.com/${metadata.saveLocation}`
-      }),
-      this.notficationsService.create({
-        userId: metadata.userId,
-        message: 'Transfer video completed!'
-      })
-    ])
-    this.socketService.emitTransferVideoCompleted(metadata.userId, metadata.saveAlbumId)
-    return rs[0]
-  }
+  }  
 
 
   @Post('/transfer-photo/completed')
