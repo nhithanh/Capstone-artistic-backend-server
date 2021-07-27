@@ -41,6 +41,7 @@ export declare class StylesService {
     getAllStylesWithSnapshotPath(): Promise<any>;
     findAllVideoSupportedStyles(): Promise<{
         iconURL: string;
+        demoVideoURL: string;
         id: string;
         styleName: string;
         isActive: boolean;
@@ -48,7 +49,6 @@ export declare class StylesService {
         activeSnapshot: Promise<Snapshot>;
         routingKey: string;
         isSupportVideo: boolean;
-        demoVideoURL: string;
         priority: number;
         createdAt: Date;
         updatedAt: Date;

@@ -38,6 +38,7 @@ export declare class StylesController {
     }[]>;
     getVideoSupportStyles(): Promise<{
         iconURL: string;
+        demoVideoURL: string;
         id: string;
         styleName: string;
         isActive: boolean;
@@ -45,7 +46,6 @@ export declare class StylesController {
         activeSnapshot: Promise<import("../snapshots/entities/snapshot.entity").Snapshot>;
         routingKey: string;
         isSupportVideo: boolean;
-        demoVideoURL: string;
         priority: number;
         createdAt: Date;
         updatedAt: Date;

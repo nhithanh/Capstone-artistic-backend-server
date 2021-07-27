@@ -62,7 +62,7 @@ let StylesService = class StylesService {
             select: ['id', 'styleName', 'iconURL', 'routingKey', 'demoVideoURL']
         });
         return data.map(style => {
-            return Object.assign(Object.assign({}, style), { iconURL: this.s3Service.getCDNURL(style.iconURL) });
+            return Object.assign(Object.assign({}, style), { iconURL: this.s3Service.getCDNURL(style.iconURL), demoVideoURL: this.s3Service.getCDNURL(style.demoVideoURL) });
         });
     }
     async findOne(id) {

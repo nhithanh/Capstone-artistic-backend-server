@@ -81,7 +81,8 @@ export class StylesService {
     return data.map(style => {
       return {
         ...style,
-        iconURL: this.s3Service.getCDNURL(style.iconURL)
+        iconURL: this.s3Service.getCDNURL(style.iconURL),
+        demoVideoURL: this.s3Service.getCDNURL(style.demoVideoURL)
       }
     })
   }
