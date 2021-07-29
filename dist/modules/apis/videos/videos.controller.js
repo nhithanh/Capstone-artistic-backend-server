@@ -59,7 +59,8 @@ let VideosController = class VideosController {
             videoLocation: this.s3Service.getCDNURL(rs[0].storageLocation + '/original.mp4'),
             saveFolder: req.folderName
         });
-        this.socketsService.emitTransferVideoCompleted(userId, saveAlbumId);
+        console.log(rs[0]);
+        this.socketsService.emitTransferVideoCompleted(userId, saveAlbumId, Object.assign(Object.assign({}, rs[0]), { thumbnailURL: this.s3Service.getCDNURL(rs[0].storageLocation + "/thumbnail.png"), originalVideoURL: this.s3Service.getCDNURL(rs[0].storageLocation + "/original.mp4"), playlist: this.s3Service.getCDNURL(rs[0].storageLocation + "/playlist.m3u8") }));
         return rs[0];
     }
 };

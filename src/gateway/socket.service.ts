@@ -10,10 +10,11 @@ export class SocketService {
         this.server.emit(userId, payload)
     }
 
-    public emitTransferVideoCompleted(userId: string, albumId: string) {
+    public emitTransferVideoCompleted(userId: string, albumId: string, media: any) {
         this.server.emit(userId, {
             action: "TRANSFER_VIDEO_COMPLETED",
-            albumId
+            albumId,
+            media
         })
     }
 

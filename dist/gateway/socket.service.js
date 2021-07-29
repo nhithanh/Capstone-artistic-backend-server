@@ -15,10 +15,11 @@ let SocketService = class SocketService {
     emitToSpecificUser(userId, payload) {
         this.server.emit(userId, payload);
     }
-    emitTransferVideoCompleted(userId, albumId) {
+    emitTransferVideoCompleted(userId, albumId, media) {
         this.server.emit(userId, {
             action: "TRANSFER_VIDEO_COMPLETED",
-            albumId
+            albumId,
+            media
         });
     }
     emitStopTraining() {
