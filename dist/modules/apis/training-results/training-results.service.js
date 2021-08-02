@@ -50,7 +50,8 @@ let TrainingResultsService = class TrainingResultsService {
         const data = await this.trainingResultRepository.find({
             where: {
                 trainingRequestId: id
-            }
+            },
+            order: { createdAt: 'ASC' }
         });
         return data.map(item => {
             return Object.assign(Object.assign({}, item), { photoAccessURL: this.s3Service.getCDNURL(item.resultPhotoLocation), snapshotAccessURL: this.s3Service.getCDNURL(item.snapshotLocation) });

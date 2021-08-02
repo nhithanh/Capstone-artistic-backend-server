@@ -70,7 +70,8 @@ export class TrainingResultsService {
     const data = await this.trainingResultRepository.find({
       where: {
         trainingRequestId: id
-      }
+      },
+      order: {createdAt: 'ASC'}
     })
 
     return data.map(item => {
