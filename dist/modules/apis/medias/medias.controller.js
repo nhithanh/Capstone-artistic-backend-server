@@ -27,7 +27,6 @@ const save_media_to_album_dto_1 = require("./dto/save-media-to-album.dto");
 const media_entity_1 = require("./entities/media.entity");
 const transfer_video_metadata_dto_1 = require("./dto/transfer-video-metadata.dto");
 const upload_media_dto_1 = require("./dto/upload-media.dto");
-const notifications_service_1 = require("../notifications/notifications.service");
 const styles_service_1 = require("../styles/styles.service");
 let MediasController = class MediasController {
     constructor() { }
@@ -125,10 +124,6 @@ __decorate([
     common_1.Inject(),
     __metadata("design:type", s3_service_1.S3Service)
 ], MediasController.prototype, "s3Service", void 0);
-__decorate([
-    common_1.Inject(),
-    __metadata("design:type", notifications_service_1.NotificationsService)
-], MediasController.prototype, "notficationsService", void 0);
 __decorate([
     common_1.Inject(),
     __metadata("design:type", socket_service_1.SocketService)

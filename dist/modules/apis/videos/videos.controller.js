@@ -22,6 +22,7 @@ const media_entity_1 = require("../medias/entities/media.entity");
 const producer_service_1 = require("../../producer/producer.service");
 const notifications_service_1 = require("../notifications/notifications.service");
 const socket_service_1 = require("../../../gateway/socket.service");
+const moment = require("moment");
 let VideosController = class VideosController {
     constructor() {
         this.S3_ABSOLUTE_PATH = 'https://artisan-photos.s3.ap-southeast-1.amazonaws.com';
@@ -52,9 +53,10 @@ let VideosController = class VideosController {
             }),
             this.notificationsService.create({
                 userId: userId,
-                message: `Video transfered completed [26-07-2021, 08:30]!`
+                message: `Video transfered completed at ${moment().format('MMMM Do YYYY, h:mm:ss a')}!`
             })
         ]);
+        console.log({ message: `Video transfered completed at ${moment().format('MMMM Do YYYY, h:mm:ss a')}!` });
         this.producerService.emitConvertVideoTask({
             videoLocation: this.s3Service.getCDNURL(rs[0].storageLocation + '/original.mp4'),
             saveFolder: req.folderName

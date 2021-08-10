@@ -7,10 +7,8 @@ import { SaveMediaToAlbumDto } from './dto/save-media-to-album.dto';
 import { MEDIA_TYPE } from './entities/media.entity';
 import { TransferVideoMetadataDto } from './dto/transfer-video-metadata.dto';
 import { UpdateMediaDTO } from './dto/upload-media.dto';
-import { NotificationsService } from '../notifications/notifications.service';
 export declare class MediasController {
     s3Service: S3Service;
-    notficationsService: NotificationsService;
     private readonly socketService;
     private readonly producerService;
     private readonly mediasService;

@@ -5,9 +5,9 @@ import { MediasService } from '../medias/medias.service';
 import { S3Service } from 'src/s3/s3.service';
 import { MEDIA_TYPE } from '../medias/entities/media.entity';
 import { ProducerService } from 'src/modules/producer/producer.service';
-import { TransferVideoCompleteMetadata } from '../medias/dto/transfer-video-metadata.dto';
 import { NotificationsService } from '../notifications/notifications.service';
 import { SocketService } from 'src/gateway/socket.service';
+import * as moment from 'moment'
 
 @Controller('videos')
 export class VideosController {
@@ -71,9 +71,10 @@ export class VideosController {
       }),
       this.notificationsService.create({
         userId: userId,
-        message: `Video transfered completed [26-07-2021, 08:30]!`
+        message: `Video transfered completed at ${moment().format('MMMM Do YYYY, h:mm:ss a')}!`
       })
     ])
+    console.log({message: `Video transfered completed at ${moment().format('MMMM Do YYYY, h:mm:ss a')}!`})
     this.producerService.emitConvertVideoTask({
       videoLocation: this.s3Service.getCDNURL(rs[0].storageLocation + '/original.mp4'),
       saveFolder: req.folderName

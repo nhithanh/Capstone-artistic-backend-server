@@ -23,6 +23,7 @@ let NotificationsService = class NotificationsService {
             where: {
                 userId
             },
+            take: 5,
             order: {
                 createdAt: "DESC"
             }

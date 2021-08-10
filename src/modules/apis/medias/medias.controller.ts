@@ -10,9 +10,8 @@ import { MediasQueryParams } from './dto/medias.query';
 import { JwtAuthGuard } from 'src/auths/jwt-auth.guard';
 import { SaveMediaToAlbumDto } from './dto/save-media-to-album.dto';
 import { MEDIA_TYPE } from './entities/media.entity'
-import { TransferVideoCompleteMetadata, TransferVideoMetadataDto } from './dto/transfer-video-metadata.dto';
+import { TransferVideoMetadataDto } from './dto/transfer-video-metadata.dto';
 import { UpdateMediaDTO } from './dto/upload-media.dto';
-import { NotificationsService } from '../notifications/notifications.service';
 import { StylesService } from '../styles/styles.service';
 
 @ApiTags("medias")
@@ -21,9 +20,6 @@ export class MediasController {
 
   @Inject()
   s3Service: S3Service;
-
-  @Inject()
-  notficationsService: NotificationsService;
 
   @Inject()
   private readonly socketService: SocketService
